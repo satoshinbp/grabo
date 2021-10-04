@@ -1,5 +1,5 @@
 import React from 'react';
-import { HStack, Text, Box, StatusBar } from 'native-base';
+import { StatusBar, Box, HStack, Text } from 'native-base';
 
 export default () => {
   return (
