@@ -1,5 +1,5 @@
-import React from 'react';
-import { StatusBar, Box, HStack, Text } from 'native-base';
+import React from 'react'
+import { StatusBar, Box, HStack, Text } from 'native-base'
 
 export default () => {
   return (
@@ -13,5 +13,5 @@ export default () => {
         </HStack>
       </Box>
     </>
-  );
-};
+  )
+}

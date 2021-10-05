@@ -1,9 +1,9 @@
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { View, VStack, Divider, Heading, Button } from 'native-base';
+import React from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { View, VStack, Divider, Heading, Button } from 'native-base'
 
 export default () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   return (
     <View h="100%" flex={1} px={4} bg="#fff">
@@ -14,5 +14,5 @@ export default () => {
         </Button>
       </VStack>
     </View>
-  );
-};
+  )
+}
