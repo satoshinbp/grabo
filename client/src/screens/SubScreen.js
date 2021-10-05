@@ -1,9 +1,9 @@
-import React from 'react';
-import { useRoute } from '@react-navigation/core';
-import { View, VStack, Divider, Heading } from 'native-base';
+import React from 'react'
+import { useRoute } from '@react-navigation/core'
+import { View, VStack, Divider, Heading } from 'native-base'
 
 export default () => {
-  const route = useRoute();
+  const route = useRoute()
 
   return (
     <View h="100%" flex={1} px={4} bg="#fff">
@@ -11,5 +11,5 @@ export default () => {
         <Heading>{`${route.params.title} Sub`}</Heading>
       </VStack>
     </View>
-  );
-};
+  )
+}

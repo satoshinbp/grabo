@@ -1,12 +1,12 @@
-// import axios from 'axios';
-// import { API_KEY } from '@env';
+// import axios from 'axios'
+// import { API_KEY } from '@env'
 
 // const getProd = async () => {
-//   const url = ``;
+//   const url = ``
 //   const res = await axios.get(url).catch((err) => {
-//     throw err;
-//   });
-//   return {};
-// };
+//     throw err
+//   })
+//   return {}
+// }
 
-// export { getProd };
+// export { getProd }

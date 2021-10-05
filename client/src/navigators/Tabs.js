@@ -1,13 +1,13 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Header from '../components/Header';
-import HomeStacks from '../navigators/HomeStacks';
-import GroupsStacks from '../navigators/GroupsStacks';
-import ScanStacks from '../navigators/ScanStacks';
-import FavsStacks from '../navigators/FavsStacks';
-import ProfileStacks from '../navigators/ProfileStacks';
+import React from 'react'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Header from '../components/Header'
+import HomeStacks from '../navigators/HomeStacks'
+import GroupsStacks from '../navigators/GroupsStacks'
+import ScanStacks from '../navigators/ScanStacks'
+import FavsStacks from '../navigators/FavsStacks'
+import ProfileStacks from '../navigators/ProfileStacks'
 
-const Tab = createBottomTabNavigator(); // RouteConfigs and StackNavigatorConfig to be set
+const Tab = createBottomTabNavigator() // RouteConfigs and StackNavigatorConfig to be set
 // After setting up RouteConfigs and StackNavigatorConfig, stack navigators might be removed
 
 export default () => {
@@ -22,5 +22,5 @@ export default () => {
         <Tab.Screen name="Profile" component={ProfileStacks} />
       </Tab.Navigator>
     </>
-  );
-};
+  )
+}
