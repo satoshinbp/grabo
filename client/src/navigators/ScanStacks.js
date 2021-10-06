@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Scan from '../screens/Scan'
 import SubScreen from '../screens/SubScreen'
 
-// After setting up RouteConfigs and StackNavigatorConfig in tabs navigator, stack navigators might be removed
 const ScanStack = createNativeStackNavigator()
 
 export default () => {
