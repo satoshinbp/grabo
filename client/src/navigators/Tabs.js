@@ -1,6 +1,5 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import Header from '../components/Header'
 import HomeStacks from '../navigators/HomeStacks'
 import GroupsStacks from '../navigators/GroupsStacks'
 import ScanStacks from '../navigators/ScanStacks'
@@ -13,7 +12,6 @@ const Tab = createBottomTabNavigator() // RouteConfigs and StackNavigatorConfig 
 export default () => {
   return (
     <>
-      <Header />
       <Tab.Navigator>
         <Tab.Screen name="Home" component={HomeStacks} />
         <Tab.Screen name="Groups" component={GroupsStacks} />
