@@ -21,8 +21,8 @@ const Tabs = ({ isAuthenticated }) => {
       <Tab.Screen name="Profile" component={ProfileStacks} options={{ headerShown: false }} />
     </Tab.Navigator>
   ) : (
-    <Login />
-    //<MyCamera />
+    // <Login />
+    <MyCamera />
   )
 }
 const mapStateToProps = (state) => ({
