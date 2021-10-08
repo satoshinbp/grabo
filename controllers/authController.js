@@ -9,6 +9,7 @@ const getCurrentUser = (req, res) => {
 
 const logout = (req, res) => {
   req.logout()
+  res.redirect('/')
 }
 
 module.exports = { getCurrentUser, login, logout }

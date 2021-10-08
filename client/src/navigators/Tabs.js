@@ -6,16 +6,11 @@ import GroupsStacks from './GroupsStacks'
 import ScanStacks from './ScanStacks'
 import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
-import Login from '../components/Login'
 
 const Tab = createBottomTabNavigator()
 
-const userSelector = (state) => state.user
-
 export default () => {
-  const user = useSelector(userSelector)
-
-  return user.id ? (
+  return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeStacks} options={{ headerShown: false }} />
       <Tab.Screen name="Groups" component={GroupsStacks} options={{ headerShown: false }} />
@@ -23,7 +18,5 @@ export default () => {
       <Tab.Screen name="Favs" component={FavsStacks} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileStacks} options={{ headerShown: false }} />
     </Tab.Navigator>
-  ) : (
-    <Login />
   )
 }
