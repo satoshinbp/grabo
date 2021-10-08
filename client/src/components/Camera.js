@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Button } from 'native-base'
 import { Camera } from 'expo-camera'
+import { REACT_APP_VISION_API_KEY } from '@env'
 
 const MyCamera = () => {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
+  const [ocrText, setOcrText] = useState('')
   const cameraRef = useRef(null)
 
   useEffect(() => {
@@ -27,7 +29,34 @@ const MyCamera = () => {
       const options = { base64: true }
       let photo = await cameraRef.current.takePictureAsync(options)
       console.log(photo.uri)
+      // send data to cloudVision
+      sendCloudVision(photo.base64)
     }
+  }
+
+  const sendCloudVision = async (image) => {
+    const body = JSON.stringify({
+      requests: [
+        {
+          features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
+          image: {
+            content: image,
+          },
+        },
+      ],
+    })
+    const response = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: body,
+    })
+    const resJson = await response.json()
+    console.log(resJson.responses[0].textAnnotations[0])
+
+    setOcrText(resJson.responses[0].textAnnotations[0].description)
   }
 
   return (
