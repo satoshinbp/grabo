@@ -7,6 +7,7 @@ import ScanStacks from './ScanStacks'
 import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
 import Login from '../components/Login'
+import MyCamera from '../components/Camera'
 
 const Tab = createBottomTabNavigator()
 
@@ -21,6 +22,7 @@ const Tabs = ({ isAuthenticated }) => {
     </Tab.Navigator>
   ) : (
     <Login />
+    //<MyCamera />
   )
 }
 const mapStateToProps = (state) => ({
