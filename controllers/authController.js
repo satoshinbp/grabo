@@ -1,3 +1,5 @@
+// Authentication to be completed after Jason's JWT class!
+
 const login = (req, res) => {
   res.send(req.user)
   // res.send('Successfully logged in with Google!')

@@ -1,3 +1,5 @@
+// Authentication to be completed after Jason's JWT class!
+
 import axios from 'axios'
 import { API_URL } from '@env'
 import * as WebBrowser from 'expo-web-browser'

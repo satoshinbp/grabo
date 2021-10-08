@@ -1,3 +1,5 @@
+// Authentication to be completed after Jason's JWT class!
+
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
