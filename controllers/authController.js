@@ -1,6 +1,6 @@
 const login = (req, res) => {
   res.send(req.user)
-  res.redirect('/')
+  // res.send('Successfully logged in with Google!')
 }
 
 const getCurrentUser = (req, res) => {
@@ -9,7 +9,6 @@ const getCurrentUser = (req, res) => {
 
 const logout = (req, res) => {
   req.logout()
-  res.redirect('/')
 }
 
 module.exports = { getCurrentUser, login, logout }
