@@ -1,20 +1,22 @@
 import React from 'react'
-import { View, VStack, Button } from 'native-base'
-import { connect } from 'react-redux'
-import { signInWithGoogle } from '../actions/authActions'
+import { View, VStack, Button, Link } from 'native-base'
+import { useDispatch } from 'react-redux'
+import { startLogin } from '../actions/userActions'
+import { API_URL } from '@env'
 
-const Login = ({ signInWithGoogle }) => (
-  <View h="100%" flex={1} px={4} bg="#fff">
-    <VStack alignItems="center" space={4} w="100%" h="100%" mt={4}>
-      <Button onPress={signInWithGoogle} w="100%">
-        Sign in with Google
-      </Button>
-    </VStack>
-  </View>
-)
+export default () => {
+  const dispatch = useDispatch()
 
-const mapDispatchToProps = (dispatch) => ({
-  signInWithGoogle: () => dispatch(signInWithGoogle()),
-})
-
-export default connect(undefined, mapDispatchToProps)(Login)
+  return (
+    <View h="100%" flex={1} px={4} bg="#fff">
+      <VStack alignItems="center" space={4} w="100%" h="100%" mt={4}>
+        <Link mt={4} href={`${API_URL}/auth/google`}>
+          Sign in with Google
+        </Link>
+        {/* <Button onPress={dispatch(startLogin())} w="100%">
+          Sign in with Google
+        </Button> */}
+      </VStack>
+    </View>
+  )
+}

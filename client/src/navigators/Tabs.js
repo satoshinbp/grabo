@@ -1,6 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { useSelector } from 'react-redux'
 import HomeStacks from './HomeStacks'
 import GroupsStacks from './GroupsStacks'
 import ScanStacks from './ScanStacks'
@@ -10,8 +10,12 @@ import Login from '../components/Login'
 
 const Tab = createBottomTabNavigator()
 
-const Tabs = ({ isAuthenticated }) => {
-  return isAuthenticated ? (
+const userSelector = (state) => state.user
+
+export default () => {
+  const user = useSelector(userSelector)
+
+  return user.id ? (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeStacks} options={{ headerShown: false }} />
       <Tab.Screen name="Groups" component={GroupsStacks} options={{ headerShown: false }} />
@@ -23,8 +27,3 @@ const Tabs = ({ isAuthenticated }) => {
     <Login />
   )
 }
-const mapStateToProps = (state) => ({
-  isAuthenticated: !!state.auth.id,
-})
-
-export default connect(mapStateToProps)(Tabs)

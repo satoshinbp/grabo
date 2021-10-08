@@ -1,3 +1,8 @@
+const login = (req, res) => {
+  res.send(req.user)
+  res.redirect('/')
+}
+
 const getCurrentUser = (req, res) => {
   res.send(req.user)
 }
@@ -7,4 +12,4 @@ const logout = (req, res) => {
   res.redirect('/')
 }
 
-module.exports = { getCurrentUser, logout }
+module.exports = { getCurrentUser, login, logout }
