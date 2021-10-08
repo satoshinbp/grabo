@@ -1,10 +1,17 @@
 require('dotenv').config()
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
-// const User = require('../models/User')
+const User = require('../models/User')
 
-// passport.serializeUser((user, done) => done(null, user.id))
-// passport.deserializeUser((id, done) => User.findById(id).then((user) => done(null, user)))
+passport.serializeUser((user, done) => {
+  done(null, user.id)
+})
+
+passport.deserializeUser((id, done) => {
+  User.findById(id).then((user) => {
+    done(null, user)
+  })
+})
 
 passport.use(
   new GoogleStrategy(
@@ -15,14 +22,21 @@ passport.use(
       proxy: true,
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log(accessToken, refreshToken, profile)
-      // User.findOne({ googleID: profile.id }).then((existingUser) => {
-      //   if (existingUser) {
-      //     done(null, existingUser)
-      //   } else {
-      //     new User({ googleID: profile.id }).save().then((user) => done(null, user))
-      //   }
-      // })
+      User.findOne({ googleId: profile.id }).then((existingUser) => {
+        if (existingUser) {
+          done(null, existingUser)
+        } else {
+          const newUser = new User({
+            googleId: profile.id,
+            name: profile.displayName,
+            email: profile.emails[0]?.value,
+            photoUrl: profile.photos[0]?.value,
+          })
+          newUser.save().then((user) => {
+            done(null, user)
+          })
+        }
+      })
     }
   )
 )

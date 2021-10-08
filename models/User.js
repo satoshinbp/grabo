@@ -4,23 +4,14 @@ const ObjectId = Schema.Types.ObjectId
 
 const userSchema = new Schema(
   {
-    googleId: String,
-    credits: { type: Number, default: 0 },
-    name: {
-      type: String,
-      required: true,
-    },
-    email: String,
-    googleID: String,
-    lang: [String],
-    favProducts: [ObjectId],
-    myProducts: [ObjectId],
-    notifications: [
-      {
-        read: Boolean,
-        message: String,
-      },
-    ],
+    googleId: { type: String, required: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    photoUrl: String,
+    lang: { type: [String], default: [] },
+    favProducts: { type: [ObjectId], default: [] },
+    myProducts: { type: [ObjectId], default: [] },
+    notifications: { type: [{ read: Boolean, message: String }], default: [] },
   },
   { timestamps: true }
 )
