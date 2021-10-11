@@ -57,7 +57,7 @@ const MyCamera = () => {
       body: body,
     })
     const resJson = await response.json()
-    console.log(resJson.responses[0].textAnnotations[0])
+    // console.log(resJson.responses[0].textAnnotations[0])
 
     setOcrText(resJson.responses[0].textAnnotations[0].description)
   }
