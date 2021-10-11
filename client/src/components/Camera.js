@@ -42,6 +42,9 @@ const MyCamera = () => {
           image: {
             content: image,
           },
+          imageContext: {
+            languageHints: ['ja', 'ko', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'],
+          },
         },
       ],
     })
