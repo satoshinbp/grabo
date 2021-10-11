@@ -1,17 +1,15 @@
-import React from 'react'
+// Authentication to be completed after Jason's JWT class!import React from 'react'
+
 import { Button } from 'native-base'
-import { connect } from 'react-redux'
-import { signOutWithGoogle } from '../actions/authActions'
+import { useDispatch } from 'react-redux'
+import { startLogout } from '../actions/userActions'
 
-// signOutWithGoogle is not working, WIP
-const Logout = ({ signOutWithGoogle }) => (
-  <Button onPress={signOutWithGoogle} w="100%">
-    Logout
-  </Button>
-)
+export default () => {
+  const dispatch = useDispatch()
 
-const mapDispatchToProps = (dispatch) => ({
-  signOutWithGoogle: () => dispatch(signOutWithGoogle()),
-})
-
-export default connect(undefined, mapDispatchToProps)(Logout)
+  return (
+    <Button onPress={() => dispatch(startLogout())} w="100%">
+      Logout
+    </Button>
+  )
+}
