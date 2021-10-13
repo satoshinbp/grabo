@@ -2,12 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Camera } from 'expo-camera'
 import { StyleSheet } from 'react-native'
 import { Text, View, Button } from 'native-base'
-import { REACT_APP_VISION_API_KEY } from '@env'
-
-const requestCameraPermissions = async () => {
-  const { status } = await Camera.requestPermissionsAsync()
-  setHasPermission(status === 'granted')
-}
 
 export default () => {
   const [hasPermission, setHasPermission] = useState(null)
@@ -16,42 +10,25 @@ export default () => {
   const cameraRef = useRef(null)
 
   useEffect(() => {
-    requestCameraPermissions()
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync()
+      setHasPermission(status === 'granted')
+    })()
   }, [])
-
-  if (hasPermission === null) return <View />
-  if (hasPermission === false) return <Text>No access to camera</Text>
 
   const takePicture = async () => {
     if (cameraRef) {
-      const options = { base64: true }
-      let photo = await cameraRef.current.takePictureAsync(options)
-      sendImgToCloudVision(photo.base64)
+      console.log(cameraRef)
+
+      const photo = await cameraRef.current.takePictureAsync({ base64: true })
+      console.log('Photo URI: ', photo.uri)
+      const newOcrText = await sendImgToCloudVision(photo.base64)
+      setOcrText(newOcrText)
     }
   }
 
-  const sendImgToCloudVision = async (image) => {
-    const body = JSON.stringify({
-      requests: [
-        {
-          features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
-          image: { content: image },
-          imageContext: { languageHints: ['ja', 'ko', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
-        },
-      ],
-    })
-    const res = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: body,
-    })
-    const resJson = await res.json()
-    setOcrText(resJson.responses[0].textAnnotations[0].description)
-  }
-
+  if (hasPermission === null) return <View />
+  if (hasPermission === false) return <Text>No access to camera</Text>
   return (
     <View h="100%" flex={1} bg="#fff">
       <Camera style={styles.camera} type={type} ref={cameraRef}>
