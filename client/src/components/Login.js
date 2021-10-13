@@ -8,7 +8,8 @@ export default () => {
   const user = {
     googleId: '',
     name: 'John Doe',
-    img: '',
+    image: [],
+    groups: ['jp', 'hi'],
   }
 
   return (
