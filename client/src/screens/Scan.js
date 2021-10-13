@@ -1,18 +1,4 @@
 import React from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { View, VStack, Divider, Heading, Button } from 'native-base'
+import MyCamera from '../components/Camera'
 
-export default () => {
-  const navigation = useNavigation()
-
-  return (
-    <View h="100%" flex={1} px={4} bg="#fff">
-      <VStack alignItems="center" space={4} w="100%" h="100%" mt={4} divider={<Divider />}>
-        <Heading>Scan</Heading>
-        <Button onPress={() => navigation.navigate('Sub Screen', { title: 'Scan' })} w="100%">
-          Sub Screen
-        </Button>
-      </VStack>
-    </View>
-  )
-}
+export default () => <MyCamera />
