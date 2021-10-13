@@ -1,12 +1,19 @@
 import React from 'react'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { NativeBaseProvider } from 'native-base'
-import configureStore from './src/store/configureStore'
+import userReducer from './src/features/user'
 import Tabs from './src/navigators/Tabs'
 import Header from './src/components/Header'
 
-const store = configureStore()
+const store = createStore(
+  combineReducers({
+    user: userReducer,
+  }),
+  applyMiddleware(thunk)
+)
 
 export default () => {
   return (
