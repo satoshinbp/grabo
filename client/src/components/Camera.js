@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Camera } from 'expo-camera'
 import { StyleSheet } from 'react-native'
 import { Text, View, Button } from 'native-base'
+import { sendImgToCloudVision } from '../utils/api'
 
 export default () => {
   const [hasPermission, setHasPermission] = useState(null)
@@ -10,7 +11,7 @@ export default () => {
   const cameraRef = useRef(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const { status } = await Camera.requestPermissionsAsync()
       setHasPermission(status === 'granted')
     })()
@@ -18,8 +19,6 @@ export default () => {
 
   const takePicture = async () => {
     if (cameraRef) {
-      console.log(cameraRef)
-
       const photo = await cameraRef.current.takePictureAsync({ base64: true })
       console.log('Photo URI: ', photo.uri)
       const newOcrText = await sendImgToCloudVision(photo.base64)
