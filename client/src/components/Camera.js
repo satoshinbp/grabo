@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { Button } from 'native-base'
+import { StyleSheet } from 'react-native'
+import { Text, View, Button } from 'native-base'
 import { Camera } from 'expo-camera'
 import { REACT_APP_VISION_API_KEY } from '@env'
 
@@ -57,53 +57,41 @@ const MyCamera = () => {
       body: body,
     })
     const resJson = await response.json()
-    // console.log(resJson.responses[0].textAnnotations[0])
+    console.log(resJson.responses[0].textAnnotations[0])
 
     setOcrText(resJson.responses[0].textAnnotations[0].description)
   }
 
   return (
-    <View style={styles.container}>
+    <View h="100%" flex={1} bg="#fff">
       <Camera style={styles.camera} type={type} ref={cameraRef}>
-        <View style={styles.buttonContainer}>
-          <Button icon onPress={takePicture} style={styles.button}>
-            <Text style={styles.text}> Snap </Text>
-          </Button>
-          <Button
-            style={styles.button}
-            onPress={() => {
-              setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back)
-            }}
-          >
-            <Text style={styles.text}> Flip </Text>
-          </Button>
-        </View>
+        <Button style={styles.button} onPress={takePicture}>
+          Snap
+        </Button>
+        <Button
+          style={styles.button}
+          onPress={() => {
+            setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back)
+          }}
+        >
+          Flip
+        </Button>
       </Camera>
     </View>
   )
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   camera: {
     flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
     flexDirection: 'row',
-    margin: 20,
   },
+
   button: {
     flex: 0.5,
     margin: 10,
+    marginBottom: 30,
     alignSelf: 'flex-end',
     alignItems: 'center',
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
   },
 })
 

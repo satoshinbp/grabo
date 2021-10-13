@@ -11,7 +11,7 @@ import MyCamera from '../components/Camera'
 const Tab = createBottomTabNavigator()
 
 export default () => {
-  return isAuthenticated ? (
+  return (
     <Tab.Navigator>
       <Tab.Screen name="My Products" component={ProductsStacks} options={{ headerShown: false }} />
       <Tab.Screen name="My Groups" component={GroupsStacks} options={{ headerShown: false }} />
@@ -19,8 +19,5 @@ export default () => {
       <Tab.Screen name="Favorites" component={FavsStacks} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileStacks} options={{ headerShown: false }} />
     </Tab.Navigator>
-  ) : (
-    // <Login />
-    <MyCamera />
   )
 }
