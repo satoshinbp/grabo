@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { FlatList, Button } from 'native-base'
-import groups from '../mocks/groups'
+import groups from '../utils/groups'
 import { setProductsByGroup } from '../features/products'
 
 export default () => {

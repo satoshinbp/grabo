@@ -7,7 +7,7 @@ export default () => {
 
   return (
     <Box>
-      <Heading>{route.params.product}</Heading>
+      <Heading>{route.params.id}</Heading>
     </Box>
   )
 }

@@ -1,7 +1,7 @@
 export default [
   {
     _id: '1',
-    image: [],
+    image: ['https://picsum.photos/id/123/200/300'],
     group: 'jp',
     keywords: ['白い恋人', '北海道'],
     fixedQandA: [
@@ -37,7 +37,7 @@ export default [
   },
   {
     _id: '2',
-    image: [],
+    image: ['https://picsum.photos/id/234/200/300'],
     group: 'jp',
     keywords: ['kitkat', 'nestle kitkat'],
     fixedQandA: [
@@ -74,7 +74,7 @@ export default [
   },
   {
     _id: '3',
-    image: [],
+    image: ['https://picsum.photos/id/345/200/300'],
     group: 'hi',
     keywords: ['समोसा रेसिपी'],
     fixedQandA: [
@@ -110,7 +110,7 @@ export default [
   },
   {
     _id: '4',
-    image: [],
+    image: ['https://picsum.photos/id/456/200/300'],
     group: 'ko',
     keywords: ['현대수산맛김'],
     fixedQandA: [
@@ -146,7 +146,7 @@ export default [
   },
   {
     _id: '5',
-    image: [],
+    image: ['https://picsum.photos/id/567/200/300'],
     group: 'zh',
     keywords: ['豆板醤', '李錦記'],
     fixedQandA: [
