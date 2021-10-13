@@ -13,14 +13,11 @@ const sendImgToCloudVision = async (image) => {
     ],
   }
 
-  const res = await axios({
-    url,
+  const res = await axios.post(url, data, {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    method: 'POST',
-    data,
   })
 
   console.log('Text Detection Result: ', res.data.responses[0].textAnnotations[0])

@@ -11,7 +11,7 @@ export default () => {
   const cameraRef = useRef(null)
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       const { status } = await Camera.requestPermissionsAsync()
       setHasPermission(status === 'granted')
     })()
