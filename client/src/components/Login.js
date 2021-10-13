@@ -1,24 +1,19 @@
-// Authentication to be completed after Jason's JWT class!
-
 import React from 'react'
-import { View, VStack, Button, Link } from 'native-base'
+import { Button } from 'native-base'
 import { useDispatch } from 'react-redux'
-import { startLogin } from '../actions/userActions'
-// import { API_URL } from '@env'
+import { login } from '../features/user'
 
 export default () => {
   const dispatch = useDispatch()
+  const user = {
+    googleId: '',
+    name: 'John Doe',
+    img: '',
+  }
 
   return (
-    <View h="100%" flex={1} px={4} bg="#fff">
-      <VStack alignItems="center" space={4} w="100%" h="100%" mt={4}>
-        {/* <Link mt={4} href={`${API_URL}/auth/google`}>
-          Sign in with Google
-        </Link> */}
-        <Button onPress={() => dispatch(startLogin())} w="100%">
-          Sign in with Google
-        </Button>
-      </VStack>
-    </View>
+    <Button onPress={() => dispatch(login(user))} w="100%">
+      Login
+    </Button>
   )
 }
