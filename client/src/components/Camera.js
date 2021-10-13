@@ -1,54 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Camera } from 'expo-camera'
 import { StyleSheet } from 'react-native'
 import { Text, View, Button } from 'native-base'
-import { Camera } from 'expo-camera'
 import { REACT_APP_VISION_API_KEY } from '@env'
 
-const MyCamera = () => {
+export default () => {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
   const [ocrText, setOcrText] = useState('')
   const cameraRef = useRef(null)
 
+  const requestCameraPermissions = async () => {
+    const { status } = await Camera.requestPermissionsAsync()
+    setHasPermission(status === 'granted')
+  }
+
   useEffect(() => {
-    ;(async () => {
-      const { status } = await Camera.requestPermissionsAsync()
-      setHasPermission(status === 'granted')
-    })()
+    requestCameraPermissions()
   }, [])
 
-  if (hasPermission === null) {
-    return <View />
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>
-  }
+  if (hasPermission === null) return <View />
+  if (hasPermission === false) return <Text>No access to camera</Text>
 
   const takePicture = async () => {
     if (cameraRef) {
       const options = { base64: true }
       let photo = await cameraRef.current.takePictureAsync(options)
-      console.log(photo.uri)
-      // send data to cloudVision
-      sendCloudVision(photo.base64)
+      sendImgToCloudVision(photo.base64)
     }
   }
 
-  const sendCloudVision = async (image) => {
+  const sendImgToCloudVision = async (image) => {
     const body = JSON.stringify({
       requests: [
         {
           features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
-          image: {
-            content: image,
-          },
-          imageContext: {
-            languageHints: ['ja', 'ko', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'],
-          },
+          image: { content: image },
+          imageContext: { languageHints: ['ja', 'ko', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
         },
       ],
     })
-    const response = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`, {
+    const res = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -56,9 +48,7 @@ const MyCamera = () => {
       method: 'POST',
       body: body,
     })
-    const resJson = await response.json()
-    console.log(resJson.responses[0].textAnnotations[0])
-
+    const resJson = await res.json()
     setOcrText(resJson.responses[0].textAnnotations[0].description)
   }
 
@@ -80,6 +70,7 @@ const MyCamera = () => {
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   camera: {
     flex: 1,
@@ -94,5 +85,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-export default MyCamera
