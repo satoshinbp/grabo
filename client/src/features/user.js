@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialStateValue = {
   googleId: '',
   name: '',
-  img: '',
+  image: '',
+  groups: [],
 }
 
 const userSlice = createSlice({
