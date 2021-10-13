@@ -4,16 +4,16 @@ import { StyleSheet } from 'react-native'
 import { Text, View, Button } from 'native-base'
 import { REACT_APP_VISION_API_KEY } from '@env'
 
+const requestCameraPermissions = async () => {
+  const { status } = await Camera.requestPermissionsAsync()
+  setHasPermission(status === 'granted')
+}
+
 export default () => {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
   const [ocrText, setOcrText] = useState('')
   const cameraRef = useRef(null)
-
-  const requestCameraPermissions = async () => {
-    const { status } = await Camera.requestPermissionsAsync()
-    setHasPermission(status === 'granted')
-  }
 
   useEffect(() => {
     requestCameraPermissions()
