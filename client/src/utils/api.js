@@ -21,8 +21,8 @@ const sendImgToCloudVision = async (image) => {
     },
   })
 
-  console.log('Text Detection Result: ', res.data.responses[0].textAnnotations[0])
-  return res.data.responses[0].textAnnotations[0].description
+  // console.log('Text Detection Result: ', res.data.responses[0].textAnnotations[0])
+  return res.data.responses[0].textAnnotations[0]
 }
 
 const fetchProductsByGroup = (group) => {
