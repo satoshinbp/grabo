@@ -7,15 +7,15 @@ import { sendImgToCloudVision } from '../utils/api'
 export default (props) => {
   const [selectedImage, setSelectedImage] = useState(null)
 
-  let openImagePickerAsync = async () => {
-    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync()
+  const openImagePickerAsync = async () => {
+    const permissionResult = await ImagePicker.requestCameraRollPermissionsAsync()
 
     if (permissionResult.granted === false) {
       alert('Permission to access camera roll is required!')
       return
     }
 
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({ base64: true })
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({ base64: true })
     if (pickerResult.cancelled === true) {
       return
     }
@@ -25,15 +25,6 @@ export default (props) => {
     props.setLanguage(newOcrText.locale)
     setSelectedImage({ localUri: pickerResult.uri })
   }
-  // console.log(props.text)
-
-  // if (selectedImage !== null) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Image source={{ uri: selectedImage.localUri }} style={styles.thumbnail} />
-  //     </View>
-  //   )
-  // }
 
   return (
     <Button style={styles.button} onPress={openImagePickerAsync}>

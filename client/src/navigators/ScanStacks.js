@@ -1,6 +1,7 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Scan from '../screens/Scan'
+import SelectLanguage from '../screens/SelectLanguage'
 
 const ScanStack = createNativeStackNavigator()
 

@@ -27,8 +27,6 @@ export default () => {
       setLanguage(newOcrText.locale)
     }
   }
-  console.log('Text Detection Result:', ocrText)
-  console.log('Language:', language)
 
   if (hasPermission === null) return <View />
   if (hasPermission === false) return <Text>No access to camera</Text>
