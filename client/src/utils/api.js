@@ -9,7 +9,7 @@ const sendImgToCloudVision = async (image) => {
       {
         features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
         image: { content: image },
-        imageContext: { languageHints: ['ja', 'ko', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
+        imageContext: { languageHints: ['ja', 'ru', 'ko', 'es', 'ar', 'de', 'pt', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
       },
     ],
   }

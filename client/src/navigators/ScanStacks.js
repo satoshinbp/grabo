@@ -8,6 +8,7 @@ export default () => {
   return (
     <ScanStack.Navigator>
       <ScanStack.Screen name="Scan" component={Scan} options={{ headerShown: false }} />
+      <ScanStack.Screen name="SelectLanguage" component={SelectLanguage} options={{ headerShown: false }} />
     </ScanStack.Navigator>
   )
 }
