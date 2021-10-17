@@ -4,7 +4,9 @@ const mongoose = require('mongoose')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
 require('./services/passport')
+
 const authRoutes = require('./routes/authRoutes')
+const imageRoutes = require('./routes/imageRoutes')
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -14,7 +16,6 @@ mongoose
   .catch((err) => {
     console.log(err)
   })
-
 const app = express()
 
 app.use(
@@ -23,10 +24,12 @@ app.use(
     keys: [process.env.COOKIE_KEY],
   })
 )
+require('./routes/imageRoutes')(app)
 
-app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.initialize())
+// app.use(passport.session())
 
 app.use(authRoutes)
+app.use(imageRoutes)
 
 module.exports = app
