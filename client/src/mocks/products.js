@@ -3,7 +3,7 @@ export default [
     _id: '1',
     images: [
       {
-        image: 'https://picsum.photos/id/123/200/300',
+        url: 'https://picsum.photos/id/123/200/300',
         report: {
           unclear: 0,
           wrong: 0,
@@ -13,17 +13,17 @@ export default [
     ],
     group: 'jp',
     keywords: ['白い恋人', '北海道'],
-    fixedQandA: [
+    fixedQuestions: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'a', value: 'shiroikoibito', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'a', description: 'shiroikoibito', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
       {
         question: 'Who is the maker of this product',
-        answers: [{ userId: 'b', value: 'ishiya', report: { unclear: 0, wrong: 0, harrasment: 0 } }],
+        answers: [{ userId: 'b', description: 'ishiya', report: { unclear: 0, wrong: 0, harrasment: 0 } }],
         highlightedBy: [],
       },
       {
@@ -42,19 +42,28 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQandA: [],
+    uniqQuestions: [],
   },
   {
     _id: '2',
-    images: ['https://picsum.photos/id/234/200/300'],
+    images: [
+      {
+        url: 'https://picsum.photos/id/234/200/300',
+        report: {
+          unclear: 0,
+          wrong: 0,
+          harrasment: 0,
+        },
+      },
+    ],
     group: 'jp',
     keywords: ['kitkat', 'nestle kitkat'],
-    fixedQandA: [
+    fixedQuestions: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'c', value: 'kitkat', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
-          { userId: 'd', value: 'kitkat chocolate matcha', report: { unclear: 0, wrong: 0, harrasment: 0 } },
+          { userId: 'c', description: 'kitkat', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'd', description: 'kitkat chocolate matcha', report: { unclear: 0, wrong: 0, harrasment: 0 } },
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
@@ -79,18 +88,27 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQandA: [],
+    uniqQuestions: [],
   },
   {
     _id: '3',
-    images: ['https://picsum.photos/id/345/200/300'],
+    images: [
+      {
+        url: 'https://picsum.photos/id/345/200/300',
+        report: {
+          unclear: 0,
+          wrong: 0,
+          harrasment: 0,
+        },
+      },
+    ],
     group: 'hi',
     keywords: ['समोसा रेसिपी'],
-    fixedQandA: [
+    fixedQuestions: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'a', value: 'samosa', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'a', description: 'samosa', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
@@ -115,14 +133,23 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQandA: [],
+    uniqQuestions: [],
   },
   {
     _id: '4',
-    images: ['https://picsum.photos/id/456/200/300'],
+    images: [
+      {
+        url: 'https://picsum.photos/id/456/200/300',
+        report: {
+          unclear: 0,
+          wrong: 0,
+          harrasment: 0,
+        },
+      },
+    ],
     group: 'ko',
     keywords: ['현대수산맛김'],
-    fixedQandA: [
+    fixedQuestions: [
       {
         question: 'What is the name of this product?',
         answers: [],
@@ -136,7 +163,7 @@ export default [
       {
         question: 'Who is the maker of this product',
         answers: [
-          { userId: 'b', value: 'hyundaekim', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'b', description: 'hyundaekim', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
         ],
         highlightedBy: [],
       },
@@ -151,19 +178,28 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQandA: [],
+    uniqQuestions: [],
   },
   {
     _id: '5',
-    images: ['https://picsum.photos/id/567/200/300'],
+    images: [
+      {
+        url: 'https://picsum.photos/id/567/200/300',
+        report: {
+          unclear: 0,
+          wrong: 0,
+          harrasment: 0,
+        },
+      },
+    ],
     group: 'zh',
     keywords: ['豆板醤', '李錦記'],
-    fixedQandA: [
+    fixedQuestions: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'd', value: 'doubanjiang', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
-          { userId: 'f', value: 'chili bean sauce', report: { unclear: 0, wrong: 0, harrasment: 0 } },
+          { userId: 'd', description: 'doubanjiang', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'f', description: 'chili bean sauce', report: { unclear: 0, wrong: 0, harrasment: 0 } },
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
@@ -188,6 +224,6 @@ export default [
         highlightedBy: ['i', 'j'],
       },
     ],
-    uniqQandA: [],
+    uniqQuestions: [],
   },
 ]
