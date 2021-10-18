@@ -14,7 +14,7 @@ export default () => {
         <Button onPress={() => navigation.navigate('Product', { id: item._id })}>
           <Image
             source={{
-              uri: item.image[Math.floor(Math.random() * item.image.length)],
+              uri: item.images[Math.floor(Math.random() * item.images.length)].url,
             }}
             alt="product"
             size="xl"
