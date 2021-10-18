@@ -5,8 +5,8 @@ const cookieSession = require('cookie-session')
 const passport = require('passport')
 require('./services/passport')
 const authRoutes = require('./routes/authRoutes')
-const ProductTest = require('./models/ProductTest')
 const Product = require('./models/Product')
+const productRouter = require('./routes/product')
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -30,8 +30,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(authRoutes)
+app.use(productRouter)
 
-app.get('/api/product', (req, res) => {
+/*app.get('/api/product', (req, res) => {
   const product = new Product({
     img: {
       url: ['https://www.lays.com/sites/lays.com/files/2020-11/lays-Classic-small.jpg'],
@@ -118,8 +119,27 @@ app.get('/api/product', (req, res) => {
       res.send(result)
     })
     .catch((err) => {
-      console.log('err')
+      console.log(err)
     })
 })
 
+app.get('/api/product/alldocument', (req, res) => {
+  Product.find()
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
+app.get('/api/product/callback', (req, res) => {
+  Product.findById('616cc6977a3c67c48feef7ea')
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})*/
 module.exports = app

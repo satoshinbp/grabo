@@ -4,16 +4,22 @@ const ObjectId = Schema.Types.ObjectId
 
 const productSchema = new Schema(
   {
-    img: { url: [String], report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number } },
+    img: {
+      url: { type: [String], required: true },
+      report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
+    },
     lang: String,
     keywords: [String],
     fixedQuestions: [
       {
-        question: { title: String, report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number } },
+        question: {
+          title: { type: String, required: true },
+          report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
+        },
         answers: [
           {
-            userID: String,
-            value: String,
+            userID: { type: String, required: true },
+            value: { type: String, required: true },
             report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
           },
         ],
@@ -22,11 +28,11 @@ const productSchema = new Schema(
     ],
     uniqueQuestions: [
       {
-        question: { userID: String, value: String },
+        question: { userID: { type: String, required: true }, value: { type: String, required: true } },
         answers: [
           {
-            userID: String,
-            value: String,
+            userID: { type: String, required: true },
+            value: { type: String, required: true },
             report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
           },
         ],

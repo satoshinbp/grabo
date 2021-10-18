@@ -1,6 +1,8 @@
-/*const activityController = require('../controllers/authController')
+const express = require('express')
+const router = express.Router()
+const Product = require('../models/Product')
+const productController = require('../controllers/product')
 
-module.exports = (app) => {
-  app.get('/api/product', activityController.findAll)
-  app.post('/api/product', activityController.create)
-}*/
+router.get('/api/product', productController.getProduct)
+
+module.exports = router
