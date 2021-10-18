@@ -23,7 +23,7 @@ export default () => {
     }
   }
 
-  const uploadImage = (files) => {
+  const uploadImage = () => {
     let params = new FormData()
     params.append('image', { uri: image.replace('file://', ''), name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     axios
