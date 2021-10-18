@@ -9,7 +9,7 @@ export default () => {
     googleId: '',
     name: 'John Doe',
     image: [],
-    groups: ['jp', 'hi'],
+    groups: ['ja', 'hi'],
   }
 
   return (
