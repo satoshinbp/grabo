@@ -7,7 +7,7 @@ const userSchema = new Schema(
     googleId: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
-    photoUrl: String,
+    image: String,
     lang: { type: [String], default: [] },
     favProducts: { type: [ObjectId], default: [] },
     myProducts: { type: [ObjectId], default: [] },
