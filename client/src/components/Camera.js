@@ -3,15 +3,16 @@ import { Camera } from 'expo-camera'
 import { StyleSheet } from 'react-native'
 import { Text, View, Button } from 'native-base'
 import { sendImgToCloudVision } from '../utils/api'
+import CameraRoll from '../components/CameraRoll'
 
 export default () => {
   const [hasPermission, setHasPermission] = useState(null)
-  const [type, setType] = useState(Camera.Constants.Type.back)
   const [ocrText, setOcrText] = useState('')
+  const [language, setLanguage] = useState('')
   const cameraRef = useRef(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const { status } = await Camera.requestPermissionsAsync()
       setHasPermission(status === 'granted')
     })()
@@ -22,7 +23,8 @@ export default () => {
       const photo = await cameraRef.current.takePictureAsync({ base64: true })
       console.log('Photo URI: ', photo.uri)
       const newOcrText = await sendImgToCloudVision(photo.base64)
-      setOcrText(newOcrText)
+      setOcrText(newOcrText.description)
+      setLanguage(newOcrText.locale)
     }
   }
 
@@ -30,18 +32,12 @@ export default () => {
   if (hasPermission === false) return <Text>No access to camera</Text>
   return (
     <View h="100%" flex={1} bg="#fff">
-      <Camera style={styles.camera} type={type} ref={cameraRef}>
+      <Camera style={styles.camera} ref={cameraRef}>
         <Button style={styles.button} onPress={takePicture}>
           Snap
         </Button>
-        <Button
-          style={styles.button}
-          onPress={() => {
-            setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back)
-          }}
-        >
-          Flip
-        </Button>
+
+        <CameraRoll text={ocrText} setOcrText={setOcrText} setLanguage={setLanguage} />
       </Camera>
     </View>
   )
