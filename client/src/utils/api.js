@@ -33,4 +33,12 @@ const fetchProductsByGroup = (group) => {
   return products.filter((product) => product.group === group)
 }
 
-export { sendImgToCloudVision, fetchProductsByGroup }
+const fetchProduct = (id) => {
+  // const url = `${API_URL}/<api>`
+  // const res = await axios.get(url)
+  // return res.data
+
+  return products.filter((product) => product._id === id)[0]
+}
+
+export { sendImgToCloudVision, fetchProduct, fetchProductsByGroup }
