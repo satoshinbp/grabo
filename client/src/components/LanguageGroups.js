@@ -6,13 +6,7 @@ export default () => {
   const [value, setValue] = useState('')
 
   return (
-    <Radio.Group
-      name="Group"
-      value={value}
-      onChange={(nextValue) => {
-        setValue(nextValue)
-      }}
-    >
+    <Radio.Group name="Group" value={value} onChange={(nextValue) => setValue(nextValue)}>
       {groups.map((language) => (
         <Radio value={language.code}>{language.language}</Radio>
       ))}

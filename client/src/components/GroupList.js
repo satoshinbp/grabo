@@ -16,8 +16,8 @@ export default () => {
       renderItem={({ item }) => (
         <Button
           onPress={() => {
-            navigation.navigate('Group', { group: item.label })
-            dispatch(setProductsByGroup(item.value))
+            navigation.navigate('Group', { group: item.language })
+            dispatch(setProductsByGroup(item.code))
           }}
         >
           {item.label}
