@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Radio } from 'native-base'
 import groups from '../utils/groups'
 
-export default () => {
-  const [value, setValue] = useState('')
+export default (props) => {
+  const [value, setValue] = useState(props.code)
 
   return (
     <Radio.Group
@@ -13,9 +13,12 @@ export default () => {
         setValue(nextValue)
       }}
     >
-      {groups.map((language) => (
-        <Radio value={language.code}>{language.language}</Radio>
-      ))}
+      {groups.map(
+        (language) => (
+          language.code == props.code && props.setIsTextDetected(true),
+          (<Radio value={language.code}>{language.language}</Radio>)
+        )
+      )}
     </Radio.Group>
   )
 }
