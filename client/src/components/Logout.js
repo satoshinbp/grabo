@@ -1,14 +1,13 @@
-// Authentication to be completed after Jason's JWT class!import React from 'react'
-
+import React from 'react'
 import { Button } from 'native-base'
 import { useDispatch } from 'react-redux'
-import { startLogout } from '../actions/userActions'
+import { logout } from '../features/user'
 
 export default () => {
   const dispatch = useDispatch()
 
   return (
-    <Button onPress={() => dispatch(startLogout())} w="100%">
+    <Button onPress={() => dispatch(logout())} w="100%">
       Logout
     </Button>
   )

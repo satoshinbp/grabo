@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { Image } from 'react-native'
-import { View, VStack, Divider, Heading, Button } from 'native-base'
+import { View, VStack, Divider, Button } from 'native-base'
 import axios from 'axios'
 import * as ImagePicker from 'expo-image-picker'
+import { Box, Heading } from 'native-base'
 
 export default () => {
   const navigation = useNavigation()
@@ -24,9 +25,9 @@ export default () => {
 
   const uploadImage = (files) => {
     let params = new FormData()
-    params.append('image', { uri: image.replace('file://', ''), name: 'gazo.jpeg', type: 'image/jpeg' })
+    params.append('image', { uri: image.replace('file://', ''), name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     axios
-      .post('http://10.0.0.33:8000/api/image', params, {
+      .post('http://"your IP":8000/api/image', params, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then((result) => {
@@ -39,11 +40,10 @@ export default () => {
 
   return (
     <View h="100%" flex={1} px={4} bg="#fff">
+      <Box>
+        <Heading>My Products</Heading>
+      </Box>
       <VStack alignItems="center" space={4} w="100%" h="100%" mt={4} divider={<Divider />}>
-        <Heading>Image check!!</Heading>
-        <Button onPress={() => navigation.navigate('Sub Scadddddreen', { title: 'Home' })} w="100%">
-          Sub Screen
-        </Button>
         <Button onPress={pickImage} w="100%">
           Choose pica
         </Button>
