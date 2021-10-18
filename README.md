@@ -16,7 +16,7 @@
 
 ## Our Solution: Grabo
 
-Grabo has 3 main features :
+Grabo has 3 main features:
 
 1.
 2.
