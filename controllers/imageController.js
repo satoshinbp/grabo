@@ -24,7 +24,3 @@ exports.uploadImage = (req, res) => {
   console.log('Successfull')
   res.send('Successfully uploaded ')
 }
-
-exports.fetchImage = (req, res) => {
-  return console.log('fetch')
-}
