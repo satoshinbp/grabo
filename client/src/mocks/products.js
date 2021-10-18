@@ -11,7 +11,7 @@ export default [
         },
       },
     ],
-    group: 'jp',
+    group: 'ja',
     keywords: ['白い恋人', '北海道'],
     fixedQuestions: [
       {
@@ -56,7 +56,7 @@ export default [
         },
       },
     ],
-    group: 'jp',
+    group: 'ja',
     keywords: ['kitkat', 'nestle kitkat'],
     fixedQuestions: [
       {
