@@ -10,7 +10,7 @@ const productSchema = new Schema(
     },
     lang: String,
     keywords: [String],
-    fixedQuestions: [
+    fixedQandA: [
       {
         question: {
           title: { type: String, required: true },
@@ -18,25 +18,25 @@ const productSchema = new Schema(
         },
         answers: [
           {
-            userID: { type: String, required: true },
+            userId: { type: String, required: true },
             value: { type: String, required: true },
             report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
           },
         ],
-        highlighted: [String],
+        highlightedBy: [String],
       },
     ],
-    uniqueQuestions: [
+    uniqueQandA: [
       {
-        question: { userID: { type: String, required: true }, value: { type: String, required: true } },
+        question: { userId: { type: String, required: true }, value: { type: String, required: true } },
         answers: [
           {
-            userID: { type: String, required: true },
+            userId: { type: String, required: true },
             value: { type: String, required: true },
             report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
           },
         ],
-        highlighted: [String],
+        highlightedBy: [String],
       },
     ],
   },
