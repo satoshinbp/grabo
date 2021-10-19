@@ -11,11 +11,23 @@ const Tab = createBottomTabNavigator()
 export default () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="My Groups" component={GroupsStacks} options={{ headerShown: false }} />
-      <Tab.Screen name="My Products" component={ProductsStacks} options={{ headerShown: false }} />
-      <Tab.Screen name="Scan" component={ScanStacks} options={{ headerShown: false }} />
-      <Tab.Screen name="Favorites" component={FavsStacks} options={{ headerShown: false }} />
-      <Tab.Screen name="Profile" component={ProfileStacks} options={{ headerShown: false }} />
+      <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups', headerShown: false }} />
+      <Tab.Screen
+        name="My Products Tab"
+        component={ProductsStacks}
+        options={{ tabBarLabel: 'My Products', headerShown: false }}
+      />
+      <Tab.Screen name="Scan Tab" component={ScanStacks} options={{ tabBarLabel: 'Scan', headerShown: false }} />
+      <Tab.Screen
+        name="Favorites Tab"
+        component={FavsStacks}
+        options={{ tabBarLabel: 'Favorites', headerShown: false }}
+      />
+      <Tab.Screen
+        name="Profile Tab"
+        component={ProfileStacks}
+        options={{ tabBarLabel: 'Profile', headerShown: false }}
+      />
     </Tab.Navigator>
   )
 }

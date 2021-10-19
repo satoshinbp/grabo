@@ -12,18 +12,18 @@ export default () => {
 
   return (
     <FlatList
-      data={groups.filter((group) => user.groups.includes(group.value))}
+      data={groups.filter((group) => user.groups.includes(group.code))}
       renderItem={({ item }) => (
         <Button
           onPress={() => {
-            navigation.navigate('Group', { group: item.label })
-            dispatch(setProductsByGroup(item.value))
+            navigation.navigate('Group', { group: item.language })
+            dispatch(setProductsByGroup(item.code))
           }}
         >
-          {item.label}
+          {item.language}
         </Button>
       )}
-      keyExtractor={(item) => item.value}
+      keyExtractor={(item) => item.code}
     />
   )
 }

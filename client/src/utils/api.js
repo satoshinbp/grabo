@@ -9,7 +9,7 @@ const sendImgToCloudVision = async (image) => {
       {
         features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
         image: { content: image },
-        imageContext: { languageHints: ['ja', 'ko', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
+        imageContext: { languageHints: ['ja', 'ru', 'ko', 'es', 'ar', 'de', 'pt', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
       },
     ],
   }
@@ -21,8 +21,8 @@ const sendImgToCloudVision = async (image) => {
     },
   })
 
-  console.log('Text Detection Result: ', res.data.responses[0].textAnnotations[0])
-  return res.data.responses[0].textAnnotations[0].description
+  // console.log('Text Detection Result: ', res.data.responses[0].textAnnotations[0])
+  return res.data.responses[0].textAnnotations[0]
 }
 
 const fetchProductsByGroup = (group) => {
@@ -33,4 +33,12 @@ const fetchProductsByGroup = (group) => {
   return products.filter((product) => product.group === group)
 }
 
-export { sendImgToCloudVision, fetchProductsByGroup }
+const fetchProduct = (id) => {
+  // const url = `${API_URL}/<api>`
+  // const res = await axios.get(url)
+  // return res.data
+
+  return products.filter((product) => product._id === id)[0]
+}
+
+export { sendImgToCloudVision, fetchProduct, fetchProductsByGroup }
