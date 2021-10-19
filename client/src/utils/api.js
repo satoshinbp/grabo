@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_URL, REACT_APP_VISION_API_KEY } from '@env'
+import { API_URL, API_URL_IP, REACT_APP_VISION_API_KEY } from '@env'
 import products from '../mocks/products'
 
 const sendImgToCloudVision = async (image) => {
@@ -25,6 +25,17 @@ const sendImgToCloudVision = async (image) => {
   return res.data.responses[0].textAnnotations[0]
 }
 
+const postImage = async (params) => {
+  try {
+    const result = await axios.post(`${API_URL_IP}/api/image`, params, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return result
+  } catch (err) {
+    throw err
+  }
+}
+
 const fetchProductsByGroup = (group) => {
   // const url = `${API_URL}/<api>`
   // const res = await axios.get(url)
@@ -41,4 +52,4 @@ const fetchProduct = (id) => {
   return products.filter((product) => product._id === id)[0]
 }
 
-export { sendImgToCloudVision, fetchProduct, fetchProductsByGroup }
+export { sendImgToCloudVision, postImage, fetchProduct, fetchProductsByGroup }

@@ -5,8 +5,9 @@ import { View, VStack, Divider, Button } from 'native-base'
 import axios from 'axios'
 import * as ImagePicker from 'expo-image-picker'
 import { Box, Heading } from 'native-base'
+import { API_URL, REACT_APP_VISION_API_KEY } from '@env'
 
-export const CreateProduct = () => {
+export default () => {
   const navigation = useNavigation()
   const [image, setImage] = useState(null)
 
@@ -27,7 +28,7 @@ export const CreateProduct = () => {
     let params = new FormData()
     params.append('image', { uri: image.replace('file://', ''), name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     axios
-      .post('http://"your IP":8000/api/image', params, {
+      .post(`http://10.128.214.82:8000/api/image`, params, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then((result) => {
