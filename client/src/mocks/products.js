@@ -1,14 +1,9 @@
 export default [
   {
-    _id: '1',
     images: [
       {
         url: 'https://picsum.photos/id/123/200/300',
-        report: {
-          unclear: 0,
-          wrong: 0,
-          harrasment: 0,
-        },
+        report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
       },
     ],
     group: 'ja',
@@ -17,13 +12,23 @@ export default [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'a', description: 'shiroikoibito', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
+          {
+            userId: '61606b031d55ffa6c98218ac',
+            description: 'shiroikoibito',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
         ],
-        highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
+        highlightedBy: [],
       },
       {
         question: 'Who is the maker of this product',
-        answers: [{ userId: 'b', description: 'ishiya', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }],
+        answers: [
+          {
+            userId: '616071215c8b8e6dbc8290e8',
+            description: 'ishiya',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
+        ],
         highlightedBy: [],
       },
       {
@@ -45,15 +50,10 @@ export default [
     uniqQandAs: [],
   },
   {
-    _id: '2',
     images: [
       {
         url: 'https://picsum.photos/id/234/200/300',
-        report: {
-          unclear: 0,
-          wrong: 0,
-          harrasment: 0,
-        },
+        report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
       },
     ],
     group: 'ja',
@@ -62,19 +62,23 @@ export default [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'c', description: 'kitkat', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
           {
-            userId: 'd',
+            userId: '61606b031d55ffa6c98218ac',
+            description: 'kitkat',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
+          {
+            userId: '616071215c8b8e6dbc8290e8',
             description: 'kitkat chocolate matcha',
             report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
           },
         ],
-        highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
+        highlightedBy: [],
       },
       {
         question: 'Where is the origin of this product?',
         answers: [],
-        highlightedBy: ['e', 'f'],
+        highlightedBy: ['61606b031d55ffa6c98218ac', '616071215c8b8e6dbc8290e8'],
       },
       {
         question: 'Who is the maker of this product',
@@ -95,15 +99,10 @@ export default [
     uniqQandAs: [],
   },
   {
-    _id: '3',
     images: [
       {
         url: 'https://picsum.photos/id/345/200/300',
-        report: {
-          unclear: 0,
-          wrong: 0,
-          harrasment: 0,
-        },
+        report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
       },
     ],
     group: 'hi',
@@ -112,14 +111,18 @@ export default [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'a', description: 'samosa', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
+          {
+            userId: '61606b031d55ffa6c98218ac',
+            description: 'samosa',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
         ],
-        highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
+        highlightedBy: [],
       },
       {
         question: 'Where is the origin of this product?',
         answers: [],
-        highlightedBy: ['g'],
+        highlightedBy: ['616071215c8b8e6dbc8290e8'],
       },
       {
         question: 'Who is the maker of this product',
@@ -140,15 +143,10 @@ export default [
     uniqQandAs: [],
   },
   {
-    _id: '4',
     images: [
       {
         url: 'https://picsum.photos/id/456/200/300',
-        report: {
-          unclear: 0,
-          wrong: 0,
-          harrasment: 0,
-        },
+        report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
       },
     ],
     group: 'ko',
@@ -157,17 +155,21 @@ export default [
       {
         question: 'What is the name of this product?',
         answers: [],
-        highlightedBy: ['c'], // to be cleared when new answer is added with sending notification to the users
+        highlightedBy: ['61606b031d55ffa6c98218ac'],
       },
       {
         question: 'Where is the origin of this product?',
         answers: [],
-        highlightedBy: ['f'],
+        highlightedBy: ['616071215c8b8e6dbc8290e8'],
       },
       {
         question: 'Who is the maker of this product',
         answers: [
-          { userId: 'b', description: 'hyundaekim', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
+          {
+            userId: '616071215c8b8e6dbc8290e8',
+            description: 'hyundaekim',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
         ],
         highlightedBy: [],
       },
@@ -185,15 +187,10 @@ export default [
     uniqQandAs: [],
   },
   {
-    _id: '5',
     images: [
       {
         url: 'https://picsum.photos/id/567/200/300',
-        report: {
-          unclear: 0,
-          wrong: 0,
-          harrasment: 0,
-        },
+        report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
       },
     ],
     group: 'zh',
@@ -202,10 +199,18 @@ export default [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'd', description: 'doubanjiang', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
-          { userId: 'f', description: 'chili bean sauce', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } },
+          {
+            userId: '616071215c8b8e6dbc8290e8',
+            description: 'doubanjiang',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
+          {
+            userId: '616071215c8b8e6dbc8290e8',
+            description: 'chili bean sauce',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
         ],
-        highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
+        highlightedBy: [],
       },
       {
         question: 'Where is the origin of this product?',
@@ -225,7 +230,7 @@ export default [
       {
         question: 'Please describe about this product',
         answers: [],
-        highlightedBy: ['i', 'j'],
+        highlightedBy: ['616071215c8b8e6dbc8290e8', '61606b031d55ffa6c98218ac'],
       },
     ],
     uniqQandAs: [],

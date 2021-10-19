@@ -4,7 +4,6 @@ const ObjectId = Schema.Types.ObjectId
 
 const productSchema = new Schema(
   {
-    userId: ObjectId,
     images: [
       {
         url: String,
