@@ -1,6 +1,6 @@
 const Product = require('../models/Product')
 
-const getProduct = (req, res) => {
+const getProducts = (req, res) => {
   Product.find()
     .then((result) => {
       res.send(result)
@@ -20,4 +20,4 @@ const getProductById = (req, res) => {
     })
 }
 
-module.exports = { getProduct, getProductById }
+module.exports = { getProducts, getProductById }
