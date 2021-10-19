@@ -7,7 +7,7 @@ const productSchema = new Schema(
     userId: ObjectId,
     images: [
       {
-        url: ObjectId,
+        url: String,
         report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
       },
     ],

@@ -20,4 +20,14 @@ const getProductById = (req, res) => {
     })
 }
 
-module.exports = { getProducts, getProductById }
+const createProduct = (req, res) => {
+  Product.create(req.body)
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+module.exports = { getProducts, getProductById, createProduct }
