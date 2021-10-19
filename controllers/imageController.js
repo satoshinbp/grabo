@@ -7,9 +7,9 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.S3_SECRETACCESSKEY,
 })
 
-exports.upload = multer({
+const upload = multer({
   storage: multerS3({
-    s3: s3,
+    s3,
     bucket: 'grabo1',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname })
@@ -20,7 +20,9 @@ exports.upload = multer({
   }),
 })
 
-exports.uploadImage = (req, res) => {
+const uploadImage = (req, res) => {
   console.log('Successfull')
   res.send('Successfully uploaded ')
 }
+
+module.exports = { upload, uploadImage }

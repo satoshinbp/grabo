@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 // const passport = require('passport')
 // require('./services/passport')
 const authRoutes = require('./routes/authRoutes')
+const imageRoutes = require('./routes/imageRoutes')
 const productRoutes = require('./routes/productRoutes')
 
 mongoose
@@ -30,7 +31,7 @@ app.use(express.json())
 // app.use(passport.session())
 
 app.use(authRoutes)
+app.use(imageRoutes)
 app.use(productRoutes)
-require('./routes/imageRoutes')(app)
 
 module.exports = app
