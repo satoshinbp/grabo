@@ -30,7 +30,7 @@ export default () => {
         w="100%"
       />
       <FlatList
-        data={product.fixedQuestions}
+        data={product.fixedQandAs}
         renderItem={({ item }) => (
           <>
             <Text>{item.question}</Text>

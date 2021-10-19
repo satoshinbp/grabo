@@ -1,11 +1,13 @@
+// Authentication to be done after Json's class, currently commented out
+
 require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
-const cookieSession = require('cookie-session')
-const passport = require('passport')
-require('./services/passport')
-
+// const cookieSession = require('cookie-session')
+// const passport = require('passport')
+// require('./services/passport')
 const authRoutes = require('./routes/authRoutes')
+const productRoutes = require('./routes/productRoutes')
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -16,17 +18,19 @@ mongoose
     console.log(err)
   })
 const app = express()
+app.use(express.json())
 
-app.use(
-  cookieSession({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    keys: [process.env.COOKIE_KEY],
-  })
-)
+// app.use(
+//   cookieSession({
+//     maxAge: 30 * 24 * 60 * 60 * 1000,
+//     keys: [process.env.COOKIE_KEY],
+//   })
+// )
+// app.use(passport.initialize())
+// app.use(passport.session())
 
-app.use(passport.initialize())
-app.use(passport.session())
-require('./routes/imageRoutes')(app)
 app.use(authRoutes)
+app.use(productRoutes)
+require('./routes/imageRoutes')(app)
 
 module.exports = app
