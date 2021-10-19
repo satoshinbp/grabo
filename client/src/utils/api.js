@@ -21,34 +21,25 @@ const sendImgToCloudVision = async (image) => {
     },
   })
 
-  // console.log('Text Detection Result: ', res.data.responses[0].textAnnotations[0])
   return res.data.responses[0].textAnnotations[0]
 }
 
 const postImage = async (params) => {
   try {
-    const result = await axios.post(`${API_URL_IP}/api/image`, params, {
+    const res = await axios.post(`${API_URL_IP}/api/image`, params, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
-    return result
+    return res
   } catch (err) {
     throw err
   }
 }
 
 const fetchProductsByGroup = (group) => {
-  // const url = `${API_URL}/<api>`
-  // const res = await axios.get(url)
-  // return res.data
-
   return products.filter((product) => product.group === group)
 }
 
 const fetchProduct = (id) => {
-  // const url = `${API_URL}/<api>`
-  // const res = await axios.get(url)
-  // return res.data
-
   return products.filter((product) => product._id === id)[0]
 }
 

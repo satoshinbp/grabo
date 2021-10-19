@@ -1,18 +1,13 @@
 import React, { useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { Image } from 'react-native'
-import { View, VStack, Divider, Button } from 'native-base'
-import axios from 'axios'
+import { Box, View, VStack, Divider, Image, Button, Heading } from 'native-base'
 import * as ImagePicker from 'expo-image-picker'
-import { Box, Heading } from 'native-base'
-import { API_URL, REACT_APP_VISION_API_KEY } from '@env'
+import { postImage } from '../utils/api'
 
 export default () => {
-  const navigation = useNavigation()
   const [image, setImage] = useState(null)
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
@@ -25,18 +20,10 @@ export default () => {
   }
 
   const uploadImage = () => {
-    let params = new FormData()
+    const params = new FormData()
     params.append('image', { uri: image.replace('file://', ''), name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    axios
-      .post(`http://10.128.214.82:8000/api/image`, params, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-      .then((result) => {
-        console.log(result)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    const postedImage = postImage(params)
+    console.log(postedImage)
   }
 
   return (
