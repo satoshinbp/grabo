@@ -5,6 +5,7 @@ const cookieSession = require('cookie-session')
 const passport = require('passport')
 require('./services/passport')
 const authRoutes = require('./routes/authRoutes')
+const productRoutes = require('./routes/productRoutes')
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -28,5 +29,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(authRoutes)
+app.use(productRoutes)
 
 module.exports = app
