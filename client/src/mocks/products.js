@@ -13,17 +13,17 @@ export default [
     ],
     group: 'ja',
     keywords: ['白い恋人', '北海道'],
-    fixedQuestions: [
+    fixedQandAs: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'a', description: 'shiroikoibito', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'a', description: 'shiroikoibito', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
       {
         question: 'Who is the maker of this product',
-        answers: [{ userId: 'b', description: 'ishiya', report: { unclear: 0, wrong: 0, harrasment: 0 } }],
+        answers: [{ userId: 'b', description: 'ishiya', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }],
         highlightedBy: [],
       },
       {
@@ -42,7 +42,7 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQuestions: [],
+    uniqQandAs: [],
   },
   {
     _id: '2',
@@ -58,12 +58,16 @@ export default [
     ],
     group: 'ja',
     keywords: ['kitkat', 'nestle kitkat'],
-    fixedQuestions: [
+    fixedQandAs: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'c', description: 'kitkat', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
-          { userId: 'd', description: 'kitkat chocolate matcha', report: { unclear: 0, wrong: 0, harrasment: 0 } },
+          { userId: 'c', description: 'kitkat', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
+          {
+            userId: 'd',
+            description: 'kitkat chocolate matcha',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
@@ -88,7 +92,7 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQuestions: [],
+    uniqQandAs: [],
   },
   {
     _id: '3',
@@ -104,11 +108,11 @@ export default [
     ],
     group: 'hi',
     keywords: ['समोसा रेसिपी'],
-    fixedQuestions: [
+    fixedQandAs: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'a', description: 'samosa', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'a', description: 'samosa', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
@@ -133,7 +137,7 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQuestions: [],
+    uniqQandAs: [],
   },
   {
     _id: '4',
@@ -149,7 +153,7 @@ export default [
     ],
     group: 'ko',
     keywords: ['현대수산맛김'],
-    fixedQuestions: [
+    fixedQandAs: [
       {
         question: 'What is the name of this product?',
         answers: [],
@@ -163,7 +167,7 @@ export default [
       {
         question: 'Who is the maker of this product',
         answers: [
-          { userId: 'b', description: 'hyundaekim', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
+          { userId: 'b', description: 'hyundaekim', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
         ],
         highlightedBy: [],
       },
@@ -178,7 +182,7 @@ export default [
         highlightedBy: [],
       },
     ],
-    uniqQuestions: [],
+    uniqQandAs: [],
   },
   {
     _id: '5',
@@ -194,12 +198,12 @@ export default [
     ],
     group: 'zh',
     keywords: ['豆板醤', '李錦記'],
-    fixedQuestions: [
+    fixedQandAs: [
       {
         question: 'What is the name of this product?',
         answers: [
-          { userId: 'd', description: 'doubanjiang', report: { unclear: 0, wrong: 0, harrasment: 0 } }, // type of report TBD
-          { userId: 'f', description: 'chili bean sauce', report: { unclear: 0, wrong: 0, harrasment: 0 } },
+          { userId: 'd', description: 'doubanjiang', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } }, // type of report TBD
+          { userId: 'f', description: 'chili bean sauce', report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 } },
         ],
         highlightedBy: [], // to be cleared when new answer is added with sending notification to the users
       },
@@ -224,6 +228,6 @@ export default [
         highlightedBy: ['i', 'j'],
       },
     ],
-    uniqQuestions: [],
+    uniqQandAs: [],
   },
 ]
