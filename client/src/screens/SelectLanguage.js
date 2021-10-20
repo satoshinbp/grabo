@@ -1,9 +1,19 @@
-import React, { useState } from 'react'
-import { Center, Box, Heading, Text } from 'native-base'
-import LanguageGroups from '../components/LanguageGroups'
+import React, { useState, useEffect } from 'react'
+import { Center, Box, Heading, Text, Radio } from 'native-base'
+import groups from '../utils/groups'
 
 export default (props) => {
   const [isTextDetected, setIsTextDetected] = useState(false)
+  const [value, setValue] = useState(props.route.params.code)
+
+  useEffect(() => {
+    groups.map((group) => {
+      if (group.code === props.route.params.code) {
+        setIsTextDetected(true)
+      }
+    })
+  }, [])
+
   return (
     <>
       <Box>
@@ -21,11 +31,11 @@ export default (props) => {
         )}
       </Box>
       <Center flex={1} px="3">
-        <LanguageGroups
-          code={props.route.params.code}
-          text={props.route.params.text}
-          setIsTextDetected={setIsTextDetected}
-        />
+        <Radio.Group name="Group" value={value} onChange={(nextValue) => setValue(nextValue)}>
+          {groups.map((language) => (
+            <Radio value={language.code}>{language.language}</Radio>
+          ))}
+        </Radio.Group>
       </Center>
     </>
   )
