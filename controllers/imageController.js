@@ -1,22 +1,19 @@
+require('dotenv').config()
 const AWS = require('aws-sdk')
 const multer = require('multer')
-var multerS3 = require('multer-s3')
+const multerS3 = require('multer-s3')
 
 const s3 = new AWS.S3({
-  accessKeyId: process.env.S3_ACCESSKEYID,
-  secretAccessKey: process.env.S3_SECRETACCESSKEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 })
 
 const upload = multer({
   storage: multerS3({
     s3,
     bucket: 'grabo1',
-    metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname })
-    },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString())
-    },
+    metadata: (req, file, cb) => cb(null, { fieldName: file.fieldname }),
+    key: (req, file, cb) => cb(null, Date.now().toString()),
   }),
 })
 

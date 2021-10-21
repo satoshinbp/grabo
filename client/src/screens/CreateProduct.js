@@ -19,11 +19,10 @@ export default () => {
     }
   }
 
-  const uploadImage = () => {
+  const uploadImage = async () => {
     const params = new FormData()
     params.append('image', { uri: image.replace('file://', ''), name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    const postedImage = postImage(params)
-    console.log(postedImage)
+    const res = await postImage(params)
   }
 
   return (

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_URL, API_URL_IP, REACT_APP_VISION_API_KEY } from '@env'
+import { API_URL, REACT_APP_VISION_API_KEY } from '@env'
 import products from '../mocks/products'
 
 const sendImgToCloudVision = async (image) => {
@@ -26,7 +26,7 @@ const sendImgToCloudVision = async (image) => {
 
 const postImage = async (params) => {
   try {
-    const res = await axios.post(`${API_URL_IP}/api/image`, params, {
+    const res = await axios.post(`${API_URL}/images`, params, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return res
