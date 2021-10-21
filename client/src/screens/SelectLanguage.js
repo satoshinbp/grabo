@@ -32,8 +32,8 @@ export default (props) => {
       </Box>
       <Center flex={1} px="3">
         <Radio.Group name="Group" value={value} onChange={(nextValue) => setValue(nextValue)}>
-          {groups.map((language) => (
-            <Radio value={language.code}>{language.language}</Radio>
+          {groups.map((group) => (
+            <Radio value={group.code}>{group.language}</Radio>
           ))}
         </Radio.Group>
       </Center>
