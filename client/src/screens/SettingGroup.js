@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
-import GroupList from '../components/GroupList'
 import groups from '../utils/groups'
+import { setLanguageGroup } from '../features/user'
 
-export const SettingGroup = () => {
-  const [selectedGroup, setSelectedGroup] = useState([])
-
+export default () => {
+  const user = useSelector((state) => state.user.value)
+  const dispatch = useDispatch()
   return (
     <Box>
       <VStack space={2}>
@@ -14,15 +15,16 @@ export const SettingGroup = () => {
         </HStack>
         <Checkbox.Group
           colorScheme="green"
-          defaultValue={groups}
+          defaultValue={user.groups}
           accessibilityLabel="choose language groups"
           onChange={(values) => {
-            setSelectedGroup(values || [])
+            console.log(values)
+            // dispatch(setLanguageGroup(values))
           }}
         >
           {' '}
           {groups.map((group) => (
-            <Checkbox value={group} my=".5">
+            <Checkbox value={group.code} my=".5">
               {group.language}
             </Checkbox>
           ))}

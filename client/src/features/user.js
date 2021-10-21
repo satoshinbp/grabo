@@ -17,8 +17,11 @@ const userSlice = createSlice({
     logout: (state, action) => {
       state.value = initialStateValue
     },
+    setLanguageGroup: (state, action) => {
+      state.value = action.payload
+    },
   },
 })
 
-export const { login, logout } = userSlice.actions
+export const { login, logout, setLanguageGroup } = userSlice.actions
 export default userSlice.reducer
