@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Center, Box, Heading, Text, Radio } from 'native-base'
+import { Center, Box, Heading, Text, Radio, Button } from 'native-base'
 import groups from '../utils/groups'
 
 export default (props) => {
@@ -36,6 +36,16 @@ export default (props) => {
             <Radio value={group.code}>{group.language}</Radio>
           ))}
         </Radio.Group>
+        <Button
+          onPress={() =>
+            props.navigation.navigate('CreateProduct', {
+              code: value,
+              text: props.route.params.text,
+            })
+          }
+        >
+          Create a Product
+        </Button>
       </Center>
     </>
   )
