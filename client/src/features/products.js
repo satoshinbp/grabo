@@ -22,13 +22,13 @@ export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', as
 
 const productsSlice = createSlice({
   name: 'products',
-  initialState: { products: [], loading: false },
+  initialState: { product: {}, products: [], loading: false },
   extraReducers: {
     [fetchProductById.pending]: (state, action) => {
       state.loading = true
     },
     [fetchProductById.fulfilled]: (state, action) => {
-      state.products.push(action.payload)
+      state.product = action.payload
       state.loading = false
     },
     [fetchProductById.rejected]: (state, action) => {

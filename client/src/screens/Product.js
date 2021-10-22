@@ -8,8 +8,7 @@ import { fetchProductById } from '../features/products'
 export default () => {
   const route = useRoute()
   const dispatch = useDispatch()
-  const { products, loading } = useSelector((state) => state.products)
-  const product = products[0]
+  const { product, loading } = useSelector((state) => state.products)
 
   useEffect(() => {
     dispatch(fetchProductById(route.params.id))

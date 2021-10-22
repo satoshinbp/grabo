@@ -7,7 +7,6 @@ const getProducts = (req, res) => {
 }
 
 const getProductById = (req, res) => {
-  console.log(req.params.id)
   Product.findById(req.params.id)
     .then((result) => res.send(result))
     .catch((err) => console.log(err))
