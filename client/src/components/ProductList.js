@@ -19,6 +19,7 @@ export default () => {
             alt="product"
             size="xl"
           /> */}
+          {/* to be replaced with Image */}
           {item.keywords[0]}
         </Button>
       )}
