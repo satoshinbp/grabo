@@ -1,12 +1,34 @@
 import React, { useState } from 'react'
 import { TouchableWithoutFeedback, Keyboard } from 'react-native'
-import { View, Box, Heading, Select, VStack, CheckIcon, Checkbox, Input, Text, Button } from 'native-base'
+import * as ImagePicker from 'expo-image-picker'
+import { View, Box, Heading, Select, VStack, CheckIcon, Checkbox, Input, Text, Button, Image } from 'native-base'
+import { postImage } from '../utils/api'
 import groups from '../utils/groups'
 
 export default (props) => {
+  const [image, setImage] = useState(null)
   const [code, setCode] = useState(props.route.params.code)
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
   const [uniqQuestion, setUniqQuestion] = useState('')
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+
+    if (!result.cancelled) {
+      setImage(result.uri)
+    }
+  }
+
+  const uploadImage = async () => {
+    const params = new FormData()
+    params.append('image', { uri: image.replace('file://', ''), name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    const res = await postImage(params)
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -16,6 +38,20 @@ export default (props) => {
         </Box>
         <Box>
           <Text>Image</Text>
+          <Button onPress={pickImage} w="100%">
+            Choose pic
+          </Button>
+          <Button onPress={uploadImage} w="100%">
+            upload
+          </Button>
+          {/* display selected image */}
+          <Image source={{ uri: image }} alt="image" style={{ width: 300, height: 300 }} />
+          {/* example of fetched image from S3 */}
+          <Image
+            source={{ uri: 'https://grabo1.s3.amazonaws.com/1634460715953' }}
+            alt="image"
+            style={{ width: 300, height: 300 }}
+          />
         </Box>
         <Box>
           <Text>Language</Text>
