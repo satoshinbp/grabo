@@ -10,6 +10,7 @@ const productSchema = new Schema(
         report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
       },
     ],
+    userId: ObjectId,
     group: String,
     keywords: [String],
     fixedQandAs: [
