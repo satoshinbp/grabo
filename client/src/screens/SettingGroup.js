@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
-import groups from '../utils/groups'
-import { setLanguageGroup } from '../features/user'
+import grouplists from '../utils/groups'
+import { updateGroup } from '../features/user'
 
 export default () => {
+  const [groups, setGroups] = useState([])
   const user = useSelector((state) => state.user.value)
   const dispatch = useDispatch()
   return (
@@ -18,19 +19,18 @@ export default () => {
           defaultValue={user.groups}
           accessibilityLabel="choose language groups"
           onChange={(values) => {
-            console.log(values)
-            // dispatch(setLanguageGroup(values))
+            setGroups(values)
           }}
         >
           {' '}
-          {groups.map((group) => (
+          {grouplists.map((group) => (
             <Checkbox value={group.code} my=".5">
               {group.language}
             </Checkbox>
           ))}
         </Checkbox.Group>
       </VStack>
-      <Button>Save</Button>
+      <Button onPress={() => dispatch(updateGroup(groups))}>Save</Button>
     </Box>
   )
 }
