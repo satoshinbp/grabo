@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { postImage } from '../utils/api'
 
 export default () => {
-  const [image, setImage] = useState(null)
+  const [image, setImage] = useState('')
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -15,13 +15,13 @@ export default () => {
     })
 
     if (!result.cancelled) {
-      setImage(result.uri)
+      setImage(result.uri.replace('file://', ''))
     }
   }
 
   const uploadImage = async () => {
     const params = new FormData()
-    params.append('image', { uri: image.replace('file://', ''), name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    params.append('image', { uri: image, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     const res = await postImage(params)
   }
 
@@ -38,7 +38,7 @@ export default () => {
           upload
         </Button>
         {/* display selected image */}
-        <Image source={{ uri: image }} alt="image" style={{ width: 300, height: 300 }} />
+        {image ? <Image source={{ uri: image }} alt="picked image" style={{ width: 300, height: 300 }} /> : null}
         {/* example of fetched image from S3 */}
         <Image
           source={{ uri: 'https://grabo1.s3.amazonaws.com/1634460715953' }}
