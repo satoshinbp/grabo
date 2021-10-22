@@ -1,18 +1,31 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { fetchProductsByGroup } from '../utils/api'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import axios from 'axios'
+import { API_URL } from '@env'
 
-const initialStateValue = []
+export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', async (group, thunkAPI) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/products/group/${group}`)
+    return data
+  } catch (err) {
+    throw err
+  }
+})
 
 const productsSlice = createSlice({
   name: 'products',
-  initialState: { value: initialStateValue },
-  reducers: {
-    setProductsByGroup: (state, action) => {
-      const fetchedProducts = fetchProductsByGroup(action.payload)
-      state.value = fetchedProducts
+  initialState: { data: [], loading: false },
+  extraReducers: {
+    [fetchProductsByGroup.pending]: (state, action) => {
+      state.loading = true
+    },
+    [fetchProductsByGroup.fulfilled]: (state, action) => {
+      state.data = action.payload
+      state.loading = false
+    },
+    [fetchProductsByGroup.rejected]: (state, action) => {
+      state.loading = false
     },
   },
 })
 
-export const { setProductsByGroup } = productsSlice.actions
 export default productsSlice.reducer

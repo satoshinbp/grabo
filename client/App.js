@@ -1,7 +1,7 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import { Provider } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { NativeBaseProvider } from 'native-base'
 import userReducer from './src/features/user'

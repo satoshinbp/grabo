@@ -35,12 +35,8 @@ const postImage = async (params) => {
   }
 }
 
-const fetchProductsByGroup = (group) => {
-  return products.filter((product) => product.group === group)
-}
-
 const fetchProduct = (id) => {
   return products.filter((product) => product._id === id)[0]
 }
 
-export { sendImgToCloudVision, postImage, fetchProduct, fetchProductsByGroup }
+export { sendImgToCloudVision, postImage, fetchProduct }
