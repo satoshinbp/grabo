@@ -5,7 +5,7 @@ import { Button, FlatList, Image } from 'native-base'
 
 export default () => {
   const navigation = useNavigation()
-  const products = useSelector((state) => state.products.data)
+  const { products } = useSelector((state) => state.products)
 
   return (
     <FlatList

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { API_URL, REACT_APP_VISION_API_KEY } from '@env'
-import products from '../mocks/products'
 
 const sendImgToCloudVision = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
@@ -35,8 +34,4 @@ const postImage = async (params) => {
   }
 }
 
-const fetchProduct = (id) => {
-  return products.filter((product) => product._id === id)[0]
-}
-
-export { sendImgToCloudVision, postImage, fetchProduct }
+export { sendImgToCloudVision, postImage }

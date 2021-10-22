@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider } from 'native-base'
 import Loading from '../components/Loading'
-import { fetchProduct } from '../utils/api'
+import { fetchProductById } from '../features/products'
 
 export default () => {
   const route = useRoute()
-  const [loading, setLoading] = useState(true)
-  const [product, setProduct] = useState(null)
+  const dispatch = useDispatch()
+  const { products, loading } = useSelector((state) => state.products)
+  const product = products[0]
 
   useEffect(() => {
-    setProduct(fetchProduct(route.params.id))
-    setLoading(false)
+    dispatch(fetchProductById(route.params.id))
   }, [])
 
   if (loading) return <Loading />
