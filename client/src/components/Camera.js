@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Camera } from 'expo-camera'
 import { StyleSheet } from 'react-native'
 import { Text, View, Button } from 'native-base'
-import { sendImgToCloudVision } from '../utils/api'
+import { Camera } from 'expo-camera'
 import CameraRoll from '../components/CameraRoll'
+import { sendImgToCloudVision } from '../utils/api'
 
 export default (props) => {
   const [hasPermission, setHasPermission] = useState(null)
