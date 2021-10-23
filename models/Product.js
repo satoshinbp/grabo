@@ -13,6 +13,7 @@ const productSchema = new Schema(
     userId: ObjectId,
     group: String,
     keywords: [String],
+    userId: String,
     fixedQandAs: [
       {
         question: {

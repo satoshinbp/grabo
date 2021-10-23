@@ -16,6 +16,7 @@ export default () => {
         name="My Products Tab"
         component={ProductsStacks}
         options={{ tabBarLabel: 'My Products', headerShown: false }}
+        userId={'6172435c2b4fc5a8bcd3e349'}
       />
       <Tab.Screen name="Scan Tab" component={ScanStacks} options={{ tabBarLabel: 'Scan', headerShown: false }} />
       <Tab.Screen
