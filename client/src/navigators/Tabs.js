@@ -5,10 +5,13 @@ import GroupsStacks from './GroupsStacks'
 import ScanStacks from './ScanStacks'
 import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchProductsByUserId } from '../features/products'
 
 const Tab = createBottomTabNavigator()
 
 export default () => {
+  const dispatch = useDispatch()
   return (
     <Tab.Navigator>
       <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups', headerShown: false }} />
@@ -16,7 +19,11 @@ export default () => {
         name="My Products Tab"
         component={ProductsStacks}
         options={{ tabBarLabel: 'My Products', headerShown: false }}
-        userId={'6172435c2b4fc5a8bcd3e349'}
+        listeners={{
+          tabPress: () => {
+            dispatch(fetchProductsByUserId('6172435c2b4fc5a8bcd3e349'))
+          },
+        }}
       />
       <Tab.Screen name="Scan Tab" component={ScanStacks} options={{ tabBarLabel: 'Scan', headerShown: false }} />
       <Tab.Screen
