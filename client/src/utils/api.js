@@ -34,12 +34,9 @@ const postImage = async (params) => {
   }
 }
 
-const postProduct = async () => {
+const postProduct = async (params) => {
   try {
-    const res = await axios.post(`${API_URL}/products`, {
-      group: 'ja',
-      keywords: ['バカうけ', 'しょっぱい'],
-    })
+    const res = await axios.post(`${API_URL}/products`, params)
     return console.log(res)
   } catch (err) {
     console.error(new Error(err))

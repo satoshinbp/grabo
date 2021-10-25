@@ -19,8 +19,9 @@ import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
 
 export default (props) => {
-  const [image, setImage] = useState('')
-  const [code, setCode] = useState('')
+  const [image, setImage] = useState(props.route.params.imageUrl)
+  const [code, setCode] = useState(props.route.params.code)
+  const [text, setText] = useState(props.route.params.text)
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
   const [uniqQuestion, setUniqQuestion] = useState('')
 
@@ -41,6 +42,53 @@ export default (props) => {
     const params = new FormData()
     params.append('image', { uri: image, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     const res = await postImage(params)
+  }
+
+  const handleSubmit = async () => {
+    const params = {
+      group: code,
+      keywords: [text],
+      images: [
+        {
+          url: image,
+          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+        },
+      ],
+      fixedQandAs: [
+        {
+          question: {
+            description: 'What is the name of this product?',
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
+          answers: [
+            {
+              userId: null, //
+              description: '',
+              report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+            },
+          ],
+          highlightedBy: [], //
+        },
+      ],
+      uniqQandAs: [
+        {
+          question: {
+            userId: null,
+            description: uniqQuestion,
+            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          },
+          answers: [
+            {
+              userId: null,
+              description: '',
+              report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+            },
+          ],
+          highlightedBy: [], //
+        },
+      ],
+    }
+    const res = await postProduct(params)
   }
 
   return (
@@ -115,7 +163,7 @@ export default (props) => {
               onChangeText={(text) => setUniqQuestion(text)}
             />
           </Box>
-          <Button onPress={postProduct}>Create a Product</Button>
+          <Button onPress={handleSubmit}>Create a Product</Button>
         </View>
       </TouchableWithoutFeedback>
     </ScrollView>
