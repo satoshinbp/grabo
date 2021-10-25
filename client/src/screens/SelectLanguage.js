@@ -41,6 +41,7 @@ export default (props) => {
             props.navigation.navigate('CreateProduct', {
               code: value,
               text: props.route.params.text,
+              imageUrl: props.route.params.imageUrl,
             })
           }
         >
