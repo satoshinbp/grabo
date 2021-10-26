@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Groups from '../screens/Groups'
 import Group from '../screens/Group'
 import Product from '../screens/Product'
+import SettingGroup from '../screens/SettingGroup'
 
 const GroupStack = createNativeStackNavigator()
 
@@ -12,6 +13,7 @@ export default () => {
       <GroupStack.Screen name="Groups" component={Groups} options={{ headerShown: false }} />
       <GroupStack.Screen name="Group" component={Group} />
       <GroupStack.Screen name="Product" component={Product} />
+      <GroupStack.Screen name="SettingGroup" component={SettingGroup} />
     </GroupStack.Navigator>
   )
 }
