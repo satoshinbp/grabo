@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { API_URL, REACT_APP_VISION_API_KEY } from '@env'
-import products from '../mocks/products'
 
 const sendImgToCloudVision = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
@@ -21,24 +20,18 @@ const sendImgToCloudVision = async (image) => {
     },
   })
 
-  // console.log('Text Detection Result: ', res.data.responses[0].textAnnotations[0])
   return res.data.responses[0].textAnnotations[0]
 }
 
-const fetchProductsByGroup = (group) => {
-  // const url = `${API_URL}/<api>`
-  // const res = await axios.get(url)
-  // return res.data
-
-  return products.filter((product) => product.group === group)
+const postImage = async (params) => {
+  try {
+    const res = await axios.post(`${API_URL}/images`, params, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
 }
 
-const fetchProduct = (id) => {
-  // const url = `${API_URL}/<api>`
-  // const res = await axios.get(url)
-  // return res.data
-
-  return products.filter((product) => product._id === id)[0]
-}
-
-export { sendImgToCloudVision, fetchProduct, fetchProductsByGroup }
+export { sendImgToCloudVision, postImage }

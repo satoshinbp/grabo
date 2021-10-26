@@ -8,9 +8,8 @@ const userSchema = new Schema(
     name: { type: String, required: true },
     email: { type: String, required: true },
     image: String,
-    lang: { type: [String], default: [] },
+    group: { type: [String], default: [] },
     favProducts: { type: [ObjectId], default: [] },
-    myProducts: { type: [ObjectId], default: [] },
     notifications: { type: [{ read: Boolean, message: String }], default: [] },
   },
   { timestamps: true }

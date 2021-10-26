@@ -10,6 +10,7 @@ const productSchema = new Schema(
         report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
       },
     ],
+    userId: ObjectId,
     group: String,
     keywords: [String],
     fixedQandAs: [
@@ -25,7 +26,7 @@ const productSchema = new Schema(
             report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
           },
         ],
-        highlightedBy: [String],
+        highlightedBy: [ObjectId],
       },
     ],
     uniqQandAs: [
@@ -42,7 +43,7 @@ const productSchema = new Schema(
             report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
           },
         ],
-        highlightedBy: [String],
+        highlightedBy: [ObjectId],
       },
     ],
   },

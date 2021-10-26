@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button } from 'native-base'
 import { useDispatch } from 'react-redux'
+import { Button } from 'native-base'
 import { logout } from '../features/user'
 
 export default () => {
