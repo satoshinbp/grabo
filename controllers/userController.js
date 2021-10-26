@@ -2,11 +2,11 @@ const User = require('../models/User')
 
 const createUser = (req, res) => {
   // implement later
-  console.log('User was successfully created! ')
+  return console.log('User was successfully created! ')
 }
 
 const updateUser = (req, res) => {
-  User.updateOne({ name: 'Dean Noris' }, { $set: { groups: req.groups } })
+  return console.log('User was successfully updated! ')
 }
 
 module.exports = { createUser, updateUser }
