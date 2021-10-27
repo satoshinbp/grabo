@@ -3,12 +3,12 @@ const axios = require('axios')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
-const redirectURI = 'auth/google/callback'
+const redirectUri = 'auth/google/callback'
 
 const getGoogleAuthUrl = () => {
   const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
   const params = new URLSearchParams({
-    redirect_uri: `${process.env.SERVER_ROOT_URI}/${redirectURI}`,
+    redirect_uri: `${process.env.SERVER_ROOT_URI}/${redirectUri}`,
     client_id: process.env.GOOGLE_CLIENT_ID,
     access_type: 'offline',
     response_type: 'code',
@@ -53,7 +53,7 @@ const authorizeWithGoogle = async (req, res) => {
     code,
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    redirectUri: `${process.env.SERVER_ROOT_URI}/${redirectURI}`,
+    redirectUri: `${process.env.SERVER_ROOT_URI}/${redirectUri}`,
   })
   const url = `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`
 
