@@ -20,6 +20,15 @@ export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', as
   }
 })
 
+export const fetchProductsByUserId = createAsyncThunk('products/fetchByUserId', async (userId, thunkAPI) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/products/user/${userId}`)
+    return data
+  } catch (err) {
+    throw err
+  }
+})
+
 const productsSlice = createSlice({
   name: 'products',
   initialState: { product: {}, products: [], loading: false },
@@ -42,6 +51,16 @@ const productsSlice = createSlice({
       state.loading = false
     },
     [fetchProductsByGroup.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [fetchProductsByUserId.pending]: (state, action) => {
+      state.loading = true
+    },
+    [fetchProductsByUserId.fulfilled]: (state, action) => {
+      state.products = action.payload
+      state.loading = false
+    },
+    [fetchProductsByUserId.rejected]: (state, action) => {
       state.loading = false
     },
   },
