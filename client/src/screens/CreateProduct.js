@@ -49,6 +49,7 @@ export default (props) => {
     const params = {
       group: code,
       keywords: [text],
+      // userId, // userId shall be provided once autheintication gets ready
       images: [
         {
           url: image,
@@ -61,13 +62,13 @@ export default (props) => {
           report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
         },
         answers: [],
-        highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId later [userId]
+        highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
       })),
       uniqQandAs: [
         {
           question: {
-            userId: null,
-            description: uniqQuestion,
+            userId: null, // userId shall be provided once autheintication gets ready
+            description: uniqQuestion || 'this is test description',
             report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
           },
           answers: [],

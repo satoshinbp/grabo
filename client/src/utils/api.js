@@ -25,7 +25,7 @@ const sendImgToCloudVision = async (image) => {
 
 const postImage = async (params) => {
   try {
-    const res = await axios.post(`${API_URL}/images`, params, {
+    const res = await axios.post(`${API_URL}/api/images`, params, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return res
@@ -36,8 +36,10 @@ const postImage = async (params) => {
 
 const postProduct = async (params) => {
   try {
-    const res = await axios.post(`${API_URL}/products`, params)
-    return console.log(res)
+    console.log(params)
+    const res = await axios.post(`${API_URL}/api/products`, params)
+    console.log(res)
+    return res
   } catch (err) {
     console.error(new Error(err))
   }

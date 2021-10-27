@@ -89,7 +89,7 @@ const googleAuthCallback = async (req, res) => {
       httpOnly: true,
       secure: false,
     })
-    res.redirect(process.env.CLIENT_ROOT_URI)
+    // res.redirect(process.env.CLIENT_ROOT_URI)
   } catch (err) {
     console.error('Failed to fetch user')
     throw new Error(err.message)
