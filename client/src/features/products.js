@@ -4,7 +4,7 @@ import { API_URL } from '@env'
 
 export const fetchProductById = createAsyncThunk('product/fetchById', async (id, thunkAPI) => {
   try {
-    const { data } = await axios.get(`${API_URL}/products/${id}`)
+    const { data } = await axios.get(`${API_URL}/api/products/${id}`)
     return data
   } catch (err) {
     throw err
@@ -13,7 +13,16 @@ export const fetchProductById = createAsyncThunk('product/fetchById', async (id,
 
 export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', async (group, thunkAPI) => {
   try {
-    const { data } = await axios.get(`${API_URL}/products/group/${group}`)
+    const { data } = await axios.get(`${API_URL}/api/products/group/${group}`)
+    return data
+  } catch (err) {
+    throw err
+  }
+})
+
+export const fetchProductsByUserId = createAsyncThunk('products/fetchByUserId', async (userId, thunkAPI) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/products/user/${userId}`)
     return data
   } catch (err) {
     throw err
@@ -42,6 +51,16 @@ const productsSlice = createSlice({
       state.loading = false
     },
     [fetchProductsByGroup.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [fetchProductsByUserId.pending]: (state, action) => {
+      state.loading = true
+    },
+    [fetchProductsByUserId.fulfilled]: (state, action) => {
+      state.products = action.payload
+      state.loading = false
+    },
+    [fetchProductsByUserId.rejected]: (state, action) => {
       state.loading = false
     },
   },

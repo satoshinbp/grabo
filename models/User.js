@@ -7,10 +7,19 @@ const userSchema = new Schema(
     googleId: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
-    image: String,
+    image: { type: String, required: true },
     groups: { type: [String], default: [] },
     favProducts: { type: [ObjectId], default: [] },
-    notifications: { type: [{ read: Boolean, message: String }], default: [] },
+    notifications: {
+      type: [
+        {
+          read: { type: Boolean, required: true },
+          message: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
+    tokens: { type: [String], required: true },
   },
   { timestamps: true }
 )

@@ -6,7 +6,8 @@ const createUser = (req, res) => {
 }
 
 const updateUser = (req, res) => {
-  console.log('req', req.body)
+  
+  // _id will be replaced by req.body.id
   User.updateOne(
     { _id: '6177a6880ff9181090432c78' },
     {
@@ -20,6 +21,18 @@ const updateUser = (req, res) => {
       res.send(result)
     })
     .catch((error) => res.send(error))
+
+const getCurrentUser = async (req, res) => res.send(req.user)
+
+const logout = async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => token !== req.token)
+    await req.user.save()
+
+    res.send()
+  } catch (e) {
+    res.status(500).send()
+  }
 }
 
-module.exports = { createUser, updateUser }
+module.exports = { getCurrentUser, updateUser, logout }

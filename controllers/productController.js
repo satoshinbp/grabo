@@ -18,10 +18,20 @@ const getProductsByGroup = (req, res) => {
     .catch((err) => console.log(err))
 }
 
+const getProductsByUserId = (req, res) => {
+  Product.find({ userId: req.params.id })
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
 const createProduct = (req, res) => {
   Product.create(req.body)
     .then((result) => res.send(result))
     .catch((err) => console.log(err))
 }
 
-module.exports = { getProducts, getProductById, getProductsByGroup, createProduct }
+module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct }
