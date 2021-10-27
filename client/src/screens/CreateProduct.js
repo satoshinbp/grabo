@@ -17,6 +17,7 @@ import {
 } from 'native-base'
 import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
+import fixedQuestions from '../utils/questions'
 
 export default (props) => {
   const [image, setImage] = useState(props.route.params.imageUrl)
@@ -54,22 +55,14 @@ export default (props) => {
           report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
         },
       ],
-      fixedQandAs: [
-        {
-          question: {
-            description: 'What is the name of this product?',
-            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-          },
-          answers: [
-            {
-              userId: null, //
-              description: '',
-              report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-            },
-          ],
-          highlightedBy: [], //
+      fixedQandAs: fixedQuestions.map((question, index) => ({
+        question: {
+          description: question,
+          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
         },
-      ],
+        answers: [],
+        highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId later [userId]
+      })),
       uniqQandAs: [
         {
           question: {
@@ -77,14 +70,8 @@ export default (props) => {
             description: uniqQuestion,
             report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
           },
-          answers: [
-            {
-              userId: null,
-              description: '',
-              report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-            },
-          ],
-          highlightedBy: [], //
+          answers: [],
+          highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
         },
       ],
     }
