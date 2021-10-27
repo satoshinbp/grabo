@@ -17,8 +17,11 @@ const userSlice = createSlice({
     logout: (state, action) => {
       state.value = initialStateValue
     },
+    updateGroup: (state, action) => {
+      state.value = { ...state.value, groups: action.payload }
+    },
   },
 })
 
-export const { login, logout } = userSlice.actions
+export const { login, logout, updateGroup } = userSlice.actions
 export default userSlice.reducer
