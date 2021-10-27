@@ -34,4 +34,13 @@ const postImage = async (params) => {
   }
 }
 
-export { sendImgToCloudVision, postImage }
+const postProduct = async (params) => {
+  try {
+    const res = await axios.post(`${API_URL}/products`, params)
+    return console.log(res)
+  } catch (err) {
+    console.error(new Error(err))
+  }
+}
+
+export { sendImgToCloudVision, postImage, postProduct }

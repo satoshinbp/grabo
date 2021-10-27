@@ -21,12 +21,14 @@ export default (props) => {
     }
     try {
       const newOcrText = await sendImgToCloudVision(pickerResult.base64)
+      props.setImageUrl(pickerResult.uri)
       props.setOcrText(newOcrText.description)
       props.setLanguage(newOcrText.locale)
       setSelectedImage({ localUri: pickerResult.uri })
       props.navigation.navigate('SelectLanguage', {
         code: newOcrText.locale,
         text: newOcrText.description,
+        imageUrl: pickerResult.uri,
       })
     } catch (e) {
       alert('please try another photo')
