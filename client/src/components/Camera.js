@@ -9,6 +9,7 @@ export default (props) => {
   const [hasPermission, setHasPermission] = useState(null)
   const [ocrText, setOcrText] = useState('')
   const [language, setLanguage] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
   const cameraRef = useRef(null)
 
   useEffect(() => {
@@ -25,11 +26,13 @@ export default (props) => {
 
       try {
         const newOcrText = await sendImgToCloudVision(photo.base64)
+        setImageUrl(photo.uri)
         setOcrText(newOcrText.description)
         setLanguage(newOcrText.locale)
         props.navigation.navigate('SelectLanguage', {
           code: newOcrText.locale,
           text: newOcrText.description,
+          imageUrl: photo.uri,
         })
       } catch (e) {
         alert('Failed. Please take it again')
@@ -45,7 +48,14 @@ export default (props) => {
         <Button style={styles.button} onPress={takePicture}>
           Snap
         </Button>
-        <CameraRoll navigation={props.navigation} text={ocrText} setOcrText={setOcrText} setLanguage={setLanguage} />
+        <CameraRoll
+          navigation={props.navigation}
+          text={ocrText}
+          setOcrText={setOcrText}
+          setLanguage={setLanguage}
+          imageUrl={imageUrl}
+          setImageUrl={setImageUrl}
+        />
       </Camera>
     </View>
   )
