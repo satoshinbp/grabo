@@ -2,47 +2,53 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
+const reportSchema = new Schema({
+  wrong: { type: Number, default: 0 },
+  affiliate: { type: Number, default: 0 },
+  threats: { type: Number, default: 0 },
+  privacy: { type: Number, default: 0 },
+})
+
+const uniqCommentSchema = new Schema({
+  userId: { type: ObjectId }, //shall be required once autheintication gets ready
+  description: { type: String, required: true, trim: true },
+  report: { type: reportSchema, required: true },
+})
+
 const productSchema = new Schema(
   {
-    images: [
-      {
-        url: String,
-        report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
-      },
-    ],
-    userId: ObjectId,
-    group: String,
-    keywords: [String],
+    images: {
+      type: [
+        {
+          url: { type: String, required: true },
+          report: { type: reportSchema, required: true },
+        },
+      ],
+      required: true,
+    },
+    userId: { type: ObjectId }, //shall be required once autheintication gets ready
+    group: { type: String, required: true },
+    keywords: {
+      type: [{ type: String, required: true, trim: true }],
+      default: [],
+    },
     fixedQandAs: [
       {
         question: {
-          description: String,
-          report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
-        },
-        answers: [
-          {
-            userId: ObjectId,
-            description: String,
-            report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
+          type: {
+            description: { type: String, required: true, trim: true },
+            report: { type: reportSchema, required: true },
           },
-        ],
+          default: [],
+        },
+        answers: { type: [uniqCommentSchema], default: [] },
         highlightedBy: [ObjectId],
       },
     ],
     uniqQandAs: [
       {
-        question: {
-          userId: ObjectId,
-          description: String,
-          report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
-        },
-        answers: [
-          {
-            userId: ObjectId,
-            description: String,
-            report: { wrong: Number, affiliate: Number, threats: Number, privacy: Number },
-          },
-        ],
+        question: { type: uniqCommentSchema, default: [] },
+        answers: { type: [uniqCommentSchema], default: [] },
         highlightedBy: [ObjectId],
       },
     ],
