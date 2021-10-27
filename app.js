@@ -9,6 +9,7 @@ const mongoose = require('mongoose')
 // const authRoutes = require('./routes/authRoutes')
 const imageRoutes = require('./routes/imageRoutes')
 const productRoutes = require('./routes/productRoutes')
+const userRoutes = require('./routes/userRoutes')
 const cors = require('cors')
 
 mongoose
@@ -32,5 +33,5 @@ app.use(cors())
 // app.use(authRoutes)
 app.use('/images', imageRoutes)
 app.use('/products', productRoutes)
-
+app.use('/user', userRoutes)
 module.exports = app
