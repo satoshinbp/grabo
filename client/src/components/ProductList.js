@@ -12,14 +12,13 @@ export default () => {
       data={products}
       renderItem={({ item }) => (
         <Button onPress={() => navigation.navigate('Product', { id: item._id })}>
-          {/* <Image
+          <Image
             source={{
               uri: item.images[Math.floor(Math.random() * item.images.length)].url,
             }}
             alt="product"
             size="xl"
-          /> */}
-          {/* to be replaced with Image */}
+          />
           {item.keywords[0]}
         </Button>
       )}

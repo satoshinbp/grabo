@@ -19,7 +19,7 @@ const getProductsByGroup = (req, res) => {
 }
 
 const getProductsByUserId = (req, res) => {
-  Product.find({ userId: req.params.userID })
+  Product.find({ userId: req.params.id })
     .then((result) => {
       res.send(result)
     })

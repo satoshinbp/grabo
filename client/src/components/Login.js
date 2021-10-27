@@ -10,7 +10,7 @@ export default () => {
     name: 'John Doe',
     image: [],
     groups: ['ja', 'hi'],
-    mongoId: '6172435c2b4fc5a8bcd3e349',
+    _id: '6172435c2b4fc5a8bcd3e349',
   }
 
   return (

@@ -22,7 +22,7 @@ export default () => {
         options={{ tabBarLabel: 'My Products', headerShown: false }}
         listeners={{
           tabPress: () => {
-            dispatch(fetchProductsByUserId(user.mongoId))
+            dispatch(fetchProductsByUserId(user._id))
           },
         }}
       />
