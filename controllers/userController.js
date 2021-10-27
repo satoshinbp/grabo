@@ -1,12 +1,21 @@
 const User = require('../models/User')
 
-const createUser = (req, res) => {
-  // implement later
-  return console.log('User was successfully created! ')
-}
+const getCurrentUser = async (req, res) => res.send(req.user)
 
 const updateUser = (req, res) => {
+  // WIP
   return console.log('User was successfully updated! ')
 }
 
-module.exports = { createUser, updateUser }
+const logout = async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => token !== req.token)
+    await req.user.save()
+
+    res.send()
+  } catch (e) {
+    res.status(500).send()
+  }
+}
+
+module.exports = { getCurrentUser, updateUser, logout }

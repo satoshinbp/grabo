@@ -1,11 +1,11 @@
 require('dotenv').config()
-const axios = require('axios')
 const jwt = require('jsonwebtoken')
+const axios = require('axios')
 const User = require('../models/User')
 
 const redirectUri = 'auth/google/callback'
 
-const getGoogleAuthUrl = () => {
+const googleAuth = (req, res) => {
   const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
   const params = new URLSearchParams({
     redirect_uri: `${process.env.SERVER_ROOT_URI}/${redirectUri}`,
@@ -17,12 +17,11 @@ const getGoogleAuthUrl = () => {
       ' '
     ),
   })
-  return `${rootUrl}?${params.toString()}`
+
+  res.redirect(`${rootUrl}?${params.toString()}`)
 }
 
-const authenticateWithGoogle = async (req, res) => res.redirect(getGoogleAuthUrl())
-
-const getTokensWithGoogle = ({ code, clientId, clientSecret, redirectUri }) => {
+const getTokens = ({ code, clientId, clientSecret, redirectUri }) => {
   const url = 'https://oauth2.googleapis.com/token'
   const params = new URLSearchParams({
     code,
@@ -45,12 +44,18 @@ const getTokensWithGoogle = ({ code, clientId, clientSecret, redirectUri }) => {
     })
 }
 
-const generateToken = (user) => jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '10d' })
+const generateToken = async (user) => {
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
 
-const authorizeWithGoogle = async (req, res) => {
-  const code = req.query.code
-  const { id_token, access_token } = await getTokensWithGoogle({
-    code,
+  user.tokens.push(token)
+  await user.save()
+
+  return token
+}
+
+const googleAuthCallback = async (req, res) => {
+  const { id_token, access_token } = await getTokens({
+    code: req.query.code,
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     redirectUri: `${process.env.SERVER_ROOT_URI}/${redirectUri}`,
@@ -63,21 +68,23 @@ const authorizeWithGoogle = async (req, res) => {
         Authorization: `Bearer ${id_token}`,
       },
     })
+    const profile = response.data
+    let user = await User.findOne({ googleId: profile.id })
 
-    const googleUser = response.data
-    let user = await User.findOne({ googleId: googleUser.id })
     if (!user) {
-      const newUser = new User({
-        googleId: googleUser.id,
-        name: googleUser.given_name + ' ' + googleUser.family_name,
-        email: googleUser.email,
-        image: googleUser.picture,
+      user = new User({
+        googleId: profile.id,
+        name: profile.given_name + ' ' + profile.family_name,
+        email: profile.email,
+        image: profile.picture,
       })
-      user = await newUser.save()
     }
 
-    const token = generateToken(user)
-    res.cookie(process.env.COOKIE_NAME, token, {
+    const token = await generateToken(user)
+
+    // below code is WIP
+    // need to decide where to store token in client side
+    res.cookie('token', token, {
       maxAge: 900000,
       httpOnly: true,
       secure: false,
@@ -89,9 +96,4 @@ const authorizeWithGoogle = async (req, res) => {
   }
 }
 
-const logout = (req, res) => {
-  req.logout()
-  res.redirect('/')
-}
-
-module.exports = { authenticateWithGoogle, authorizeWithGoogle, logout }
+module.exports = { googleAuth, googleAuthCallback }
