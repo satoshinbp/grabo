@@ -12,6 +12,7 @@ const Tab = createBottomTabNavigator()
 
 export default () => {
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.value)
   return (
     <Tab.Navigator>
       <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups', headerShown: false }} />
@@ -21,7 +22,7 @@ export default () => {
         options={{ tabBarLabel: 'My Products', headerShown: false }}
         listeners={{
           tabPress: () => {
-            dispatch(fetchProductsByUserId('6172435c2b4fc5a8bcd3e349'))
+            dispatch(fetchProductsByUserId(user.mongoId))
           },
         }}
       />
