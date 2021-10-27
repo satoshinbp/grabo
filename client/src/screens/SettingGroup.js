@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Text, VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
 import grouplists from '../utils/groups'
 import { updateGroup } from '../features/user'
+import { updateUser } from '../utils/api'
 
 export default () => {
   const [groups, setGroups] = useState([])
@@ -15,7 +16,12 @@ export default () => {
       return setIsError(true)
     }
     setIsError(false)
-    dispatch(updateGroup(groups))
+    const params = {
+      groups: groups,
+    }
+    updateUser(params).then((res) => {
+      dispatch(updateGroup(groups))
+    })
   }
 
   return (

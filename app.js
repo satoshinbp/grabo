@@ -33,5 +33,5 @@ app.use(cors())
 // app.use(authRoutes)
 app.use('/images', imageRoutes)
 app.use('/products', productRoutes)
-app.use('/user', userRoutes)
+app.use('/users', userRoutes)
 module.exports = app

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { updateUser } from '../utils/api'
 
 const initialStateValue = {
   googleId: '',
@@ -22,6 +23,14 @@ const userSlice = createSlice({
     },
   },
 })
+
+export const groupUpdate = () => async (dispatch) => {
+  try {
+    dispatch(updateGroup())
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 export const { login, logout, updateGroup } = userSlice.actions
 export default userSlice.reducer

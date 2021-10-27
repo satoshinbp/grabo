@@ -34,4 +34,15 @@ const postImage = async (params) => {
   }
 }
 
-export { sendImgToCloudVision, postImage }
+const updateUser = async (params) => {
+  console.log('params', params)
+  try {
+    //hardcode id will be repleced by "user.id"
+    const updatedUser = await axios.patch(`${API_URL}/users/6177a6880ff9181090432c78`, params)
+    return updatedUser
+  } catch (err) {
+    throw err
+  }
+}
+
+export { sendImgToCloudVision, postImage, updateUser }

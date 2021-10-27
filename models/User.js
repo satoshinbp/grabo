@@ -8,7 +8,7 @@ const userSchema = new Schema(
     name: { type: String, required: true },
     email: { type: String, required: true },
     image: String,
-    group: { type: [String], default: [] },
+    groups: { type: [String], default: [] },
     favProducts: { type: [ObjectId], default: [] },
     notifications: { type: [{ read: Boolean, message: String }], default: [] },
   },
