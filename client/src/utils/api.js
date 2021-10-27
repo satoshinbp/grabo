@@ -35,7 +35,6 @@ const postImage = async (params) => {
 }
 
 const updateUser = async (params) => {
-  console.log('params', params)
   try {
     //hardcode id will be repleced by "user.id"
     const updatedUser = await axios.patch(`${API_URL}/api/users/6177a6880ff9181090432c78`, params)
