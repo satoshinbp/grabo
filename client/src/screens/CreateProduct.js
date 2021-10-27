@@ -95,8 +95,8 @@ export default (props) => {
             </Button>
             {/* display selected image */}
             {image ? <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} /> : null}
+            {/* leave this comment */}
             {/* example of fetched image from S3 */}
-
             {/* <Image
             source={{ uri: 'https://grabo1.s3.amazonaws.com/1634460715953' }}
             alt="image"
@@ -127,11 +127,9 @@ export default (props) => {
             <Text>Choose which default questions to highlight</Text>
             <VStack mb="10" space={4}>
               <Checkbox.Group onChange={setHighlitedQuestion} value={highlitedQuestion}>
-                <Checkbox value={0}>What is the name of this product?</Checkbox>
-                <Checkbox value={1}>Who is the maker of this product?</Checkbox>
-                <Checkbox value={2}>What is the taste of this product?</Checkbox>
-                <Checkbox value={3}>What is this product used for?</Checkbox>
-                <Checkbox value={4}>Please review this product.</Checkbox>
+                {fixedQuestions.map((question, index) => (
+                  <Checkbox value={index}>{question}</Checkbox>
+                ))}
               </Checkbox.Group>
             </VStack>
           </Box>
