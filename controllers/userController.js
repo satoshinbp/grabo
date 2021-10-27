@@ -1,5 +1,12 @@
-const getCurrentUser = (req, res) => {
-  res.send(req.user)
+const User = require('../models/User')
+
+const createUser = (req, res) => {
+  // implement later
+  return console.log('User was successfully created! ')
 }
 
-module.exports = { getCurrentUser }
+const updateUser = (req, res) => {
+  return console.log('User was successfully updated! ')
+}
+
+module.exports = { createUser, updateUser }

@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
 const imageRoutes = require('./routes/imageRoutes')
 const productRoutes = require('./routes/productRoutes')
+const userRoutes = require('./routes/userRoutes')
 const cors = require('cors')
 
 mongoose
