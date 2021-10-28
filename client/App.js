@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { NativeBaseProvider } from 'native-base'
 import userReducer from './src/features/user'
 import productsReducer from './src/features/products'
+import imageReducer from './src/features/image'
 import Tabs from './src/navigators/Tabs'
 import Header from './src/components/Header'
 
@@ -13,6 +14,7 @@ const store = createStore(
   combineReducers({
     user: userReducer,
     products: productsReducer,
+    image: imageReducer,
   }),
   applyMiddleware(thunk)
 )

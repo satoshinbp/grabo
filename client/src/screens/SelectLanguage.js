@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { Center, Box, Heading, Text, Radio, Button } from 'native-base'
 import groups from '../utils/groups'
+import { useSelector, useDispatch } from 'react-redux'
+import { setCode } from '../features/image'
 
 export default (props) => {
+  const dispatch = useDispatch()
   const [isTextDetected, setIsTextDetected] = useState(false)
-  const [value, setValue] = useState(props.route.params.code)
+  const image = useSelector((state) => state.image)
+  const value = image.code
+  // console.log(image)
 
   useEffect(() => {
     groups.map((group) => {
-      if (group.code === props.route.params.code) {
+      if (group.code === image.code) {
         setIsTextDetected(true)
       }
     })
@@ -30,8 +35,9 @@ export default (props) => {
           </>
         )}
       </Box>
+
       <Center flex={1} px="3">
-        <Radio.Group name="Group" value={value} onChange={(nextValue) => setValue(nextValue)}>
+        <Radio.Group name="Group" value={value} onChange={(nextValue) => dispatch(setCode(nextValue))}>
           {groups.map((group) => (
             <Radio value={group.code}>{group.language}</Radio>
           ))}
@@ -39,9 +45,9 @@ export default (props) => {
         <Button
           onPress={() =>
             props.navigation.navigate('CreateProduct', {
-              code: value,
-              text: props.route.params.text,
-              imageUrl: props.route.params.imageUrl,
+              // code: value,
+              // text: props.route.params.text,
+              // imageUrl: props.route.params.imageUrl,
             })
           }
         >
