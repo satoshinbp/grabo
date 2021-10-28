@@ -5,7 +5,7 @@ import { FlatList, Button } from 'native-base'
 import groups from '../utils/groups'
 
 export default () => {
-  const user = useSelector((state) => state.user.value)
+  const { user } = useSelector((state) => state.user)
   const dispatch = useDispatch()
   const navigation = useNavigation()
 

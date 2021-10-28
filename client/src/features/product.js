@@ -2,9 +2,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { API_URL } from '@env'
 
-export const fetchProductById = createAsyncThunk('product/fetchById', async (id, thunkAPI) => {
+export const fetchProductById = createAsyncThunk('products/fetchById', async (id, thunkAPI) => {
   try {
     const { data } = await axios.get(`${API_URL}/api/products/${id}`)
+    console.log('id', id)
+    console.log(data)
     return data
   } catch (err) {
     throw err
@@ -14,6 +16,7 @@ export const fetchProductById = createAsyncThunk('product/fetchById', async (id,
 export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', async (group, thunkAPI) => {
   try {
     const { data } = await axios.get(`${API_URL}/api/products/group/${group}`)
+    console.log(data)
     return data
   } catch (err) {
     throw err
@@ -29,8 +32,8 @@ export const fetchProductsByUserId = createAsyncThunk('products/fetchByUserId', 
   }
 })
 
-const productsSlice = createSlice({
-  name: 'products',
+const productSlice = createSlice({
+  name: 'product',
   initialState: { product: {}, products: [], loading: false },
   extraReducers: {
     [fetchProductById.pending]: (state, action) => {
@@ -66,4 +69,4 @@ const productsSlice = createSlice({
   },
 })
 
-export default productsSlice.reducer
+export default productSlice.reducer

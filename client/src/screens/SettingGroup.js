@@ -6,7 +6,7 @@ import { updateGroup } from '../features/user'
 
 export default () => {
   const [groups, setGroups] = useState([])
-  const user = useSelector((state) => state.user.value)
+  const { user } = useSelector((state) => state.user)
   const [isError, setIsError] = useState(false)
   const dispatch = useDispatch()
 

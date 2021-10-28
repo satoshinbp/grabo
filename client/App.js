@@ -5,14 +5,14 @@ import thunk from 'redux-thunk'
 import { NavigationContainer } from '@react-navigation/native'
 import { NativeBaseProvider } from 'native-base'
 import userReducer from './src/features/user'
-import productsReducer from './src/features/products'
+import productReducer from './src/features/product'
 import Tabs from './src/navigators/Tabs'
 import Header from './src/components/Header'
 
 const store = createStore(
   combineReducers({
     user: userReducer,
-    products: productsReducer,
+    product: productReducer,
   }),
   applyMiddleware(thunk)
 )

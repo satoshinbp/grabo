@@ -57,10 +57,7 @@ export default (props) => {
         },
       ],
       fixedQandAs: fixedQuestions.map((question, index) => ({
-        question: {
-          description: question,
-          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-        },
+        question,
         answers: [],
         highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
       })),

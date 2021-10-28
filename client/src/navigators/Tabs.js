@@ -6,13 +6,14 @@ import ScanStacks from './ScanStacks'
 import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchProductsByUserId } from '../features/products'
+import { fetchProductsByUserId } from '../features/product'
 
 const Tab = createBottomTabNavigator()
 
 export default () => {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user.value)
+  const { user } = useSelector((state) => state.user)
+
   return (
     <Tab.Navigator>
       <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups', headerShown: false }} />
