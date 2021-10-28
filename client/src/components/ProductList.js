@@ -5,7 +5,7 @@ import { Button, FlatList, Image } from 'native-base'
 
 export default () => {
   const navigation = useNavigation()
-  const { products } = useSelector((state) => state.products)
+  const { products } = useSelector((state) => state.product)
 
   return (
     <FlatList
@@ -19,7 +19,6 @@ export default () => {
             alt="product"
             size="xl"
           />
-          {item.keywords[0]}
         </Button>
       )}
       keyExtractor={(item) => item._id}

@@ -32,26 +32,26 @@ const productSchema = new Schema(
       type: [{ type: String, required: true, trim: true }],
       default: [],
     },
-    fixedQandAs: [
-      {
-        question: {
-          type: {
-            description: { type: String, required: true, trim: true },
-            report: { type: reportSchema, required: true },
-          },
-          default: [],
+    fixedQandAs: {
+      type: [
+        {
+          question: { type: String, required: true, trim: true },
+          answers: { type: [uniqCommentSchema], default: [] },
+          highlightedBy: [ObjectId],
         },
-        answers: { type: [uniqCommentSchema], default: [] },
-        highlightedBy: [ObjectId],
-      },
-    ],
-    uniqQandAs: [
-      {
-        question: { type: uniqCommentSchema, default: [] },
-        answers: { type: [uniqCommentSchema], default: [] },
-        highlightedBy: [ObjectId],
-      },
-    ],
+      ],
+      required: true,
+    },
+    uniqQandAs: {
+      type: [
+        {
+          question: { type: uniqCommentSchema, default: [] },
+          answers: { type: [uniqCommentSchema], default: [] },
+          highlightedBy: [ObjectId],
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 )
