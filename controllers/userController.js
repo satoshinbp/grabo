@@ -1,21 +1,17 @@
 const User = require('../models/User')
 
-const updateUser = (req, res) => {
+const updateUser = async (req, res) => {
+  let user = await User.findOne({ _id: '6177a6880ff9181090432c78' })
+  const updates = Object.keys(req.body)
+  updates.forEach((update) => (user[update] = req.body[update]))
 
-  // _id will be replaced by req.body.id
-  User.updateOne(
-    { _id: '6177a6880ff9181090432c78' },
-    {
-      name: req.body.name,
-      groups: req.body.groups,
-      notification: req.body.notification,
-      favProducts: req.body.favProducts,
-    }
-  )
+  await user
+    .save()
     .then((result) => {
       res.send(result)
     })
     .catch((error) => res.send(error))
+}
 
 const getCurrentUser = async (req, res) => res.send(req.user)
 
