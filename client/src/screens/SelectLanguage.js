@@ -8,12 +8,12 @@ export default (props) => {
   const dispatch = useDispatch()
   const [isTextDetected, setIsTextDetected] = useState(false)
   const image = useSelector((state) => state.image)
-  const value = image.code
+  const code = image.value.code
   // console.log(image)
 
   useEffect(() => {
     groups.map((group) => {
-      if (group.code === image.code) {
+      if (group.code === code) {
         setIsTextDetected(true)
       }
     })
@@ -37,7 +37,7 @@ export default (props) => {
       </Box>
 
       <Center flex={1} px="3">
-        <Radio.Group name="Group" value={value} onChange={(nextValue) => dispatch(setCode(nextValue))}>
+        <Radio.Group name="Group" value={code} onChange={(nextValue) => dispatch(setCode(nextValue))}>
           {groups.map((group) => (
             <Radio value={group.code}>{group.language}</Radio>
           ))}

@@ -25,12 +25,12 @@ export default (props) => {
   const dispatch = useDispatch()
   const image = useSelector((state) => state.image)
   // const [image, setImage] = useState(props.route.params.imageUrl)
-  const code = image.code
+  const code = image.value.code
   // const [text, setText] = useState(props.route.params.text)
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
   const [uniqQuestion, setUniqQuestion] = useState('')
 
-  console.log(image.ocrText)
+  // console.log(image)
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -83,37 +83,45 @@ export default (props) => {
     //     },
     //   ],
     // }
+    // const params = {
+    //   group: code,
+    //   // keywords: [image.ocrText],
+    //   keywords: image.ocrText,
+    //   // userId, // userId shall be provided once autheintication gets ready
+    //   images: [
+    //     {
+    //       url: image.imageUrl,
+    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+    //     },
+    //   ],
+    //   fixedQandAs: fixedQuestions.map((question, index) => ({
+    //     question: {
+    //       description: question,
+    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+    //     },
+    //     answers: [],
+    //     highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
+    //   })),
+    //   uniqQandAs: [
+    //     {
+    //       question: {
+    //         userId: null, // userId shall be provided once autheintication gets ready
+    //         description: uniqQuestion || 'this is test description',
+    //         report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+    //       },
+    //       answers: [],
+    //       highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
+    //     },
+    //   ],
+    // }
     const params = {
-      group: code,
-      // keywords: [image.ocrText],
-      keywords: [image.ocrText],
-      // userId, // userId shall be provided once autheintication gets ready
-      images: [
-        {
-          url: image.imageUrl,
-          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-        },
-      ],
-      fixedQandAs: fixedQuestions.map((question, index) => ({
-        question: {
-          description: question,
-          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-        },
-        answers: [],
-        highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
-      })),
-      uniqQandAs: [
-        {
-          question: {
-            userId: null, // userId shall be provided once autheintication gets ready
-            description: uniqQuestion || 'this is test description',
-            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-          },
-          answers: [],
-          highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
-        },
-      ],
+      code: image.value.code,
+      url: image.value.imageUrl,
+      text: image.value.ocrText,
+      highlitedQuestion: highlitedQuestion,
+      uniqQuestion: uniqQuestion,
     }
+
     const res = await postProduct(params)
   }
 

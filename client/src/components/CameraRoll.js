@@ -37,6 +37,7 @@ export default (props) => {
         // imageUrl: pickerResult.uri,
       })
     } catch (e) {
+      console.log(e)
       alert('please try another photo')
     }
   }

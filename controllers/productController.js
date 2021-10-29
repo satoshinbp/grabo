@@ -28,8 +28,47 @@ const getProductsByUserId = (req, res) => {
     })
 }
 
+const fixedQuestions = [
+  'What is the name of this product?',
+  'Who is the maker of this product?',
+  'What is the taste of this product?',
+  'What is this product used for?',
+  'Please review this product.',
+]
+
 const createProduct = (req, res) => {
-  Product.create(req.body)
+  console.log('This is req body' + JSON.stringify(req.body))
+
+  const params = {
+    group: req.body.code,
+    keywords: req.body.text,
+    // userId, // userId shall be provided once autheintication gets ready
+    images: req.body.url.map((image, index) => ({
+      url: image,
+      report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+    })),
+    fixedQandAs: fixedQuestions.map((question, index) => ({
+      question: {
+        description: question,
+        report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+      },
+      answers: [],
+      highlightedBy: req.body.highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
+    })),
+    uniqQandAs: [
+      {
+        question: {
+          userId: null, // userId shall be provided once autheintication gets ready
+          description: req.body.uniqQuestion || 'this is test description',
+          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+        },
+        answers: [],
+        highlightedBy: req.body.uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
+      },
+    ],
+  }
+
+  Product.create(params)
     .then((result) => res.send(result))
     .catch((err) => console.log(err))
 }
