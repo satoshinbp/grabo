@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { API_URL } from '@env'
+import { SERVER_ROOT_URI } from '@env'
 
-export const signInWithGoogle = createAsyncThunk('users/signin', async ({ googleId, name, email, image }, thunkAPI) => {
+export const login = createAsyncThunk('users/signin', async (idToken, thunkAPI) => {
   try {
-    const res = await axios.post(`${API_URL}/auth/google`, { googleId, name, email, image })
+    const res = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken }) // it doesn't work on Android, need to investigate
     const { token, user } = res.data
+    console.log(user)
     return user // shall be replaced. user data to be fetched by token
   } catch (err) {
     throw err
@@ -34,18 +35,18 @@ const userSlice = createSlice({
     },
   },
   extraReducers: {
-    [signInWithGoogle.pending]: (state, action) => {
+    [login.pending]: (state, action) => {
       state.loading = true
     },
-    [signInWithGoogle.fulfilled]: (state, action) => {
+    [login.fulfilled]: (state, action) => {
       state.user = action.payload
       state.loading = false
     },
-    [signInWithGoogle.rejected]: (state, action) => {
+    [login.rejected]: (state, action) => {
       state.loading = false
     },
   },
 })
 
-export const { login, logout, updateGroup } = userSlice.actions
+export const { logout, updateGroup } = userSlice.actions
 export default userSlice.reducer
