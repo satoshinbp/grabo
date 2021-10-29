@@ -47,23 +47,20 @@ const createProduct = (req, res) => {
       url: image,
       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
     })),
+
     fixedQandAs: fixedQuestions.map((question, index) => ({
-      question: {
-        description: question,
-        report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-      },
+      question: question,
       answers: [],
-      highlightedBy: req.body.highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
+      highlightedBy: [],
     })),
+
     uniqQandAs: [
       {
         question: {
-          userId: null, // userId shall be provided once autheintication gets ready
-          description: req.body.uniqQuestion || 'this is test description',
-          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+          description: req.body.uniqQuestion,
         },
         answers: [],
-        highlightedBy: req.body.uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
+        highlightedBy: req.body.uniqQuestion ? [] : [],
       },
     ],
   }
