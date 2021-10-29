@@ -1,8 +1,9 @@
 require('dotenv').config()
+const { OAuth2Client } = require('google-auth-library')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
-const generateToken = async (user) => {
+const generateAuthToken = async (user) => {
   const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
 
   user.tokens.push(token)
@@ -11,15 +12,27 @@ const generateToken = async (user) => {
   return token
 }
 
-const signInWithgoogle = async (req, res) => {
+const client = new OAuth2Client()
+const verifyGoogleIdToken = async (idToken) => {
+  const ticket = await client.verifyIdToken({
+    idToken,
+    audience: [process.env.GOOGLE_ANDROID_CLIENT_ID, process.env.GOOGLE_IOS_CLIENT_ID],
+  })
+  const payload = ticket.getPayload()
+  const id = payload['sub']
+  return id
+}
+
+const signInWithGoogle = async (req, res) => {
   try {
-    let user = await User.findOne({ googleId: req.body.googleId })
+    const googleId = await verifyGoogleIdToken(req.body.idToken)
+    let user = await User.findOne({ googleId })
 
     if (!user) {
       user = new User(req.body)
     }
 
-    const token = await generateToken(user)
+    const token = await generateAuthToken(user)
     res.send({ token, user }) // token to be stored in secure storage or app storage
   } catch (e) {
     console.error('Failed to fetch user')
@@ -27,4 +40,4 @@ const signInWithgoogle = async (req, res) => {
   }
 }
 
-module.exports = { signInWithgoogle }
+module.exports = { signInWithGoogle }

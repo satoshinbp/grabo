@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_URL, REACT_APP_VISION_API_KEY } from '@env'
+import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
 
 const sendImgToCloudVision = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
@@ -25,7 +25,7 @@ const sendImgToCloudVision = async (image) => {
 
 const postImage = async (params) => {
   try {
-    const res = await axios.post(`${API_URL}/api/images`, params, {
+    const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return res
@@ -37,7 +37,7 @@ const postImage = async (params) => {
 const postProduct = async (params) => {
   try {
     console.log(params)
-    const res = await axios.post(`${API_URL}/api/products`, params)
+    const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params)
     console.log(res)
     return res
   } catch (err) {
