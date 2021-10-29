@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Button } from 'native-base'
 import { logout } from '../features/user'
+import * as SecureStore from 'expo-secure-store'
 
 export default () => {
   const dispatch = useDispatch()
