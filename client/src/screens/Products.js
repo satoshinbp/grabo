@@ -5,7 +5,7 @@ import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
 
 export default () => {
-  const { loading } = useSelector((state) => state.products)
+  const { loading } = useSelector((state) => state.product)
 
   if (loading) return <Loading />
   return (

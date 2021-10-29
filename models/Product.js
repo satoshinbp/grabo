@@ -12,7 +12,7 @@ const reportSchema = new Schema({
 const uniqCommentSchema = new Schema({
   userId: { type: ObjectId }, //shall be required once autheintication gets ready
   description: { type: String, required: true, trim: true },
-  report: { type: reportSchema, required: true },
+  report: { type: reportSchema, default: () => ({}) },
 })
 
 const productSchema = new Schema(
@@ -21,7 +21,7 @@ const productSchema = new Schema(
       type: [
         {
           url: { type: String, required: true },
-          report: { type: reportSchema, required: true },
+          report: { type: reportSchema, default: () => ({}) },
         },
       ],
       required: true,
@@ -32,26 +32,26 @@ const productSchema = new Schema(
       type: [{ type: String, required: true, trim: true }],
       default: [],
     },
-    fixedQandAs: [
-      {
-        question: {
-          type: {
-            description: { type: String, required: true, trim: true },
-            report: { type: reportSchema, required: true },
-          },
-          default: [],
+    fixedQandAs: {
+      type: [
+        {
+          question: { type: String, required: true, trim: true },
+          answers: { type: [uniqCommentSchema], default: [] },
+          highlightedBy: [ObjectId],
         },
-        answers: { type: [uniqCommentSchema], default: [] },
-        highlightedBy: [ObjectId],
-      },
-    ],
-    uniqQandAs: [
-      {
-        question: { type: uniqCommentSchema, default: [] },
-        answers: { type: [uniqCommentSchema], default: [] },
-        highlightedBy: [ObjectId],
-      },
-    ],
+      ],
+      required: true,
+    },
+    uniqQandAs: {
+      type: [
+        {
+          question: { type: uniqCommentSchema, default: [] },
+          answers: { type: [uniqCommentSchema], default: [] },
+          highlightedBy: [ObjectId],
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 )

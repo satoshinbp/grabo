@@ -4,12 +4,12 @@ import { useRoute } from '@react-navigation/core'
 import { Box, Heading } from 'native-base'
 import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
-import { fetchProductsByGroup } from '../features/products'
+import { fetchProductsByGroup } from '../features/product'
 
 export default () => {
   const route = useRoute()
   const dispatch = useDispatch()
-  const { loading } = useSelector((state) => state.products)
+  const { loading } = useSelector((state) => state.product)
 
   useEffect(() => {
     dispatch(fetchProductsByGroup(route.params.code))
