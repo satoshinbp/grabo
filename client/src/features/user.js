@@ -1,25 +1,49 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { updateUser } from '../utils/api'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import axios from 'axios'
+import { SERVER_ROOT_URI } from '@env'
 
-const initialStateValue = {
+export const login = createAsyncThunk('users/signin', async (idToken, thunkAPI) => {
+  try {
+    const res = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken }) // it doesn't work on Android, need to investigate
+    const { token, user } = res.data
+    console.log(user)
+    return user // shall be replaced. user data to be fetched by token
+  } catch (err) {
+    throw err
+  }
+})
+
+const initialUserState = {
   googleId: '',
   name: '',
+  email: '',
   image: '',
   groups: [],
+  favProducts: [],
+  notifications: [],
 }
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: { value: initialStateValue },
+  initialState: { user: initialUserState, loading: false },
   reducers: {
-    login: (state, action) => {
-      state.value = action.payload
-    },
     logout: (state, action) => {
-      state.value = initialStateValue
+      state.user = initialUserState
     },
     updateGroup: (state, action) => {
-      state.value = { ...state.value, groups: action.payload }
+      state.user = { ...state.user, groups: action.payload }
+    },
+  },
+  extraReducers: {
+    [login.pending]: (state, action) => {
+      state.loading = true
+    },
+    [login.fulfilled]: (state, action) => {
+      state.user = action.payload
+      state.loading = false
+    },
+    [login.rejected]: (state, action) => {
+      state.loading = false
     },
   },
 })
@@ -32,5 +56,5 @@ export const groupUpdate = () => async (dispatch) => {
   }
 }
 
-export const { login, logout, updateGroup } = userSlice.actions
+export const { logout, updateGroup } = userSlice.actions
 export default userSlice.reducer

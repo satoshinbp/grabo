@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { API_URL } from '@env'
+import { SERVER_ROOT_URI } from '@env'
 
-export const fetchProductById = createAsyncThunk('product/fetchById', async (id, thunkAPI) => {
+export const fetchProductById = createAsyncThunk('products/fetchById', async (id, thunkAPI) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/products/${id}`)
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`)
+    console.log('id', id)
+    console.log(data)
     return data
   } catch (err) {
     throw err
@@ -13,7 +15,8 @@ export const fetchProductById = createAsyncThunk('product/fetchById', async (id,
 
 export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', async (group, thunkAPI) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/products/group/${group}`)
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${group}`)
+    console.log(data)
     return data
   } catch (err) {
     throw err
@@ -22,15 +25,15 @@ export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', as
 
 export const fetchProductsByUserId = createAsyncThunk('products/fetchByUserId', async (userId, thunkAPI) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/products/user/${userId}`)
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`)
     return data
   } catch (err) {
     throw err
   }
 })
 
-const productsSlice = createSlice({
-  name: 'products',
+const productSlice = createSlice({
+  name: 'product',
   initialState: { product: {}, products: [], loading: false },
   extraReducers: {
     [fetchProductById.pending]: (state, action) => {
@@ -66,4 +69,4 @@ const productsSlice = createSlice({
   },
 })
 
-export default productsSlice.reducer
+export default productSlice.reducer
