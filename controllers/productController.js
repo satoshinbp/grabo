@@ -37,7 +37,7 @@ const fixedQuestions = [
 ]
 
 const createProduct = (req, res) => {
-  console.log('This is req body' + JSON.stringify(req.body))
+  // console.log('This is req body' + JSON.stringify(req.body))
 
   const params = {
     group: req.body.code,

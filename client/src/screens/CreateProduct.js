@@ -21,16 +21,15 @@ import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
 import { setCode } from '../features/image'
 
+// =========    Please leave this sheets comments as a reference ==========================
+
 export default (props) => {
   const dispatch = useDispatch()
   const image = useSelector((state) => state.image)
-  // const [image, setImage] = useState(props.route.params.imageUrl)
+  // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
-  // const [text, setText] = useState(props.route.params.text)
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
   const [uniqQuestion, setUniqQuestion] = useState('')
-
-  // console.log(image)
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -53,36 +52,6 @@ export default (props) => {
   }
 
   const handleSubmit = async () => {
-    // const params = {
-    //   group: code,
-    //   keywords: [text],
-    //   // userId, // userId shall be provided once autheintication gets ready
-    //   images: [
-    //     {
-    //       url: image,
-    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //     },
-    //   ],
-    //   fixedQandAs: fixedQuestions.map((question, index) => ({
-    //     question: {
-    //       description: question,
-    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //     },
-    //     answers: [],
-    //     highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
-    //   })),
-    //   uniqQandAs: [
-    //     {
-    //       question: {
-    //         userId: null, // userId shall be provided once autheintication gets ready
-    //         description: uniqQuestion || 'this is test description',
-    //         report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //       },
-    //       answers: [],
-    //       highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
-    //     },
-    //   ],
-    // }
     // const params = {
     //   group: code,
     //   // keywords: [image.ocrText],
@@ -114,6 +83,7 @@ export default (props) => {
     //     },
     //   ],
     // }
+
     const params = {
       code: image.value.code,
       url: image.value.imageUrl,
@@ -140,21 +110,13 @@ export default (props) => {
             <Button onPress={uploadImage} w="100%">
               upload
             </Button>
-            <Button
-              onPress={() =>
-                props.navigation.navigate('Scan', {
-                  // code: value,
-                  // text: props.route.params.text,
-                  // imageUrl: props.route.params.imageUrl,
-                })
-              }
-            >
-              Camera
-            </Button>
+            <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
             {/* display selected image */}
-            {image.imageUrl ? (
-              <Image source={{ uri: image.imageUrl }} alt="picked image" style={{ width: 100, height: 100 }} />
-            ) : null}
+            {image.value.imageUrl
+              ? image.value.imageUrl.map((image) => (
+                  <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
+                ))
+              : null}
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
             {/* <Image
