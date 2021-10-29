@@ -20,15 +20,7 @@ const signInWithgoogle = async (req, res) => {
     }
 
     const token = await generateToken(user)
-    res.send({ token, user })
-
-    // below code is WIP
-    // need to decide where to store token in client side
-    // res.cookie('token', token, {
-    //   maxAge: 900000,
-    //   httpOnly: true,
-    //   secure: false,
-    // })
+    res.send({ token, user }) // token to be stored in secure storage or app storage
   } catch (e) {
     console.error('Failed to fetch user')
     throw new Error(e.message)

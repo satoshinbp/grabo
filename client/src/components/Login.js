@@ -36,8 +36,8 @@ export default () => {
         const name = user.name
         const email = user.email
         const image = user.photoUrl
-        // navigation.navigate('Groups', { id, email, name, photoUrl })
-        dispatch(signInWithGoogle({ googleId, name, email, image }))
+        // navigation.navigate('Groups')
+        dispatch(signInWithGoogle({ googleId, name, email, image })) // pass token instead
       } else {
         setErrorMessage('Google sign in was canceled')
       }
