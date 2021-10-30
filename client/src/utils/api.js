@@ -1,4 +1,5 @@
 import axios from 'axios'
+import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
 
 const sendImgToCloudVision = async (image) => {
@@ -26,7 +27,10 @@ const sendImgToCloudVision = async (image) => {
 const postImage = async (params) => {
   try {
     const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
     })
     return res
   } catch (err) {
@@ -36,11 +40,13 @@ const postImage = async (params) => {
 
 const postProduct = async (params) => {
   try {
-    const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params)
-    // console.log(res)
+    const token = await SecureStore.getItemAsync('token')
+    const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     return res
   } catch (err) {
-    console.error(new Error(err))
+    console.error(err)
   }
 }
 
