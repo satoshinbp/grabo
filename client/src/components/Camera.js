@@ -5,7 +5,7 @@ import { Text, View, Button } from 'native-base'
 import { Camera } from 'expo-camera'
 import CameraRoll from '../components/CameraRoll'
 import { sendImgToCloudVision } from '../utils/api'
-import { setOcrText, setImageUrl, setCode } from '../features/image'
+import { addImage, updateCode } from '../features/image'
 
 export default (props) => {
   const [hasPermission, setHasPermission] = useState(null)
@@ -26,11 +26,8 @@ export default (props) => {
 
       try {
         const newOcrText = await sendImgToCloudVision(photo.base64)
-
-        dispatch(setOcrText(newOcrText.description))
-        dispatch(setImageUrl(photo.uri))
-        dispatch(setCode(newOcrText.locale))
-
+        dispatch(addImage({ text: newOcrText.description, imageUrl: photo.uri }))
+        dispatch(updateCode(newOcrText.locale))
         props.navigation.navigate('SelectLanguage', {})
       } catch (e) {
         alert('Failed. Please take it again')

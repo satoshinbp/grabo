@@ -45,13 +45,11 @@ const createProduct = (req, res) => {
     // userId, // userId shall be provided once autheintication gets ready
     images: req.body.url.map((image, index) => ({
       url: image,
-      report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
     })),
 
     fixedQandAs: fixedQuestions.map((question, index) => ({
       question: question,
-      answers: [],
-      highlightedBy: [],
+      highlightedBy: req.body.highlitedQuestion.includes(index) ? [] : [],
     })),
 
     uniqQandAs: [
@@ -59,7 +57,6 @@ const createProduct = (req, res) => {
         question: {
           description: req.body.uniqQuestion,
         },
-        answers: [],
         highlightedBy: req.body.uniqQuestion ? [] : [],
       },
     ],

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Center, Box, Heading, Text, Radio, Button } from 'native-base'
 import groups from '../utils/groups'
 import { useSelector, useDispatch } from 'react-redux'
-import { setCode } from '../features/image'
+import { updateCode } from '../features/image'
 
 export default (props) => {
   const dispatch = useDispatch()
@@ -37,7 +37,7 @@ export default (props) => {
       </Box>
 
       <Center flex={1} px="3">
-        <Radio.Group name="Group" value={code} onChange={(nextValue) => dispatch(setCode(nextValue))}>
+        <Radio.Group name="Group" value={code} onChange={(nextValue) => dispatch(updateCode(nextValue))}>
           {groups.map((group) => (
             <Radio value={group.code}>{group.language}</Radio>
           ))}

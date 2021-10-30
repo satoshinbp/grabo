@@ -19,7 +19,7 @@ import {
 import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
-import { setCode } from '../features/image'
+import { updateCode } from '../features/image'
 
 // =========    Please leave this sheets comments as a reference ==========================
 
@@ -137,7 +137,7 @@ export default (props) => {
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={(nextValue) => dispatch(setCode(nextValue))}
+                onValueChange={(nextValue) => dispatch(updateCode(nextValue))}
               >
                 {groups.map((group) => (
                   <Select.Item value={group.code} label={group.language} />

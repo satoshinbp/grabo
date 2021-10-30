@@ -10,17 +10,15 @@ const imageSlice = createSlice({
   name: 'image',
   initialState: { value: initialStateValue },
   reducers: {
-    setOcrText: (state, action) => {
-      state.value.ocrText.push(action.payload)
+    addImage: (state, action) => {
+      state.value.ocrText.push(action.payload.text)
+      state.value.imageUrl.push(action.payload.imageUrl)
     },
-    setImageUrl: (state, action) => {
-      state.value.imageUrl.push(action.payload)
-    },
-    setCode: (state, action) => {
+    updateCode: (state, action) => {
       state.value.code = action.payload
     },
   },
 })
 
-export const { setOcrText, setImageUrl, setCode } = imageSlice.actions
+export const { addImage, updateCode } = imageSlice.actions
 export default imageSlice.reducer
