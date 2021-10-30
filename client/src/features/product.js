@@ -6,6 +6,7 @@ import { SERVER_ROOT_URI } from '@env'
 
 export const fetchProductById = createAsyncThunk('products/fetchById', async (id, thunkAPI) => {
   try {
+    const token = await SecureStore.getItemAsync('token')
     const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -17,6 +18,7 @@ export const fetchProductById = createAsyncThunk('products/fetchById', async (id
 
 export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', async (group, thunkAPI) => {
   try {
+    const token = await SecureStore.getItemAsync('token')
     const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${group}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -28,6 +30,7 @@ export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', as
 
 export const fetchProductsByUserId = createAsyncThunk('products/fetchByUserId', async (userId, thunkAPI) => {
   try {
+    const token = await SecureStore.getItemAsync('token')
     const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })

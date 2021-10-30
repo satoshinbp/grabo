@@ -26,6 +26,7 @@ const sendImgToCloudVision = async (image) => {
 
 const postImage = async (params) => {
   try {
+    const token = await SecureStore.getItemAsync('token')
     const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
       headers: {
         'Content-Type': 'multipart/form-data',
