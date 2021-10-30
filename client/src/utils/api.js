@@ -36,7 +36,7 @@ const postImage = async (params) => {
 
 const postProduct = async (params) => {
   try {
-    const res = await axios.post(`${API_URL}/api/products`, params)
+    const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params)
     // console.log(res)
     return res
   } catch (err) {
