@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { StyleSheet } from 'react-native'
 import { Button } from 'native-base'
 import * as ImagePicker from 'expo-image-picker'
 import { sendImgToCloudVision } from '../utils/api'
+import { addImage, updateCode } from '../features/image'
 
 export default (props) => {
   const [selectedImage, setSelectedImage] = useState(null)
+  const dispatch = useDispatch()
 
   const openImagePickerAsync = async () => {
     const permissionResult = await ImagePicker.requestCameraRollPermissionsAsync()
@@ -21,16 +24,12 @@ export default (props) => {
     }
     try {
       const newOcrText = await sendImgToCloudVision(pickerResult.base64)
-      props.setImageUrl(pickerResult.uri)
-      props.setOcrText(newOcrText.description)
-      props.setLanguage(newOcrText.locale)
+      dispatch(addImage({ text: newOcrText.description, imageUrl: pickerResult.uri }))
+      dispatch(updateCode(newOcrText.locale))
       setSelectedImage({ localUri: pickerResult.uri })
-      props.navigation.navigate('SelectLanguage', {
-        code: newOcrText.locale,
-        text: newOcrText.description,
-        imageUrl: pickerResult.uri,
-      })
+      props.navigation.navigate('SelectLanguage', {})
     } catch (e) {
+      console.log(e)
       alert('please try another photo')
     }
   }
