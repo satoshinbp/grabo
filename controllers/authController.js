@@ -28,7 +28,6 @@ const verifyGoogleIdToken = async (idToken) => {
 
 const signInWithGoogle = async (req, res) => {
   try {
-    console.log(req.body.idToken)
     const { googleId, name, email, image } = await verifyGoogleIdToken(req.body.idToken)
     let user = await User.findOne({ googleId })
 
