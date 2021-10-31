@@ -1,7 +1,7 @@
 const User = require('../models/User')
 
 const updateUser = async (req, res) => {
-  let user = await User.findOne({ _id: '6177a6880ff9181090432c78' })
+  let user = await User.findOne({ _id: `${req.body.user_id}` })
   const updates = Object.keys(req.body)
   updates.forEach((update) => (user[update] = req.body[update]))
 

@@ -39,11 +39,13 @@ const postImage = async (params) => {
   }
 }
 
-const updateUser = async (params) => {
+const updateUser = async (data) => {
   try {
-    //hardcode id will be repleced by "user.id"
-    const updatedUser = await axios.patch(`${API_URL}/api/users/6177a6880ff9181090432c78`, params)
-    return updatedUser
+    const token = await SecureStore.getItemAsync('token')
+    const res = await axios.patch(`${SERVER_ROOT_URI}/api/users/${data.user_id}`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res
   } catch (err) {
     throw err
   }

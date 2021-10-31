@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 import { SERVER_ROOT_URI } from '@env'
+import { updateUser } from '../utils/api'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
@@ -14,6 +15,11 @@ export const login = createAsyncThunk('users/login', async (idToken) => {
 
 export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
+})
+
+export const updateGroup = createAsyncThunk('users/updateGroup', async (params) => {
+  const user = await updateUser(params)
+  return user.data.groups
 })
 
 const initialUserState = {
@@ -29,11 +35,7 @@ const initialUserState = {
 const userSlice = createSlice({
   name: 'user',
   initialState: { user: initialUserState, loading: false },
-  reducers: {
-    updateGroup: (state, action) => {
-      state.user = { ...state.user, groups: action.payload }
-    },
-  },
+
   extraReducers: {
     [login.pending]: (state, action) => {
       state.loading = true
@@ -45,25 +47,17 @@ const userSlice = createSlice({
     [login.rejected]: (state, action) => {
       state.loading = false
     },
-    [login.pending]: (state, action) => {
+    [updateGroup.pending]: (state, action) => {
       state.loading = true
     },
-    [login.fulfilled]: (state, action) => {
-      state.user = initialUserState
+    [updateGroup.fulfilled]: (state, action) => {
+      state.user = { ...state.user, groups: action.payload }
       state.loading = false
     },
-    [login.rejected]: (state, action) => {
+    [updateGroup.rejected]: (state, action) => {
       state.loading = false
     },
   },
 })
-
-// export const groupUpdate = () => async (dispatch) => {
-//   try {
-//     dispatch(updateGroup())
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
 
 export default userSlice.reducer

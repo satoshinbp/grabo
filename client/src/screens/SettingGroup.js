@@ -3,25 +3,28 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Text, VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
 import grouplists from '../utils/groups'
 import { updateGroup } from '../features/user'
-import { updateUser } from '../utils/api'
+import { useNavigation } from '@react-navigation/native'
 
 export default () => {
   const [groups, setGroups] = useState([])
   const { user } = useSelector((state) => state.user)
   const [isError, setIsError] = useState(false)
   const dispatch = useDispatch()
+  const navigation = useNavigation()
 
   const saveButtonHandling = () => {
     if (groups.length === 0) {
+      console.log('koko')
       return setIsError(true)
     }
     setIsError(false)
     const params = {
       groups: groups,
+      user_id: user._id,
     }
-    updateUser(params).then((res) => {
-      dispatch(updateGroup(groups))
-    })
+
+    dispatch(updateGroup(params))
+    navigation.navigate('Groups')
   }
 
   return (
