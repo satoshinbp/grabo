@@ -27,8 +27,8 @@ export default () => {
       const { type, idToken } = result
 
       if (type === 'success') {
-        dispatch(login(idToken)) // pass token instead
-        // navigation.navigate('Groups')
+        dispatch(login(idToken))
+        navigation.navigate('Groups')
       } else {
         setErrorMessage('Google sign in was canceled')
       }

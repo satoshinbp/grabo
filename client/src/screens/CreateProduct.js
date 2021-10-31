@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux'
 import * as ImagePicker from 'expo-image-picker'
 import {
   View,
@@ -18,11 +19,15 @@ import {
 import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
+import { updateCode } from '../features/image'
+
+// =========    Please leave this sheets comments as a reference ==========================
 
 export default (props) => {
-  const [image, setImage] = useState(props.route.params.imageUrl)
-  const [code, setCode] = useState(props.route.params.code)
-  const [text, setText] = useState(props.route.params.text)
+  const dispatch = useDispatch()
+  const image = useSelector((state) => state.image)
+  // const [, setImage] = useState(props.route.params.imageUrl)
+  const code = image.value.code
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
   const [uniqQuestion, setUniqQuestion] = useState('')
 
@@ -41,38 +46,52 @@ export default (props) => {
 
   const uploadImage = async () => {
     const params = new FormData()
-    params.append('image', { uri: image, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    // params.append('image', { uri: image, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    params.append('image', { uri: image.imageUrl, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     const res = await postImage(params)
   }
 
   const handleSubmit = async () => {
+    // const params = {
+    //   group: code,
+    //   // keywords: [image.ocrText],
+    //   keywords: image.ocrText,
+    //   // userId, // userId shall be provided once autheintication gets ready
+    //   images: [
+    //     {
+    //       url: image.imageUrl,
+    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+    //     },
+    //   ],
+    //   fixedQandAs: fixedQuestions.map((question, index) => ({
+    //     question: {
+    //       description: question,
+    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+    //     },
+    //     answers: [],
+    //     highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
+    //   })),
+    //   uniqQandAs: [
+    //     {
+    //       question: {
+    //         userId: null, // userId shall be provided once autheintication gets ready
+    //         description: uniqQuestion || 'this is test description',
+    //         report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
+    //       },
+    //       answers: [],
+    //       highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
+    //     },
+    //   ],
+    // }
+
     const params = {
-      group: code,
-      keywords: [text],
-      // userId, // userId shall be provided once autheintication gets ready
-      images: [
-        {
-          url: image,
-          report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-        },
-      ],
-      fixedQandAs: fixedQuestions.map((question, index) => ({
-        question,
-        answers: [],
-        highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
-      })),
-      uniqQandAs: [
-        {
-          question: {
-            userId: null, // userId shall be provided once autheintication gets ready
-            description: uniqQuestion || 'this is test description',
-            report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-          },
-          answers: [],
-          highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
-        },
-      ],
+      code: image.value.code,
+      url: image.value.imageUrl,
+      text: image.value.ocrText,
+      highlitedQuestion: highlitedQuestion,
+      uniqQuestion: uniqQuestion,
     }
+
     const res = await postProduct(params)
   }
 
@@ -91,8 +110,13 @@ export default (props) => {
             <Button onPress={uploadImage} w="100%">
               upload
             </Button>
+            <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
             {/* display selected image */}
-            {image ? <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} /> : null}
+            {image.value.imageUrl
+              ? image.value.imageUrl.map((image) => (
+                  <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
+                ))
+              : null}
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
             {/* <Image
@@ -113,7 +137,7 @@ export default (props) => {
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={(itemValue) => setCode(itemValue)}
+                onValueChange={(nextValue) => dispatch(updateCode(nextValue))}
               >
                 {groups.map((group) => (
                   <Select.Item value={group.code} label={group.language} />
