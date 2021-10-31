@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator()
 
 export default () => {
   const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.user)
+  const { user } = useSelector(state => state.auth)
 
   return (
     <Tab.Navigator>
@@ -23,6 +23,7 @@ export default () => {
         options={{ tabBarLabel: 'My Products', headerShown: false }}
         listeners={{
           tabPress: () => {
+            console.log('hey')
             dispatch(fetchProductsByUserId(user._id))
           },
         }}

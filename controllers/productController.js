@@ -40,6 +40,7 @@ const createProduct = (req, res) => {
   // console.log('This is req body' + JSON.stringify(req.body))
 
   const params = {
+    userId: req.body.userId,
     group: req.body.code,
     keywords: req.body.text,
     // userId, // userId shall be provided once autheintication gets ready

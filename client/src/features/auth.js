@@ -6,11 +6,19 @@ import { updateUser } from '../utils/api'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
+export const fetchCurrentUser = createAsyncThunk('users/fetch', async (token) => {
+  const res = await axios.get(`${SERVER_ROOT_URI}/api/users`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const user = res.data
+  return { user, token }
+})
+
 export const login = createAsyncThunk('users/login', async (idToken) => {
   const res = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken })
-  const { token, user } = res.data
+  const { user, token } = res.data
   await SecureStore.setItemAsync('token', token)
-  return user
+  return { user, token }
 })
 
 export const logout = createAsyncThunk('users/logout', async () => {
@@ -32,19 +40,42 @@ const initialUserState = {
   notifications: [],
 }
 
-const userSlice = createSlice({
-  name: 'user',
-  initialState: { user: initialUserState, loading: false },
-
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: { user: initialUserState, token: null, loading: false },
   extraReducers: {
+    [fetchCurrentUser.pending]: (state, action) => {
+      state.loading = true
+    },
+    [fetchCurrentUser.fulfilled]: (state, action) => {
+      state.user = action.payload.user
+      state.token = action.payload.token
+      state.loading = false
+    },
+    [fetchCurrentUser.rejected]: (state, action) => {
+      state.error = true
+      state.loading = false
+    },
     [login.pending]: (state, action) => {
       state.loading = true
     },
     [login.fulfilled]: (state, action) => {
-      state.user = action.payload
+      state.user = action.payload.user
+      state.token = action.payload.token
       state.loading = false
     },
     [login.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [logout.pending]: (state, action) => {
+      state.loading = true
+    },
+    [logout.fulfilled]: (state, action) => {
+      state.user = initialUserState
+      state.token = null
+      state.loading = false
+    },
+    [logout.rejected]: (state, action) => {
       state.loading = false
     },
     [updateGroup.pending]: (state, action) => {
@@ -60,4 +91,4 @@ const userSlice = createSlice({
   },
 })
 
-export default userSlice.reducer
+export default authSlice.reducer

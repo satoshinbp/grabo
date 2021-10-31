@@ -23,9 +23,10 @@ import { updateCode } from '../features/image'
 
 // =========    Please leave this sheets comments as a reference ==========================
 
-export default (props) => {
+export default props => {
   const dispatch = useDispatch()
-  const image = useSelector((state) => state.image)
+  const image = useSelector(state => state.image)
+  const { user } = useSelector(state => state.auth)
   // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
@@ -85,6 +86,7 @@ export default (props) => {
     // }
 
     const params = {
+      userId: user._id,
       code: image.value.code,
       url: image.value.imageUrl,
       text: image.value.ocrText,
@@ -113,7 +115,7 @@ export default (props) => {
             <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
             {/* display selected image */}
             {image.value.imageUrl
-              ? image.value.imageUrl.map((image) => (
+              ? image.value.imageUrl.map(image => (
                   <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
                 ))
               : null}
@@ -137,9 +139,9 @@ export default (props) => {
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={(nextValue) => dispatch(updateCode(nextValue))}
+                onValueChange={nextValue => dispatch(updateCode(nextValue))}
               >
-                {groups.map((group) => (
+                {groups.map(group => (
                   <Select.Item value={group.code} label={group.language} />
                 ))}
               </Select>
@@ -167,7 +169,7 @@ export default (props) => {
               }}
               alignItems="center"
               value={uniqQuestion}
-              onChangeText={(text) => setUniqQuestion(text)}
+              onChangeText={text => setUniqQuestion(text)}
             />
           </Box>
           <Button onPress={handleSubmit}>Create a Product</Button>

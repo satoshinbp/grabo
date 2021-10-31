@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
+import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI } from '@env'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
@@ -11,8 +12,8 @@ export const fetchProductById = createAsyncThunk('products/fetchById', async (id
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
-  } catch (err) {
-    throw err
+  } catch (e) {
+    console.error(e)
   }
 })
 
@@ -23,8 +24,8 @@ export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', as
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
-  } catch (err) {
-    throw err
+  } catch (e) {
+    console.error(e)
   }
 })
 
@@ -35,8 +36,8 @@ export const fetchProductsByUserId = createAsyncThunk('products/fetchByUserId', 
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
-  } catch (err) {
-    throw err
+  } catch (e) {
+    console.error(e)
   }
 })
 
