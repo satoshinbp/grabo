@@ -14,7 +14,6 @@ export default () => {
 
   const saveButtonHandling = () => {
     if (groups.length === 0) {
-      console.log('koko')
       return setIsError(true)
     }
     setIsError(false)

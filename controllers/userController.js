@@ -13,8 +13,6 @@ const updateUser = async (req, res) => {
     .catch((error) => res.send(error))
 }
 
-const getCurrentUser = async (req, res) => res.send(req.user)
-
 const logout = async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => token !== req.token)
