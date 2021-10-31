@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Text, VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
 import grouplists from '../utils/groups'
-import { updateGroup } from '../features/user'
+import { updateGroup } from '../features/auth'
 
 export default () => {
   const [groups, setGroups] = useState([])
-  const { user } = useSelector((state) => state.user)
+  const { user } = useSelector(state => state.auth)
   const [isError, setIsError] = useState(false)
   const dispatch = useDispatch()
 
@@ -28,12 +28,12 @@ export default () => {
           colorScheme="green"
           defaultValue={user.groups}
           accessibilityLabel="choose language groups"
-          onChange={(values) => {
+          onChange={values => {
             setGroups(values)
           }}
         >
           {' '}
-          {grouplists.map((group) => (
+          {grouplists.map(group => (
             <Checkbox value={group.code} my=".5">
               {group.language}
             </Checkbox>

@@ -2,7 +2,7 @@ import axios from 'axios'
 import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
 
-const sendImgToCloudVision = async (image) => {
+const sendImgToCloudVision = async image => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
   const data = {
     requests: [
@@ -24,7 +24,7 @@ const sendImgToCloudVision = async (image) => {
   return res.data.responses[0].textAnnotations[0]
 }
 
-const postImage = async (params) => {
+const postImage = async params => {
   try {
     const token = await SecureStore.getItemAsync('token')
     const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
@@ -39,7 +39,7 @@ const postImage = async (params) => {
   }
 }
 
-const postProduct = async (params) => {
+const postProduct = async params => {
   try {
     const token = await SecureStore.getItemAsync('token')
     const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params, {

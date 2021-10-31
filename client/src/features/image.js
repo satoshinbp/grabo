@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialStateValue = {
   ocrText: [],
   imageUrl: [],
-  code: [],
+  code: '',
 }
 
 const imageSlice = createSlice({

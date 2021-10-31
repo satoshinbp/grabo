@@ -4,15 +4,14 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { NavigationContainer } from '@react-navigation/native'
 import { NativeBaseProvider } from 'native-base'
-import userReducer from './src/features/user'
+import authReducer from './src/features/auth'
 import imageReducer from './src/features/image'
 import productReducer from './src/features/product'
-import Tabs from './src/navigators/Tabs'
-import Header from './src/components/Header'
+import AppContainer from './src/components/AppContainer'
 
 const store = createStore(
   combineReducers({
-    user: userReducer,
+    auth: authReducer,
     image: imageReducer,
     product: productReducer,
   }),
@@ -25,8 +24,7 @@ export default () => {
       <NativeBaseProvider>
         {/* <NavigationContainer theme={theme}> */}
         <NavigationContainer>
-          <Header />
-          <Tabs />
+          <AppContainer />
         </NavigationContainer>
       </NativeBaseProvider>
     </Provider>
