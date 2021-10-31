@@ -2,20 +2,28 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Text, VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
 import grouplists from '../utils/groups'
+import { useNavigation } from '@react-navigation/native'
 import { updateGroup } from '../features/auth'
 
 export default () => {
   const [groups, setGroups] = useState([])
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const [isError, setIsError] = useState(false)
   const dispatch = useDispatch()
+  const navigation = useNavigation()
 
   const saveButtonHandling = () => {
     if (groups.length === 0) {
       return setIsError(true)
     }
     setIsError(false)
-    dispatch(updateGroup(groups))
+    const params = {
+      groups: groups,
+      user_id: user._id,
+    }
+
+    dispatch(updateGroup(params))
+    navigation.navigate('Groups')
   }
 
   return (
@@ -28,12 +36,12 @@ export default () => {
           colorScheme="green"
           defaultValue={user.groups}
           accessibilityLabel="choose language groups"
-          onChange={values => {
+          onChange={(values) => {
             setGroups(values)
           }}
         >
           {' '}
-          {grouplists.map(group => (
+          {grouplists.map((group) => (
             <Checkbox value={group.code} my=".5">
               {group.language}
             </Checkbox>

@@ -2,10 +2,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 import { SERVER_ROOT_URI } from '@env'
+import { updateUser } from '../utils/api'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
-export const fetchCurrentUser = createAsyncThunk('users/fetch', async token => {
+export const fetchCurrentUser = createAsyncThunk('users/fetch', async (token) => {
   const res = await axios.get(`${SERVER_ROOT_URI}/api/users`, {
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -13,7 +14,7 @@ export const fetchCurrentUser = createAsyncThunk('users/fetch', async token => {
   return { user, token }
 })
 
-export const login = createAsyncThunk('users/login', async idToken => {
+export const login = createAsyncThunk('users/login', async (idToken) => {
   const res = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken })
   const { user, token } = res.data
   await SecureStore.setItemAsync('token', token)
@@ -22,6 +23,11 @@ export const login = createAsyncThunk('users/login', async idToken => {
 
 export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
+})
+
+export const updateGroup = createAsyncThunk('users/updateGroup', async (params) => {
+  const user = await updateUser(params)
+  return user.data.groups
 })
 
 const initialUserState = {
@@ -37,11 +43,6 @@ const initialUserState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState: { user: initialUserState, token: null, loading: false },
-  reducers: {
-    updateGroup: (state, action) => {
-      state.user = { ...state.user, groups: action.payload }
-    },
-  },
   extraReducers: {
     [fetchCurrentUser.pending]: (state, action) => {
       state.loading = true
@@ -77,8 +78,17 @@ const authSlice = createSlice({
     [logout.rejected]: (state, action) => {
       state.loading = false
     },
+    [updateGroup.pending]: (state, action) => {
+      state.loading = true
+    },
+    [updateGroup.fulfilled]: (state, action) => {
+      state.user = { ...state.user, groups: action.payload }
+      state.loading = false
+    },
+    [updateGroup.rejected]: (state, action) => {
+      state.loading = false
+    },
   },
 })
 
-export const { updateGroup } = authSlice.actions
 export default authSlice.reducer
