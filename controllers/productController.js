@@ -50,7 +50,7 @@ const createProduct = (req, res) => {
 
     fixedQandAs: fixedQuestions.map((question, index) => ({
       question: question,
-      highlightedBy: req.body.highlitedQuestion.includes(index) ? [] : [],
+      highlightedBy: req.body.highlitedQuestion.includes(index) ? [req.body.userId] : [],
     })),
 
     uniqQandAs: [
@@ -58,7 +58,7 @@ const createProduct = (req, res) => {
         question: {
           description: req.body.uniqQuestion,
         },
-        highlightedBy: req.body.uniqQuestion ? [] : [],
+        highlightedBy: req.body.uniqQuestion ? [req.body.userId] : [],
       },
     ],
   }
