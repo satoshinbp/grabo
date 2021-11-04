@@ -1,12 +1,19 @@
-import { Image, View } from 'native-base'
+import { Image, Pressable } from 'native-base'
 import React from 'react'
 
-const Report = () => {
+const Report = (props) => {
   const hoge = () => {
-    console.log('hogehoge')
+    console.log('report', !props.isModalOpen)
+    props.modalHandler()
   }
 
-  return <Image source={require('../assets/exclamation.jpeg')} alt="image" style={{ width: 30, height: 30 }} />
+  return (
+    <>
+      <Pressable onPress={() => hoge()}>
+        <Image source={require('../assets/exclamation.jpeg')} alt="image" style={{ width: 30, height: 30 }} />
+      </Pressable>
+    </>
+  )
 }
 
 export default Report
