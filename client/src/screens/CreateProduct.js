@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import * as ImagePicker from 'expo-image-picker'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -20,7 +20,7 @@ import {
 import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
-import { updateCode, deleteImage } from '../features/image'
+import { updateCode, deleteImage, deleteProduct } from '../features/image'
 
 // =========    Please leave this sheets comments as a reference ==========================
 
@@ -66,8 +66,29 @@ export default (props) => {
     props.navigation.navigate('Product', { id: res.data._id })
   }
 
-  const onRemove = (index) => {
+  const onImageRemove = (index) => {
     dispatch(deleteImage({ index: index }))
+  }
+
+  const deleteAlert = () =>
+    Alert.alert('Alert', 'Are you sure to delete this product', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          dispatch(deleteProduct())
+          setHighlitedQuestion([])
+          setUniqQuestion('')
+          props.navigation.navigate('Scan', {})
+        },
+      },
+    ])
+
+  const onCancel = () => {
+    deleteAlert()
   }
 
   return (
@@ -86,7 +107,7 @@ export default (props) => {
               ? image.value.imageUrl.map((image, index) => (
                   <Box key={image}>
                     <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
-                    <MaterialIcons name="delete" size={24} color="black" onPress={() => onRemove(index)} />
+                    <MaterialIcons name="delete" size={24} color="black" onPress={() => onImageRemove(index)} />
                   </Box>
                 ))
               : null}
@@ -144,6 +165,7 @@ export default (props) => {
               onChangeText={(text) => setUniqQuestion(text)}
             />
           </Box>
+          <Button onPress={onCancel}>Cancel</Button>
           <Button onPress={handleSubmit}>Create a Product</Button>
         </View>
       </TouchableWithoutFeedback>
