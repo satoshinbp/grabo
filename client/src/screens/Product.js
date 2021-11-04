@@ -5,16 +5,18 @@ import { View, FlatList, Image, Text, Button, Divider } from 'native-base'
 import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
 
-export default () => {
+export default ({ navigation }) => {
   const route = useRoute()
-  const dispatch = useDispatch()
   const { product, loading } = useSelector((state) => state.product)
+  const dispatch = useDispatch()
 
-  console.log(route.params.id)
-  console.log(product)
   useEffect(() => {
-    dispatch(fetchProductById(route.params.id))
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(fetchProductById(route.params.id))
+    })
+
+    return unsubscribe
+  }, [navigation])
 
   if (loading) return <Loading />
   return (
