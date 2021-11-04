@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import * as ImagePicker from 'expo-image-picker'
+import { MaterialIcons } from '@expo/vector-icons'
 import {
   View,
   Box,
@@ -19,7 +20,7 @@ import {
 import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
-import { updateCode } from '../features/image'
+import { updateCode, deleteImage } from '../features/image'
 
 // =========    Please leave this sheets comments as a reference ==========================
 
@@ -65,6 +66,10 @@ export default (props) => {
     props.navigation.navigate('Product', { id: res.data._id })
   }
 
+  const onRemove = (index) => {
+    dispatch(deleteImage({ index: index }))
+  }
+
   return (
     <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -76,11 +81,16 @@ export default (props) => {
             <Text>Image</Text>
             <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
             {/* display selected image */}
+
             {image.value.imageUrl
-              ? image.value.imageUrl.map((image) => (
-                  <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
+              ? image.value.imageUrl.map((image, index) => (
+                  <Box key={image}>
+                    <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
+                    <MaterialIcons name="delete" size={24} color="black" onPress={() => onRemove(index)} />
+                  </Box>
                 ))
               : null}
+
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
             {/* <Image
