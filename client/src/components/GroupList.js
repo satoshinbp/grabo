@@ -5,13 +5,13 @@ import { FlatList, Button } from 'native-base'
 import groups from '../utils/groups'
 
 export default () => {
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const navigation = useNavigation()
 
   return (
     <FlatList
-      data={groups.filter(group => user.groups.includes(group.code))}
+      data={groups.filter((group) => user.groups.includes(group.code))}
       renderItem={({ item }) => (
         <Button
           onPress={() => {
@@ -21,7 +21,7 @@ export default () => {
           {item.language}
         </Button>
       )}
-      keyExtractor={item => item.code}
+      keyExtractor={(item) => item.code}
     />
   )
 }

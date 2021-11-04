@@ -4,7 +4,7 @@ import { Box, Heading, Text } from 'native-base'
 import Logout from '../components/Logout'
 
 export default () => {
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector((state) => state.auth)
 
   return (
     <Box>
