@@ -70,11 +70,21 @@ const createProduct = (req, res) => {
 
 const putAnswer = (req, res) => {
   console.log('req.body', req.body)
+  console.log('fixedQ', fixedQuestions[1])
   Product.updateOne(
-    { _id: req.body.docId, 'fixedQandAs.question': 'What is the taste of this product?' },
+    { _id: req.body.docId, 'fixedQandAs.question': fixedQuestions[req.body.questionIdx] },
     {
-      $set: {
-        'fixedQandAs.$.answer': req.body.answer,
+      $push: {
+        'fixedQandAs.$.answers': {
+          userId: req.user._id,
+          description: req.body.answer,
+          report: {
+            wrong: 0,
+            affiliate: 0,
+            threats: 0,
+            privacy: 0,
+          },
+        },
       },
     }
   )

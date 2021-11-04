@@ -13,7 +13,7 @@ export default () => {
 
   const handleAnswerSubmit = async () => {
     console.log('handleAnswer', product._id)
-    const params = { docId: product._id, answer: "It's sweet and really good!" }
+    const params = { docId: product._id, answer: 'Chocolate', questionIdx: 1 }
     const res = await putAnswer(params)
   }
 
