@@ -7,5 +7,6 @@ router.get('/:id', productController.getProductById)
 router.get('/group/:group', productController.getProductsByGroup)
 router.get('/user/:id', productController.getProductsByUserId)
 router.post('/', productController.createProduct)
+router.put('/answer/', productController.putAnswer)
 
 module.exports = router

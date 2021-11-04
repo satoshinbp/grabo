@@ -68,4 +68,18 @@ const createProduct = (req, res) => {
     .catch((err) => console.log(err))
 }
 
-module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct }
+const putAnswer = (req, res) => {
+  console.log('req.body', req.body)
+  Product.updateOne(
+    { _id: req.body.docId, 'fixedQandAs.question': 'What is the taste of this product?' },
+    {
+      $set: {
+        'fixedQandAs.$.answer': req.body.answer,
+      },
+    }
+  )
+    .then((result) => res.send(result))
+    .catch((err) => console.log(err))
+}
+
+module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct, putAnswer }
