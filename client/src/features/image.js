@@ -13,7 +13,6 @@ const imageSlice = createSlice({
     addImage: (state, action) => {
       state.value.ocrText.push(action.payload.text)
       state.value.imageUrl.push(action.payload.imageUrl)
-      console.log(state.value.ocrText)
     },
     deleteImage: (state, action) => {
       state.value.ocrText = state.value.ocrText.filter((ocrText, index) => index !== action.payload.index)

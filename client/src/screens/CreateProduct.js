@@ -91,6 +91,14 @@ export default (props) => {
     deleteAlert()
   }
 
+  const addImage = () => {
+    if (image.value.imageUrl.length >= 3) {
+      alert('You can upload up to 3 images')
+    } else {
+      props.navigation.navigate('Scan', {})
+    }
+  }
+
   return (
     <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -100,7 +108,7 @@ export default (props) => {
           </Box>
           <Box>
             <Text>Image</Text>
-            <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
+            <Button onPress={addImage}>Add Image </Button>
             {/* display selected image */}
 
             {image.value.imageUrl
