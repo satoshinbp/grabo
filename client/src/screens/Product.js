@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { View, FlatList, Image, Text, Button, Divider } from 'native-base'
+import { View, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
 import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
 import { putAnswer } from '../utils/api'
@@ -9,11 +9,15 @@ import { putAnswer } from '../utils/api'
 export default () => {
   const route = useRoute()
   const dispatch = useDispatch()
+  const [answerModal, setAnswerModal] = useState(false)
+  const [qestionIdx, setQnIdx] = useState()
+  const [answer, setAnswer] = useState()
   const { product, loading } = useSelector((state) => state.product)
 
   const handleAnswerSubmit = async () => {
-    console.log('handleAnswer', product._id)
-    const params = { docId: product._id, answer: 'Chocolate', questionIdx: 1 }
+    const params = { docId: product._id, answer: answer, questionIdx: qestionIdx }
+    console.log('docId', params.docId, 'answer', params.answer, 'questionIdx', params.questionIdx)
+    setAnswer()
     const res = await putAnswer(params)
   }
 
@@ -38,10 +42,39 @@ export default () => {
       />
       <FlatList
         data={product.fixedQandAs}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <>
             <Text>{item.question}</Text>
-            <Button onPress={handleAnswerSubmit}>Answer this question</Button>
+            <Button
+              onPress={() => {
+                setQnIdx(index)
+                console.log(index)
+                setAnswerModal(true)
+              }}
+            >
+              {answerModal === true && qestionIdx === index ? 'Close the answer textarea' : 'Answer this question'}
+            </Button>
+            {answerModal && (
+              <>
+                <Input
+                  mb="10"
+                  placeholder="Please write an answer here"
+                  blurOnSubmit={true}
+                  returnKeyType="done"
+                  onSubmitEditing={() => {
+                    Keyboard.dismiss()
+                  }}
+                  alignItems="center"
+                  value={answer}
+                  onChangeText={(text) => {
+                    setQnIdx(index)
+                    console.log(index)
+                    setAnswer(text)
+                  }}
+                />
+                <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
+              </>
+            )}
             <Button>Highlight</Button>
             <FlatList
               data={item.answers}
