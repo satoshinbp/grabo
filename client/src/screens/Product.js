@@ -4,14 +4,15 @@ import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider } from 'native-base'
 import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
+import Report from '../components/Report'
 
 export default () => {
   const route = useRoute()
   const dispatch = useDispatch()
   const { product, loading } = useSelector((state) => state.product)
 
-  console.log(route.params.id)
-  console.log(product)
+  // console.log(route.params.id)
+  // console.log(product)
   useEffect(() => {
     dispatch(fetchProductById(route.params.id))
   }, [])
@@ -24,7 +25,7 @@ export default () => {
         renderItem={({ item }) => (
           <>
             <Image source={{ uri: item.url }} alt="product" size="xl" />
-            <Button>Report</Button>
+            <Report />
           </>
         )}
         keyExtractor={(item) => item.url}
@@ -42,7 +43,7 @@ export default () => {
               renderItem={({ item }) => (
                 <>
                   <Text>{item.description}</Text>
-                  <Button>Report</Button>
+                  <Report />
                 </>
               )}
               keyExtractor={(item) => item.description}

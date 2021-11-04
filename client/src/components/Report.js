@@ -1,16 +1,12 @@
+import { Image, View } from 'native-base'
 import React from 'react'
-import favicon from '../assets/favicon'
 
 const Report = () => {
   const hoge = () => {
     console.log('hogehoge')
   }
 
-  return (
-    <div>
-      <img src={favicon} alt="Report Icon" onClick={hoge} />
-    </div>
-  )
+  return <Image source={require('../assets/exclamation.jpeg')} alt="image" style={{ width: 30, height: 30 }} />
 }
 
 export default Report
