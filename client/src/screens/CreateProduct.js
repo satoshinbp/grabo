@@ -47,8 +47,7 @@ export default (props) => {
 
   const uploadImage = async () => {
     const params = new FormData()
-    // params.append('image', { uri: image, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    params.append('image', { uri: image.imageUrl, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    params.append('image', { uri: image.value.imageUrl[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     const res = await postImage(params)
   }
 
@@ -61,7 +60,7 @@ export default (props) => {
       highlitedQuestion: highlitedQuestion,
       uniqQuestion: uniqQuestion,
     }
-
+    uploadImage()
     const res = await postProduct(params)
     props.navigation.navigate('Product', { id: res.data._id })
   }
@@ -75,12 +74,6 @@ export default (props) => {
           </Box>
           <Box>
             <Text>Image</Text>
-            <Button onPress={pickImage} w="100%">
-              Choose pic
-            </Button>
-            <Button onPress={uploadImage} w="100%">
-              upload
-            </Button>
             <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
             {/* display selected image */}
             {image.value.imageUrl
