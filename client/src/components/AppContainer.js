@@ -9,7 +9,7 @@ import Tabs from '../navigators/Tabs'
 
 export default () => {
   const dispatch = useDispatch()
-  const { loading, token } = useSelector(state => state.auth)
+  const { token, appReady } = useSelector((state) => state.auth)
 
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -29,7 +29,7 @@ export default () => {
     getCurrentUser()
   }, [])
 
-  if (loading) return <Splash />
+  if (!appReady) return <Splash />
   if (!token) return <Login />
   return (
     <>

@@ -42,7 +42,7 @@ const initialUserState = {
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { user: initialUserState, token: null, loading: false },
+  initialState: { user: initialUserState, token: null, loading: false, appReady: false },
   extraReducers: {
     [fetchCurrentUser.pending]: (state, action) => {
       state.loading = true
@@ -51,6 +51,7 @@ const authSlice = createSlice({
       state.user = action.payload.user
       state.token = action.payload.token
       state.loading = false
+      state.appReady = true
     },
     [fetchCurrentUser.rejected]: (state, action) => {
       state.error = true
@@ -63,6 +64,7 @@ const authSlice = createSlice({
       state.user = action.payload.user
       state.token = action.payload.token
       state.loading = false
+      state.appReady = true
     },
     [login.rejected]: (state, action) => {
       state.loading = false

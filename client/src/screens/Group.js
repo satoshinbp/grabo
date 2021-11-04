@@ -8,8 +8,8 @@ import { fetchProductsByGroup } from '../features/product'
 
 export default () => {
   const route = useRoute()
-  const dispatch = useDispatch()
   const { loading } = useSelector((state) => state.product)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(fetchProductsByGroup(route.params.code))
