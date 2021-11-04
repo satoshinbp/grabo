@@ -23,10 +23,10 @@ import { updateCode } from '../features/image'
 
 // =========    Please leave this sheets comments as a reference ==========================
 
-export default props => {
+export default (props) => {
   const dispatch = useDispatch()
-  const image = useSelector(state => state.image)
-  const { user } = useSelector(state => state.auth)
+  const image = useSelector((state) => state.image)
+  const { user } = useSelector((state) => state.auth)
   // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
@@ -53,38 +53,6 @@ export default props => {
   }
 
   const handleSubmit = async () => {
-    // const params = {
-    //   group: code,
-    //   // keywords: [image.ocrText],
-    //   keywords: image.ocrText,
-    //   // userId, // userId shall be provided once autheintication gets ready
-    //   images: [
-    //     {
-    //       url: image.imageUrl,
-    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //     },
-    //   ],
-    //   fixedQandAs: fixedQuestions.map((question, index) => ({
-    //     question: {
-    //       description: question,
-    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //     },
-    //     answers: [],
-    //     highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
-    //   })),
-    //   uniqQandAs: [
-    //     {
-    //       question: {
-    //         userId: null, // userId shall be provided once autheintication gets ready
-    //         description: uniqQuestion || 'this is test description',
-    //         report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //       },
-    //       answers: [],
-    //       highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
-    //     },
-    //   ],
-    // }
-
     const params = {
       userId: user._id,
       code: image.value.code,
@@ -95,6 +63,7 @@ export default props => {
     }
 
     const res = await postProduct(params)
+    props.navigation.navigate('Product', { id: res.data._id })
   }
 
   return (
@@ -115,7 +84,7 @@ export default props => {
             <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
             {/* display selected image */}
             {image.value.imageUrl
-              ? image.value.imageUrl.map(image => (
+              ? image.value.imageUrl.map((image) => (
                   <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
                 ))
               : null}
@@ -139,9 +108,9 @@ export default props => {
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={nextValue => dispatch(updateCode(nextValue))}
+                onValueChange={(nextValue) => dispatch(updateCode(nextValue))}
               >
-                {groups.map(group => (
+                {groups.map((group) => (
                   <Select.Item value={group.code} label={group.language} />
                 ))}
               </Select>
@@ -169,7 +138,7 @@ export default props => {
               }}
               alignItems="center"
               value={uniqQuestion}
-              onChangeText={text => setUniqQuestion(text)}
+              onChangeText={(text) => setUniqQuestion(text)}
             />
           </Box>
           <Button onPress={handleSubmit}>Create a Product</Button>
