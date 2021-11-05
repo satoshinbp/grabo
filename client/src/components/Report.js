@@ -3,7 +3,6 @@ import React from 'react'
 
 const Report = (props) => {
   const hoge = () => {
-    console.log('report', !props.isModalOpen)
     props.modalHandler()
   }
 
