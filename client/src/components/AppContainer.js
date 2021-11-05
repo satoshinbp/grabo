@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as SecureStore from 'expo-secure-store'
 import * as SplashScreen from 'expo-splash-screen'
-import { setAppReady, fetchCurrentUser } from '../features/auth'
+import { setAppReady, setUser } from '../features/auth'
 import Login from '../screens/Login'
 import Loading from '../components/Loading'
 import Header from '../components/Header'
@@ -20,7 +20,7 @@ export default () => {
         tempToken = await SecureStore.getItemAsync('token')
 
         if (tempToken) {
-          dispatch(fetchCurrentUser(tempToken))
+          dispatch(setUser(tempToken))
         } else {
           dispatch(setAppReady())
         }

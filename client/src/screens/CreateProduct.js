@@ -17,7 +17,7 @@ import {
   Image,
   ScrollView,
 } from 'native-base'
-import { postImage, postProduct } from '../utils/api'
+import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
 import { updateCode, deleteImage, deleteProduct } from '../features/image'

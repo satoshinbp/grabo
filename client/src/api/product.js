@@ -1,6 +1,8 @@
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
+// SERVER_ROOT_URI might not work depends on dev environment
+// In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
 const sendImgToCloudVision = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
@@ -39,18 +41,6 @@ const postImage = async (params) => {
   }
 }
 
-const updateUser = async (data) => {
-  try {
-    const token = await SecureStore.getItemAsync('token')
-    const res = await axios.patch(`${SERVER_ROOT_URI}/api/users/${data.user_id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return res
-  } catch (err) {
-    throw err
-  }
-}
-
 const postProduct = async (params) => {
   try {
     const token = await SecureStore.getItemAsync('token')
@@ -63,4 +53,4 @@ const postProduct = async (params) => {
   }
 }
 
-export { sendImgToCloudVision, postImage, postProduct, updateUser }
+export { sendImgToCloudVision, postImage, postProduct }
