@@ -13,6 +13,14 @@ const imageSlice = createSlice({
     addImage: (state, action) => {
       state.value.ocrText.push(action.payload.text)
       state.value.imageUrl.push(action.payload.imageUrl)
+      console.log(state.value.ocrText)
+    },
+    deleteImage: (state, action) => {
+      state.value.ocrText = state.value.ocrText.filter((ocrText, index) => index !== action.payload.index)
+      state.value.imageUrl = state.value.imageUrl.filter((imageUrl, index) => index !== action.payload.index)
+    },
+    deleteProduct: (state, action) => {
+      state.value = initialStateValue
     },
     updateCode: (state, action) => {
       state.value.code = action.payload
@@ -20,5 +28,5 @@ const imageSlice = createSlice({
   },
 })
 
-export const { addImage, updateCode } = imageSlice.actions
+export const { addImage, updateCode, deleteImage, deleteProduct } = imageSlice.actions
 export default imageSlice.reducer

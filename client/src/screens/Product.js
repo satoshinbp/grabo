@@ -7,15 +7,19 @@ import { fetchProductById } from '../features/product'
 import Report from '../components/Report'
 import ProductActionModal from '../components/ProductActionModal'
 
-export default () => {
+export default ({ navigation }) => {
   const route = useRoute()
-  const dispatch = useDispatch()
   const { product, loading } = useSelector((state) => state.product)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchProductById(route.params.id))
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(fetchProductById(route.params.id))
+    })
+
+    return unsubscribe
+  }, [navigation])
 
   const modalHandler = () => {
     setIsModalOpen(!isModalOpen)

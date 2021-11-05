@@ -42,41 +42,51 @@ const initialUserState = {
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { user: initialUserState, token: null, loading: false },
-  extraReducers: {
-    [fetchCurrentUser.pending]: (state, action) => {
-      state.loading = true
+  initialState: {
+    user: initialUserState,
+    token: null,
+    loading: false,
+    appIsReady: false,
+    signingIn: false,
+    signingOut: false,
+  },
+  reducers: {
+    setAppReady: (state, action) => {
+      state.appIsReady = true
     },
+  },
+  extraReducers: {
     [fetchCurrentUser.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
-      state.loading = false
+      state.appIsReady = true
     },
     [fetchCurrentUser.rejected]: (state, action) => {
       state.error = true
-      state.loading = false
+      state.appIsReady = true
     },
     [login.pending]: (state, action) => {
-      state.loading = true
+      state.signingIn = true
     },
     [login.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
-      state.loading = false
+      state.appIsReady = true
+      state.signingIn = false
     },
     [login.rejected]: (state, action) => {
-      state.loading = false
+      state.signingIn = false
     },
     [logout.pending]: (state, action) => {
-      state.loading = true
+      state.signingOut = true
     },
     [logout.fulfilled]: (state, action) => {
       state.user = initialUserState
       state.token = null
-      state.loading = false
+      state.signingOut = false
     },
     [logout.rejected]: (state, action) => {
-      state.loading = false
+      state.signingOut = false
     },
     [updateGroup.pending]: (state, action) => {
       state.loading = true
@@ -91,4 +101,5 @@ const authSlice = createSlice({
   },
 })
 
+export const { setAppReady } = authSlice.actions
 export default authSlice.reducer
