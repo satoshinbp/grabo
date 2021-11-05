@@ -68,28 +68,30 @@ const createProduct = (req, res) => {
     .catch((err) => console.log(err))
 }
 
-const putAnswer = (req, res) => {
-  console.log('req.body', req.body)
-  console.log('fixedQ', fixedQuestions[1])
-  Product.updateOne(
-    { _id: req.body.docId, 'fixedQandAs.question': fixedQuestions[req.body.questionIdx] },
-    {
-      $push: {
-        'fixedQandAs.$.answers': {
-          userId: req.user._id,
-          description: req.body.answer,
-          report: {
-            wrong: 0,
-            affiliate: 0,
-            threats: 0,
-            privacy: 0,
+const putAnswer = async (req, res) => {
+  //console.log('req.body', req.body)
+  try {
+    Product.updateOne(
+      { _id: req.body.docId, 'fixedQandAs.question': fixedQuestions[req.body.questionIdx] },
+      {
+        $push: {
+          'fixedQandAs.$.answers': {
+            userId: req.user._id,
+            description: req.body.answer,
+            report: {
+              wrong: 0,
+              affiliate: 0,
+              threats: 0,
+              privacy: 0,
+            },
           },
         },
-      },
-    }
-  )
-    .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+      }
+    )
+    res.send()
+  } catch (e) {
+    res.status(500).send()
+  }
 }
 
 module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct, putAnswer }

@@ -16,9 +16,9 @@ export default () => {
 
   const handleAnswerSubmit = async () => {
     const params = { docId: product._id, answer: answer, questionIdx: qestionIdx }
-    console.log('docId', params.docId, 'answer', params.answer, 'questionIdx', params.questionIdx)
-    setAnswer()
+    //console.log('docId', params.docId, 'answer', params.answer, 'questionIdx', params.questionIdx)
     const res = await putAnswer(params)
+    setAnswer()
   }
 
   useEffect(() => {
