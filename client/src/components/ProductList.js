@@ -12,7 +12,7 @@ export default () => {
       data={products}
       renderItem={({ item }) => (
         <Button onPress={() => navigation.navigate('Product', { id: item._id })}>
-          {item.images[0] ? (
+          {item.images.length > 0 && (
             <Image
               source={{
                 uri: item.images[Math.floor(Math.random() * item.images.length)].url,
@@ -20,17 +20,7 @@ export default () => {
               alt="product"
               size="xl"
             />
-          ) : (
-            ''
           )}
-          {/*<Image
-            source={{
-              uri: item.images[Math.floor(Math.random() * item.images.length)].url,
-            }}
-            alt="product"
-            size="xl"
-          />*/}
-          {item.keywords[0]}
         </Button>
       )}
       keyExtractor={(item) => item._id}

@@ -1,22 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
 import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
-import { putAnswer } from '../utils/api'
+import { addAnswer } from '../utils/api'
+import Report from '../components/Report'
+import ProductActionModal from '../components/ProductActionModal'
 
 export default ({ navigation }) => {
   const route = useRoute()
-  const dispatch = useDispatch()
-  const [qestionIdx, setQnIdx] = useState()
-  const [answer, setAnswer] = useState()
   const { product, loading } = useSelector((state) => state.product)
+  const { user } = useSelector((state) => state.auth)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const dispatch = useDispatch()
+  const [questionIndex, setQuestionIndex] = useState()
+  const [answer, setAnswer] = useState()
+  console.log(user)
 
   const handleAnswerSubmit = async () => {
-    const params = { docId: product._id, answer: answer, questionIdx: qestionIdx }
+    const params = { docId: product._id, answer, questionIndex }
     //console.log('docId', params.docId, 'answer', params.answer, 'questionIdx', params.questionIdx)
-    const res = await putAnswer(params)
+    const res = await addAnswer(params)
     setAnswer()
   }
 
@@ -28,6 +33,10 @@ export default ({ navigation }) => {
     return unsubscribe
   }, [navigation])
 
+  const modalHandler = () => {
+    setIsModalOpen(!isModalOpen)
+  }
+
   if (loading) return <Loading />
   return (
     <View>
@@ -36,7 +45,7 @@ export default ({ navigation }) => {
         renderItem={({ item }) => (
           <>
             <Image source={{ uri: item.url }} alt="product" size="xl" />
-            <Button>Report</Button>
+            <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
           </>
         )}
         keyExtractor={(item) => item.url}
@@ -59,8 +68,17 @@ export default ({ navigation }) => {
               alignItems="center"
               value={answer}
               onChangeText={(text) => {
-                setQnIdx(index)
-                setAnswer(text)
+                setQuestionIndex(index)
+                setAnswer({
+                  userId: user._id,
+                  description: text,
+                  report: {
+                    wrong: 0,
+                    affiliate: 0,
+                    threats: 0,
+                    privacy: 0,
+                  },
+                })
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
@@ -71,7 +89,7 @@ export default ({ navigation }) => {
               renderItem={({ item }) => (
                 <>
                   <Text>{item.description}</Text>
-                  <Button>Report</Button>
+                  <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
                 </>
               )}
               keyExtractor={(item) => item.description}
@@ -86,6 +104,7 @@ export default ({ navigation }) => {
         w="100%"
       />
       <Button>Create New Question</Button>
+      <ProductActionModal modalHandler={modalHandler} modalVisible={isModalOpen} />
     </View>
   )
 }

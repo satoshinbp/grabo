@@ -63,10 +63,10 @@ const postProduct = async (params) => {
   }
 }
 
-const putAnswer = async (params) => {
+const addAnswer = async (params) => {
   try {
     const token = await SecureStore.getItemAsync('token')
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer/`, params, {
+    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
@@ -75,4 +75,4 @@ const putAnswer = async (params) => {
   }
 }
 
-export { sendImgToCloudVision, postImage, postProduct, updateUser, putAnswer }
+export { sendImgToCloudVision, postImage, postProduct, updateUser, addAnswer }

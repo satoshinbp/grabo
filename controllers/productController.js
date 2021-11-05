@@ -68,10 +68,12 @@ const createProduct = (req, res) => {
     .catch((err) => console.log(err))
 }
 
-const putAnswer = (req, res) => {
+/*const addAnswer = (req, res) => {
   console.log('req.body', req.body)
+  
+  }
   Product.updateOne(
-    { _id: req.body.docId, 'fixedQandAs.question': fixedQuestions[req.body.questionIdx] },
+    { _id: req.body.docId, 'fixedQandAs.question': fixedQuestions[req.body.questionIndex] },
     {
       $push: {
         'fixedQandAs.$.answers': {
@@ -89,6 +91,25 @@ const putAnswer = (req, res) => {
   )
     .then((result) => res.send(result))
     .catch((err) => console.log(err))
+}*/
+
+const addAnswer = async (req, res) => {
+  let product = await Product.findOne({
+    _id: req.body.docId,
+  })
+  console.log(product.fixedQandAs[req.body.questionIndex].answers)
+  console.log(req.body.answer)
+  product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
+  //const updates =  // answerまでのパス
+  // console.log(updates) 中身： [ 'docId', 'answer', 'questionIndex' ]
+  // 下の例だと、product.docId product.answerみたいになってupdateされる
+  //updates.forEach((update) => (product[update] = req.body[update]))
+  await product
+    .save()
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((error) => res.send(error))
 }
 
-module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct, putAnswer }
+module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct, addAnswer }
