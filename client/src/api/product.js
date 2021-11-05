@@ -4,26 +4,25 @@ import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
-const sendImgToCloudVision = async (image) => {
-  const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
-  const data = {
-    requests: [
-      {
-        features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
-        image: { content: image },
-        imageContext: { languageHints: ['ja', 'ru', 'ko', 'es', 'ar', 'de', 'pt', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
-      },
-    ],
-  }
-
-  const res = await axios.post(url, data, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+const fetchProductById = async (token, id) => {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
   })
+  return data
+}
 
-  return res.data.responses[0].textAnnotations[0]
+const fetchProductsByGroup = async (token, code) => {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${code}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
+}
+
+const fetchProductsByUserId = async (token, userId) => {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const postImage = async (params) => {
@@ -53,4 +52,26 @@ const postProduct = async (params) => {
   }
 }
 
-export { sendImgToCloudVision, postImage, postProduct }
+const sendImgToCloudVision = async (image) => {
+  const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
+  const data = {
+    requests: [
+      {
+        features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
+        image: { content: image },
+        imageContext: { languageHints: ['ja', 'ru', 'ko', 'es', 'ar', 'de', 'pt', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
+      },
+    ],
+  }
+
+  const res = await axios.post(url, data, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+
+  return res.data.responses[0].textAnnotations[0]
+}
+
+export { fetchProductById, fetchProductsByGroup, fetchProductsByUserId, sendImgToCloudVision, postImage, postProduct }

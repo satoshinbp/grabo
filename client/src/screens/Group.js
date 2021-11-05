@@ -4,16 +4,17 @@ import { useRoute } from '@react-navigation/core'
 import { Box, Heading } from 'native-base'
 import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
-import { fetchProductsByGroup } from '../features/product'
+import { setProductsByGroup } from '../features/product'
 
 export default ({ navigation }) => {
   const route = useRoute()
+  const { token } = useSelector((state) => state.auth)
   const { loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(fetchProductsByGroup(route.params.code))
+      dispatch(setProductsByGroup(token, route.params.code))
     })
 
     return unsubscribe
