@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider } from 'native-base'
 import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
+import Report from '../components/Report'
+import ProductActionModal from '../components/ProductActionModal'
 
 export default ({ navigation }) => {
   const route = useRoute()
   const { product, loading } = useSelector((state) => state.product)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -18,6 +21,10 @@ export default ({ navigation }) => {
     return unsubscribe
   }, [navigation])
 
+  const modalHandler = () => {
+    setIsModalOpen(!isModalOpen)
+  }
+
   if (loading) return <Loading />
   return (
     <View>
@@ -26,7 +33,7 @@ export default ({ navigation }) => {
         renderItem={({ item }) => (
           <>
             <Image source={{ uri: item.url }} alt="product" size="xl" />
-            <Button>Report</Button>
+            <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
           </>
         )}
         keyExtractor={(item) => item.url}
@@ -44,7 +51,7 @@ export default ({ navigation }) => {
               renderItem={({ item }) => (
                 <>
                   <Text>{item.description}</Text>
-                  <Button>Report</Button>
+                  <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
                 </>
               )}
               keyExtractor={(item) => item.description}
@@ -59,6 +66,7 @@ export default ({ navigation }) => {
         w="100%"
       />
       <Button>Create New Question</Button>
+      <ProductActionModal modalHandler={modalHandler} modalVisible={isModalOpen} />
     </View>
   )
 }
