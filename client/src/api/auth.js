@@ -1,6 +1,5 @@
 import axios from 'axios'
-import * as SecureStore from 'expo-secure-store'
-import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
+import { SERVER_ROOT_URI } from '@env'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 

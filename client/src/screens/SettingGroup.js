@@ -22,7 +22,7 @@ export default () => {
       groups: groups,
       user_id: user._id,
     }
-    dispatch(updateGroup(token, params))
+    dispatch(updateGroup({ token, params }))
     navigation.navigate('Groups')
   }
 

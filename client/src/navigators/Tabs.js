@@ -24,7 +24,7 @@ export default () => {
         component={ProductsStacks}
         options={{ tabBarLabel: 'My Products', headerShown: false }}
         listeners={{
-          tabPress: () => dispatch(setProductsByUserId(token, user._id)),
+          tabPress: () => dispatch(setProductsByUserId({ token, userId: user._id })),
         }}
       />
       <Tab.Screen name="Scan Tab" component={ScanStacks} options={{ tabBarLabel: 'Scan', headerShown: false }} />

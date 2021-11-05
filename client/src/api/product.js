@@ -5,29 +5,40 @@ import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
 const fetchProductById = async (token, id) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
+  try {
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 const fetchProductsByGroup = async (token, code) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${code}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
+  try {
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${code}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 const fetchProductsByUserId = async (token, userId) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
+  try {
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
 }
 
-const postImage = async (params) => {
+const postImage = async (token, params) => {
   try {
-    const token = await SecureStore.getItemAsync('token')
     const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -35,20 +46,19 @@ const postImage = async (params) => {
       },
     })
     return res
-  } catch (err) {
-    throw err
+  } catch (e) {
+    console.error(e)
   }
 }
 
-const postProduct = async (params) => {
+const postProduct = async (token, params) => {
   try {
-    const token = await SecureStore.getItemAsync('token')
     const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
-  } catch (err) {
-    console.error(err)
+  } catch (e) {
+    console.error(e)
   }
 }
 
@@ -64,14 +74,18 @@ const sendImgToCloudVision = async (image) => {
     ],
   }
 
-  const res = await axios.post(url, data, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  })
+  try {
+    const res = await axios.post(url, data, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
 
-  return res.data.responses[0].textAnnotations[0]
+    return res.data.responses[0].textAnnotations[0]
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 export { fetchProductById, fetchProductsByGroup, fetchProductsByUserId, sendImgToCloudVision, postImage, postProduct }

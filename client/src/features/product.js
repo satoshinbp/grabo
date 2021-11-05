@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
-import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI } from '@env'
-import { fetchProductById, fetchProductsByGroup } from '../api/auth'
+import { fetchProductById, fetchProductsByGroup, fetchProductsByUserId } from '../api/product'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
-export const setProduct = createAsyncThunk('products/fetchById', async (token, id, thunkAPI) => {
+export const setProduct = createAsyncThunk('products/fetchById', async ({ token, id }, thunkAPI) => {
   try {
     const data = await fetchProductById(token, id)
     return data
@@ -15,7 +13,7 @@ export const setProduct = createAsyncThunk('products/fetchById', async (token, i
   }
 })
 
-export const setProductsByGroup = createAsyncThunk('products/fetchByGroup', async (token, code, thunkAPI) => {
+export const setProductsByGroup = createAsyncThunk('products/fetchByGroup', async ({ token, code }, thunkAPI) => {
   try {
     const data = await fetchProductsByGroup(token, code)
     return data
@@ -24,9 +22,9 @@ export const setProductsByGroup = createAsyncThunk('products/fetchByGroup', asyn
   }
 })
 
-export const setProductsByUserId = createAsyncThunk('products/fetchByUserId', async (token, userId, thunkAPI) => {
+export const setProductsByUserId = createAsyncThunk('products/fetchByUserId', async ({ token, userId }, thunkAPI) => {
   try {
-    const data = fetchProductsByUserId(token, id)
+    const data = fetchProductsByUserId(token, userId)
     return data
   } catch (e) {
     console.error(e)

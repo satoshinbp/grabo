@@ -2,12 +2,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
 import { fetchUser, updateUser, signInWithGoogle } from '../api/auth'
 
-export const setUser = createAsyncThunk('users/fetch', async (token) => {
+export const setUser = createAsyncThunk('users/fetch', async (token, thunkAPI) => {
   const user = await fetchUser(token)
   return { user, token }
 })
 
-export const login = createAsyncThunk('users/login', async (idToken) => {
+export const login = createAsyncThunk('users/login', async (idToken, thunkAPI) => {
   const { user, token } = await signInWithGoogle(idToken)
   await SecureStore.setItemAsync('token', token)
   return { user, token }
@@ -17,7 +17,7 @@ export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
 })
 
-export const updateGroup = createAsyncThunk('users/updateGroup', async (token, params) => {
+export const updateGroup = createAsyncThunk('users/updateGroup', async ({ token, params }, thunkAPI) => {
   const user = await updateUser(token, params)
   return user.data.groups
 })

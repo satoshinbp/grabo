@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider } from 'native-base'
 import Loading from '../components/Loading'
-import { serProduct } from '../features/product'
+import { setProduct } from '../features/product'
 import Report from '../components/Report'
 import ProductActionModal from '../components/ProductActionModal'
 
@@ -16,7 +16,7 @@ export default ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(serProduct(token, route.params.id))
+      dispatch(setProduct({ token, id: route.params.id }))
     })
 
     return unsubscribe

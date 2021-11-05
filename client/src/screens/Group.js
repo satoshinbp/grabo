@@ -14,7 +14,7 @@ export default ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(setProductsByGroup(token, route.params.code))
+      dispatch(setProductsByGroup({ token, code: route.params.code }))
     })
 
     return unsubscribe

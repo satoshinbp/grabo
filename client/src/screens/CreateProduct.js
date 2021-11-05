@@ -27,7 +27,7 @@ import { updateCode, deleteImage, deleteProduct } from '../features/image'
 export default (props) => {
   const dispatch = useDispatch()
   const image = useSelector((state) => state.image)
-  const { user } = useSelector((state) => state.auth)
+  const { token, user } = useSelector((state) => state.auth)
   // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
@@ -49,7 +49,7 @@ export default (props) => {
   const uploadImage = async () => {
     const params = new FormData()
     params.append('image', { uri: image.value.imageUrl[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    const res = await postImage(params)
+    const res = await postImage(token, params)
   }
 
   const handleSubmit = async () => {
@@ -62,7 +62,7 @@ export default (props) => {
       uniqQuestion: uniqQuestion,
     }
     uploadImage()
-    const res = await postProduct(params)
+    const res = await postProduct(token, params)
     props.navigation.navigate('Product', { id: res.data._id })
   }
 
