@@ -16,6 +16,8 @@ import {
   Button,
   Image,
   ScrollView,
+  AddIcon,
+  CloseIcon,
 } from 'native-base'
 import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
@@ -31,7 +33,7 @@ export default (props) => {
   // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
-  const [uniqQuestion, setUniqQuestion] = useState('')
+  const [uniqQuestion, setUniqQuestion] = useState([''])
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -61,6 +63,7 @@ export default (props) => {
       highlitedQuestion: highlitedQuestion,
       uniqQuestion: uniqQuestion,
     }
+
     uploadImage()
     const res = await postProduct(params)
     props.navigation.navigate('Scan', {})
@@ -101,6 +104,22 @@ export default (props) => {
     } else {
       props.navigation.navigate('Scan', {})
     }
+  }
+
+  const handleChange = (i, text) => {
+    const newUniqQuestion = [...uniqQuestion]
+    newUniqQuestion[i] = text
+    setUniqQuestion(newUniqQuestion)
+  }
+
+  const addFormFields = () => {
+    setUniqQuestion([...uniqQuestion, ''])
+  }
+
+  const removeFormFields = (i) => {
+    const newUniqQuestion = [...uniqQuestion]
+    newUniqQuestion.splice(i, 1)
+    setUniqQuestion(newUniqQuestion)
   }
 
   return (
@@ -164,18 +183,25 @@ export default (props) => {
           </Box>
           <Box>
             <Text>Ask your own question</Text>
-            <Input
-              mb="10"
-              placeholder="Write your own question here"
-              blurOnSubmit={true}
-              returnKeyType="done"
-              onSubmitEditing={() => {
-                Keyboard.dismiss()
-              }}
-              alignItems="center"
-              value={uniqQuestion}
-              onChangeText={(text) => setUniqQuestion(text)}
-            />
+            {uniqQuestion.map((element, index) => (
+              <Box key={index}>
+                <Input
+                  mb="10"
+                  placeholder="Write your own question here"
+                  blurOnSubmit={true}
+                  returnKeyType="done"
+                  onSubmitEditing={() => {
+                    Keyboard.dismiss()
+                  }}
+                  alignItems="center"
+                  value={uniqQuestion[index]}
+                  onChangeText={(e) => handleChange(index, e)}
+                />
+
+                {index ? <CloseIcon size="4" onPress={() => removeFormFields(index)} /> : null}
+              </Box>
+            ))}
+            <AddIcon size="4" onPress={addFormFields} />,
           </Box>
           <Button onPress={onCancel}>Cancel</Button>
           <Button onPress={handleSubmit}>Create a Product</Button>
