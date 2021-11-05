@@ -1,11 +1,19 @@
 const User = require('../models/User')
 
-const getCurrentUser = async (req, res) => res.send(req.user)
+const updateUser = async (req, res) => {
+  let user = await User.findOne({ _id: `${req.body.user_id}` })
+  const updates = Object.keys(req.body)
+  updates.forEach((update) => (user[update] = req.body[update]))
 
-const updateUser = (req, res) => {
-  // WIP
-  return console.log('User was successfully updated! ')
+  await user
+    .save()
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((error) => res.send(error))
 }
+
+const getCurrentUser = async (req, res) => res.send(req.user)
 
 const logout = async (req, res) => {
   try {

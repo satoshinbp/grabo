@@ -1,21 +1,29 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import { Text, VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
 import grouplists from '../utils/groups'
 import { updateGroup } from '../features/auth'
 
 export default () => {
-  const [groups, setGroups] = useState([])
-  const { user } = useSelector(state => state.auth)
-  const [isError, setIsError] = useState(false)
+  const { user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
+  const navigation = useNavigation()
 
-  const saveButtonHandling = () => {
-    if (groups.length === 0) {
-      return setIsError(true)
-    }
+  const [groups, setGroups] = useState([])
+  const [isError, setIsError] = useState(false)
+
+  const handleSave = () => {
+    if (groups.length === 0) return setIsError(true)
+
     setIsError(false)
-    dispatch(updateGroup(groups))
+
+    const params = {
+      groups: groups,
+      user_id: user._id,
+    }
+    dispatch(updateGroup(params))
+    navigation.navigate('Groups')
   }
 
   return (
@@ -28,12 +36,9 @@ export default () => {
           colorScheme="green"
           defaultValue={user.groups}
           accessibilityLabel="choose language groups"
-          onChange={values => {
-            setGroups(values)
-          }}
+          onChange={(values) => setGroups(values)}
         >
-          {' '}
-          {grouplists.map(group => (
+          {grouplists.map((group) => (
             <Checkbox value={group.code} my=".5">
               {group.language}
             </Checkbox>
@@ -41,7 +46,7 @@ export default () => {
         </Checkbox.Group>
       </VStack>
       {isError && <Text> You have to belong to at least one Group</Text>}
-      <Button onPress={saveButtonHandling}>Save</Button>
+      <Button onPress={handleSave}>Save</Button>
     </Box>
   )
 }

@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import { TouchableWithoutFeedback, Keyboard } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import * as ImagePicker from 'expo-image-picker'
+import { MaterialIcons } from '@expo/vector-icons'
 import {
   View,
   Box,
@@ -19,14 +20,14 @@ import {
 import { postImage, postProduct } from '../utils/api'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
-import { updateCode } from '../features/image'
+import { updateCode, deleteImage, deleteProduct } from '../features/image'
 
 // =========    Please leave this sheets comments as a reference ==========================
 
-export default props => {
+export default (props) => {
   const dispatch = useDispatch()
-  const image = useSelector(state => state.image)
-  const { user } = useSelector(state => state.auth)
+  const image = useSelector((state) => state.image)
+  const { user } = useSelector((state) => state.auth)
   // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
@@ -47,44 +48,11 @@ export default props => {
 
   const uploadImage = async () => {
     const params = new FormData()
-    // params.append('image', { uri: image, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    params.append('image', { uri: image.imageUrl, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    params.append('image', { uri: image.value.imageUrl[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     const res = await postImage(params)
   }
 
   const handleSubmit = async () => {
-    // const params = {
-    //   group: code,
-    //   // keywords: [image.ocrText],
-    //   keywords: image.ocrText,
-    //   // userId, // userId shall be provided once autheintication gets ready
-    //   images: [
-    //     {
-    //       url: image.imageUrl,
-    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //     },
-    //   ],
-    //   fixedQandAs: fixedQuestions.map((question, index) => ({
-    //     question: {
-    //       description: question,
-    //       report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //     },
-    //     answers: [],
-    //     highlightedBy: highlitedQuestion.includes(index) ? [] : [], // replace first empty array with real userId once autheintication gets ready [userId]
-    //   })),
-    //   uniqQandAs: [
-    //     {
-    //       question: {
-    //         userId: null, // userId shall be provided once autheintication gets ready
-    //         description: uniqQuestion || 'this is test description',
-    //         report: { wrong: 0, affiliate: 0, threats: 0, privacy: 0 },
-    //       },
-    //       answers: [],
-    //       highlightedBy: uniqQuestion ? [] : [], // replace first empty array with real userId later [userId]
-    //     },
-    //   ],
-    // }
-
     const params = {
       userId: user._id,
       code: image.value.code,
@@ -93,8 +61,34 @@ export default props => {
       highlitedQuestion: highlitedQuestion,
       uniqQuestion: uniqQuestion,
     }
-
+    uploadImage()
     const res = await postProduct(params)
+    props.navigation.navigate('Product', { id: res.data._id })
+  }
+
+  const onImageRemove = (index) => {
+    dispatch(deleteImage({ index: index }))
+  }
+
+  const deleteAlert = () =>
+    Alert.alert('Alert', 'Are you sure to delete this product', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          dispatch(deleteProduct())
+          setHighlitedQuestion([])
+          setUniqQuestion('')
+          props.navigation.navigate('Scan', {})
+        },
+      },
+    ])
+
+  const onCancel = () => {
+    deleteAlert()
   }
 
   return (
@@ -106,19 +100,18 @@ export default props => {
           </Box>
           <Box>
             <Text>Image</Text>
-            <Button onPress={pickImage} w="100%">
-              Choose pic
-            </Button>
-            <Button onPress={uploadImage} w="100%">
-              upload
-            </Button>
             <Button onPress={() => props.navigation.navigate('Scan', {})}>Camera</Button>
             {/* display selected image */}
+
             {image.value.imageUrl
-              ? image.value.imageUrl.map(image => (
-                  <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
+              ? image.value.imageUrl.map((image, index) => (
+                  <Box key={image}>
+                    <Image source={{ uri: image }} alt="picked image" style={{ width: 100, height: 100 }} />
+                    <MaterialIcons name="delete" size={24} color="black" onPress={() => onImageRemove(index)} />
+                  </Box>
                 ))
               : null}
+
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
             {/* <Image
@@ -139,9 +132,9 @@ export default props => {
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={nextValue => dispatch(updateCode(nextValue))}
+                onValueChange={(nextValue) => dispatch(updateCode(nextValue))}
               >
-                {groups.map(group => (
+                {groups.map((group) => (
                   <Select.Item value={group.code} label={group.language} />
                 ))}
               </Select>
@@ -169,9 +162,10 @@ export default props => {
               }}
               alignItems="center"
               value={uniqQuestion}
-              onChangeText={text => setUniqQuestion(text)}
+              onChangeText={(text) => setUniqQuestion(text)}
             />
           </Box>
+          <Button onPress={onCancel}>Cancel</Button>
           <Button onPress={handleSubmit}>Create a Product</Button>
         </View>
       </TouchableWithoutFeedback>

@@ -6,10 +6,9 @@ import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
 import { putAnswer } from '../utils/api'
 
-export default () => {
+export default ({ navigation }) => {
   const route = useRoute()
   const dispatch = useDispatch()
-  const [answerModal, setAnswerModal] = useState(false)
   const [qestionIdx, setQnIdx] = useState()
   const [answer, setAnswer] = useState()
   const { product, loading } = useSelector((state) => state.product)
@@ -22,8 +21,12 @@ export default () => {
   }
 
   useEffect(() => {
-    dispatch(fetchProductById(route.params.id))
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(fetchProductById(route.params.id))
+    })
+
+    return unsubscribe
+  }, [navigation])
 
   if (loading) return <Loading />
   return (
@@ -45,36 +48,23 @@ export default () => {
         renderItem={({ item, index }) => (
           <>
             <Text>{item.question}</Text>
-            <Button
-              onPress={() => {
-                setQnIdx(index)
-                console.log(index)
-                setAnswerModal(true)
+            <Input
+              mb="10"
+              placeholder="Please write an answer here"
+              blurOnSubmit={true}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                Keyboard.dismiss()
               }}
-            >
-              {answerModal === true && qestionIdx === index ? 'Close the answer textarea' : 'Answer this question'}
-            </Button>
-            {answerModal && (
-              <>
-                <Input
-                  mb="10"
-                  placeholder="Please write an answer here"
-                  blurOnSubmit={true}
-                  returnKeyType="done"
-                  onSubmitEditing={() => {
-                    Keyboard.dismiss()
-                  }}
-                  alignItems="center"
-                  value={answer}
-                  onChangeText={(text) => {
-                    setQnIdx(index)
-                    console.log(index)
-                    setAnswer(text)
-                  }}
-                />
-                <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-              </>
-            )}
+              alignItems="center"
+              value={answer}
+              onChangeText={(text) => {
+                setQnIdx(index)
+                setAnswer(text)
+              }}
+            />
+            <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
+
             <Button>Highlight</Button>
             <FlatList
               data={item.answers}

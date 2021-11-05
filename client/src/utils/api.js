@@ -39,6 +39,18 @@ const postImage = async (params) => {
   }
 }
 
+const updateUser = async (data) => {
+  try {
+    const token = await SecureStore.getItemAsync('token')
+    const res = await axios.patch(`${SERVER_ROOT_URI}/api/users/${data.user_id}`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
 const postProduct = async (params) => {
   try {
     const token = await SecureStore.getItemAsync('token')
@@ -52,7 +64,6 @@ const postProduct = async (params) => {
 }
 
 const putAnswer = async (params) => {
-  console.log(params)
   try {
     const token = await SecureStore.getItemAsync('token')
     const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer/`, params, {
@@ -64,4 +75,4 @@ const putAnswer = async (params) => {
   }
 }
 
-export { sendImgToCloudVision, postImage, postProduct, putAnswer }
+export { sendImgToCloudVision, postImage, postProduct, updateUser, putAnswer }
