@@ -63,7 +63,11 @@ export default (props) => {
     }
     uploadImage()
     const res = await postProduct(params)
+    props.navigation.navigate('Scan', {})
     props.navigation.navigate('Product', { id: res.data._id })
+    dispatch(deleteProduct())
+    setHighlitedQuestion([])
+    setUniqQuestion('')
   }
 
   const onImageRemove = (index) => {
@@ -104,7 +108,7 @@ export default (props) => {
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View>
           <Box>
-            <Heading mb="10">Product Information1</Heading>
+            <Heading mb="10">Product Information</Heading>
           </Box>
           <Box>
             <Text>Image</Text>
