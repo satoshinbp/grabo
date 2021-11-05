@@ -1,7 +1,17 @@
+import { Image } from 'native-base'
 import React, { useState } from 'react'
-import { Modal, StyleSheet, Text, Pressable, View } from 'react-native'
+import { Modal, StyleSheet, Pressable, View } from 'react-native'
+import { VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
+import ReportList from '../utils/ReportList'
 
 const ProductActionModal = (props) => {
+  const [reports, setReports] = useState([])
+
+  const handleSave = () => {
+    //implement report function later
+    props.modalHandler(false)
+  }
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -14,10 +24,34 @@ const ProductActionModal = (props) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!!</Text>
-            <Pressable style={[styles.button, styles.buttonClose]} onPress={() => props.modalHandler(false)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
+            <Pressable onPress={() => props.modalHandler(false)}>
+              <Image
+                source={require('../assets/close.jpeg')}
+                alt="image"
+                style={{ width: 30, height: 30, marginBottom: 15 }}
+              />
             </Pressable>
+            <Box>
+              <VStack space={2}>
+                <HStack alignItems="baseline">
+                  <Heading fontSize="lg">Report</Heading>
+                </HStack>
+                <Checkbox.Group
+                  colorScheme="green"
+                  accessibilityLabel="Report"
+                  onChange={(values) => {
+                    setReports([values])
+                  }}
+                >
+                  {ReportList.map((report, index) => (
+                    <Checkbox value={index} my=".5">
+                      {report}
+                    </Checkbox>
+                  ))}
+                </Checkbox.Group>
+              </VStack>
+              <Button onPress={handleSave}>Report</Button>
+            </Box>
           </View>
         </View>
       </Modal>
@@ -46,26 +80,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
   },
 })
 
