@@ -1,10 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { SERVER_ROOT_URI } from '@env'
-import { fetchProductById, fetchProductsByGroup, fetchProductsByUserId } from '../api/product'
+import {
+  fetchProductById,
+  fetchProductsByGroup,
+  fetchProductsByUserId,
+  fetchProductsByFavoredUserId,
+} from '../api/product'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
-export const setProduct = createAsyncThunk('products/fetchById', async ({ token, id }, thunkAPI) => {
+export const setProduct = createAsyncThunk('product/set', async ({ token, id }) => {
   try {
     const data = await fetchProductById(token, id)
     return data
@@ -13,7 +18,7 @@ export const setProduct = createAsyncThunk('products/fetchById', async ({ token,
   }
 })
 
-export const setProductsByGroup = createAsyncThunk('products/fetchByGroup', async ({ token, code }, thunkAPI) => {
+export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   try {
     const data = await fetchProductsByGroup(token, code)
     return data
@@ -22,9 +27,19 @@ export const setProductsByGroup = createAsyncThunk('products/fetchByGroup', asyn
   }
 })
 
-export const setProductsByUserId = createAsyncThunk('products/fetchByUserId', async ({ token, userId }, thunkAPI) => {
+export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
   try {
-    const data = fetchProductsByUserId(token, userId)
+    const data = await fetchProductsByUserId(token, userId)
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
+  console.log(token, userId)
+  try {
+    const data = await fetchProductsByFavoredUserId(token, userId)
     return data
   } catch (e) {
     console.error(e)
@@ -63,6 +78,16 @@ const productSlice = createSlice({
       state.loading = false
     },
     [setProductsByUserId.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [setProductsByFavoredUserId.pending]: (state, action) => {
+      state.loading = true
+    },
+    [setProductsByFavoredUserId.fulfilled]: (state, action) => {
+      state.products = action.payload
+      state.loading = false
+    },
+    [setProductsByFavoredUserId.rejected]: (state, action) => {
       state.loading = false
     },
   },

@@ -28,6 +28,16 @@ const getProductsByUserId = (req, res) => {
     })
 }
 
+const getProductsByFavoredUserId = (req, res) => {
+  Product.find({ favoredUserIds: { $in: [req.params.id] } })
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
 const fixedQuestions = [
   'What is the name of this product?',
   'Who is the maker of this product?',
@@ -68,4 +78,11 @@ const createProduct = (req, res) => {
     .catch((err) => console.log(err))
 }
 
-module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct }
+module.exports = {
+  getProducts,
+  getProductById,
+  getProductsByGroup,
+  getProductsByUserId,
+  getProductsByFavoredUserId,
+  createProduct,
+}

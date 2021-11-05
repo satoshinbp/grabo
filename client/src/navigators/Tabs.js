@@ -7,7 +7,7 @@ import ScanStacks from './ScanStacks'
 import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
 import Loading from '../components/Loading'
-import { setProductsByUserId } from '../features/product'
+import { setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
 
 const Tab = createBottomTabNavigator()
 
@@ -32,6 +32,9 @@ export default () => {
         name="Favorites Tab"
         component={FavsStacks}
         options={{ tabBarLabel: 'Favorites', headerShown: false }}
+        listeners={{
+          tabPress: () => dispatch(setProductsByFavoredUserId({ token, userId: user._id })),
+        }}
       />
       <Tab.Screen
         name="Profile Tab"

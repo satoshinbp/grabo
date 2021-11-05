@@ -37,6 +37,17 @@ const fetchProductsByUserId = async (token, userId) => {
   }
 }
 
+const fetchProductsByFavoredUserId = async (token, userId) => {
+  try {
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/fav/user/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 const postImage = async (token, params) => {
   try {
     const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
@@ -88,4 +99,12 @@ const sendImgToCloudVision = async (image) => {
   }
 }
 
-export { fetchProductById, fetchProductsByGroup, fetchProductsByUserId, sendImgToCloudVision, postImage, postProduct }
+export {
+  fetchProductById,
+  fetchProductsByGroup,
+  fetchProductsByUserId,
+  fetchProductsByFavoredUserId,
+  sendImgToCloudVision,
+  postImage,
+  postProduct,
+}

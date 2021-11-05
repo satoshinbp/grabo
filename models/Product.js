@@ -52,6 +52,7 @@ const productSchema = new Schema(
       ],
       default: [],
     },
+    favoredUserIds: { type: [ObjectId], default: [] },
   },
   { timestamps: true }
 )

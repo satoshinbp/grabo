@@ -6,6 +6,7 @@ router.get('/', productController.getProducts)
 router.get('/:id', productController.getProductById)
 router.get('/group/:group', productController.getProductsByGroup)
 router.get('/user/:id', productController.getProductsByUserId)
+router.get('/fav/user/:id', productController.getProductsByFavoredUserId)
 router.post('/', productController.createProduct)
 
 module.exports = router
