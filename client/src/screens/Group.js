@@ -6,14 +6,18 @@ import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
 import { fetchProductsByGroup } from '../features/product'
 
-export default () => {
+export default ({ navigation }) => {
   const route = useRoute()
-  const dispatch = useDispatch()
   const { loading } = useSelector((state) => state.product)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchProductsByGroup(route.params.code))
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(fetchProductsByGroup(route.params.code))
+    })
+
+    return unsubscribe
+  }, [navigation])
 
   if (loading) return <Loading />
   return (

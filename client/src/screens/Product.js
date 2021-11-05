@@ -1,20 +1,29 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider } from 'native-base'
 import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
+import Report from '../components/Report'
+import ProductActionModal from '../components/ProductActionModal'
 
-export default () => {
+export default ({ navigation }) => {
   const route = useRoute()
-  const dispatch = useDispatch()
   const { product, loading } = useSelector((state) => state.product)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const dispatch = useDispatch()
 
-  console.log(route.params.id)
-  console.log(product)
   useEffect(() => {
-    dispatch(fetchProductById(route.params.id))
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(fetchProductById(route.params.id))
+    })
+
+    return unsubscribe
+  }, [navigation])
+
+  const modalHandler = () => {
+    setIsModalOpen(!isModalOpen)
+  }
 
   if (loading) return <Loading />
   return (
@@ -24,7 +33,7 @@ export default () => {
         renderItem={({ item }) => (
           <>
             <Image source={{ uri: item.url }} alt="product" size="xl" />
-            <Button>Report</Button>
+            <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
           </>
         )}
         keyExtractor={(item) => item.url}
@@ -42,7 +51,7 @@ export default () => {
               renderItem={({ item }) => (
                 <>
                   <Text>{item.description}</Text>
-                  <Button>Report</Button>
+                  <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
                 </>
               )}
               keyExtractor={(item) => item.description}
@@ -57,6 +66,7 @@ export default () => {
         w="100%"
       />
       <Button>Create New Question</Button>
+      <ProductActionModal modalHandler={modalHandler} modalVisible={isModalOpen} />
     </View>
   )
 }

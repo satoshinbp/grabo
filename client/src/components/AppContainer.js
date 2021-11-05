@@ -1,35 +1,48 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as SecureStore from 'expo-secure-store'
-import { fetchCurrentUser } from '../features/auth'
-import Splash from '../screens/Splash'
+import * as SplashScreen from 'expo-splash-screen'
+import { setAppReady, fetchCurrentUser } from '../features/auth'
 import Login from '../screens/Login'
+import Loading from '../components/Loading'
 import Header from '../components/Header'
 import Tabs from '../navigators/Tabs'
 
 export default () => {
   const dispatch = useDispatch()
-  const { loading, token } = useSelector(state => state.auth)
+  const { token, appIsReady, signingIn, signingOut } = useSelector((state) => state.auth)
 
   useEffect(() => {
     const getCurrentUser = async () => {
-      let tempToken
-
       try {
+        await SplashScreen.preventAutoHideAsync()
+        let tempToken
         tempToken = await SecureStore.getItemAsync('token')
+
+        if (tempToken) {
+          dispatch(fetchCurrentUser(tempToken))
+        } else {
+          dispatch(setAppReady())
+        }
       } catch (e) {
         console.error(e)
-      }
-
-      if (tempToken) {
-        dispatch(fetchCurrentUser(tempToken))
+        dispatch(setAppReady())
       }
     }
 
     getCurrentUser()
   }, [])
 
-  if (loading) return <Splash />
+  useEffect(() => {
+    const hideSplashScreen = async () => {
+      await SplashScreen.hideAsync()
+    }
+
+    hideSplashScreen()
+  }, [appIsReady])
+
+  if (!appIsReady) return null
+  if (signingIn || signingOut) return <Loading />
   if (!token) return <Login />
   return (
     <>
