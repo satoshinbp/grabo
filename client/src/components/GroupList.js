@@ -6,7 +6,6 @@ import groups from '../utils/groups'
 
 export default () => {
   const { user } = useSelector((state) => state.auth)
-  const dispatch = useDispatch()
   const navigation = useNavigation()
 
   return (
