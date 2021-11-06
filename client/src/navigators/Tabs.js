@@ -7,6 +7,7 @@ import ScanStacks from './ScanStacks'
 import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
 import Loading from '../components/Loading'
+import TabBar from '../components/TabBar'
 import { setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
 
 const Tab = createBottomTabNavigator()
@@ -17,30 +18,33 @@ export default () => {
 
   if (loading) return <Loading />
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups', headerShown: false }} />
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#e91e63',
+        tabBarActiveBackgroundColor: '#FFC814',
+      }}
+      tabBar={(props) => <TabBar {...props} />}
+    >
+      <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups' }} />
       <Tab.Screen
         name="My Products Tab"
         component={ProductsStacks}
-        options={{ tabBarLabel: 'My Products', headerShown: false }}
+        options={{ tabBarLabel: 'My Products' }}
         listeners={{
           tabPress: () => dispatch(setProductsByUserId({ token, userId: user._id })),
         }}
       />
-      <Tab.Screen name="Scan Tab" component={ScanStacks} options={{ tabBarLabel: 'Scan', headerShown: false }} />
+      <Tab.Screen name="Scan Tab" component={ScanStacks} options={{ tabBarLabel: 'Scan' }} />
       <Tab.Screen
         name="Favorites Tab"
         component={FavsStacks}
-        options={{ tabBarLabel: 'Favorites', headerShown: false }}
+        options={{ tabBarLabel: 'Favorites' }}
         listeners={{
           tabPress: () => dispatch(setProductsByFavoredUserId({ token, userId: user._id })),
         }}
       />
-      <Tab.Screen
-        name="Profile Tab"
-        component={ProfileStacks}
-        options={{ tabBarLabel: 'Profile', headerShown: false }}
-      />
+      <Tab.Screen name="Profile Tab" component={ProfileStacks} options={{ tabBarLabel: 'Profile' }} />
     </Tab.Navigator>
   )
 }
