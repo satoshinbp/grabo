@@ -68,4 +68,9 @@ const createProduct = (req, res) => {
     .catch((err) => console.log(err))
 }
 
-module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct }
+const updateReview = () => {
+  // let product = await Product.findOne({ _id: `${req.body.product_id}` })
+  console.log(' backendkiteru')
+}
+
+module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct, updateReview }
