@@ -1,15 +1,14 @@
 import React from 'react'
-import { StatusBar, Box, HStack, Text } from 'native-base'
+import { Box, HStack, Image, StatusBar, SunIcon } from 'native-base'
 
 export default () => {
   return (
     <>
-      <StatusBar backgroundColor="#2c3e50" barStyle="light-content" />
-      <Box safeAreaTop backgroundColor="#2c3e50">
-        <HStack bg="#2c3e50" px={1} py={3} alignItems="center" justifyContent="center">
-          <Text color="#fff" fontSize={20} fontWeight="bold">
-            Grabo
-          </Text>
+      <StatusBar backgroundColor="primary.500" barStyle="dark-content" />
+      <Box safeAreaTop backgroundColor="white">
+        <HStack px={3} py={3} alignItems="center" justifyContent="space-between" backgroundColor="white">
+          <Image source={require('../assets/logo-long.png')} alt="logo" h={10} w={20} resizeMode="contain" />
+          <SunIcon size="5" mt="0.5" color="black" />
         </HStack>
       </Box>
     </>

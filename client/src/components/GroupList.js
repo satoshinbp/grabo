@@ -10,7 +10,7 @@ export default () => {
 
   return (
     <>
-      <Box mx="3" my="2">
+      <Box mx={3} my={2}>
         <Text fontSize="md" bold>
           List of language groups that you speak
         </Text>
@@ -24,19 +24,19 @@ export default () => {
             }}
           >
             <Box
-              mx="2"
+              mx={2}
               mt={index === 0 ? 1.5 : 0}
-              mb="3"
-              px="3.5"
-              py="2.5"
-              borderLeftWidth="10"
+              mb={3}
+              px={3.5}
+              py={2.5}
+              borderLeftWidth={10}
               borderColor="primary.500"
               borderRadius="md"
-              bg="white"
+              backgroundColor="white"
               shadow={2}
             >
               <HStack space={3} justifyContent="space-between">
-                <Avatar size="48px" source={{ uri: item.image }} />
+                <Avatar size={12} source={{ uri: item.image }} />
                 <VStack flex={1}>
                   <Text fontSize="md" bold>
                     {item.language}
