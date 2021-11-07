@@ -32,8 +32,8 @@ export default (props) => {
   const { token, user } = useSelector((state) => state.auth)
   // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
-  const [highlitedQuestion, setHighlitedQuestion] = useState([])
-  const [uniqQuestion, setUniqQuestion] = useState([''])
+  const [highlitedQuestions, setHighlitedQuestions] = useState([])
+  const [uniqQuestions, setUniqQuestions] = useState([])
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -60,8 +60,8 @@ export default (props) => {
       code: image.value.code,
       url: image.value.imageUrl,
       text: image.value.ocrText,
-      highlitedQuestion: highlitedQuestion,
-      uniqQuestion: uniqQuestion,
+      highlitedQuestions: highlitedQuestions,
+      uniqQuestions: uniqQuestions,
     }
 
     uploadImage()
@@ -69,8 +69,8 @@ export default (props) => {
     props.navigation.navigate('Scan', {})
     props.navigation.navigate('Product', { id: res.data._id })
     dispatch(deleteProduct())
-    setHighlitedQuestion([])
-    setUniqQuestion('')
+    setHighlitedQuestions([])
+    setUniqQuestions([])
   }
 
   const onImageRemove = (index) => {
@@ -87,7 +87,7 @@ export default (props) => {
         text: 'OK',
         onPress: () => {
           dispatch(deleteProduct())
-          setHighlitedQuestion([])
+          setHighlitedQuestions([])
           setUniqQuestion('')
           props.navigation.navigate('Scan', {})
         },
@@ -107,19 +107,19 @@ export default (props) => {
   }
 
   const handleChange = (i, text) => {
-    const newUniqQuestion = [...uniqQuestion]
-    newUniqQuestion[i] = text
-    setUniqQuestion(newUniqQuestion)
+    const newUniqQuestions = [...uniqQuestions]
+    newUniqQuestions[i] = text
+    setUniqQuestions(newUniqQuestions)
   }
 
   const addFormFields = () => {
-    setUniqQuestion([...uniqQuestion, ''])
+    setUniqQuestions([...uniqQuestions, ''])
   }
 
   const removeFormFields = (i) => {
-    const newUniqQuestion = [...uniqQuestion]
-    newUniqQuestion.splice(i, 1)
-    setUniqQuestion(newUniqQuestion)
+    const newUniqQuestions = [...uniqQuestions]
+    newUniqQuestions.splice(i, 1)
+    setUniqQuestions(newUniqQuestions)
   }
 
   return (
@@ -174,7 +174,7 @@ export default (props) => {
           <Box>
             <Text>Choose which default questions to highlight</Text>
             <VStack mb="10" space={4}>
-              <Checkbox.Group onChange={setHighlitedQuestion} value={highlitedQuestion}>
+              <Checkbox.Group onChange={setHighlitedQuestions} value={highlitedQuestions}>
                 {fixedQuestions.map((question, index) => (
                   <Checkbox value={index}>{question}</Checkbox>
                 ))}
@@ -183,7 +183,7 @@ export default (props) => {
           </Box>
           <Box>
             <Text>Ask your own question</Text>
-            {uniqQuestion.map((element, index) => (
+            {uniqQuestions.map((uniqQuestion, index) => (
               <Box key={index}>
                 <Input
                   mb="10"
@@ -194,7 +194,7 @@ export default (props) => {
                     Keyboard.dismiss()
                   }}
                   alignItems="center"
-                  value={uniqQuestion[index]}
+                  value={uniqQuestion}
                   onChangeText={(e) => handleChange(index, e)}
                 />
 
