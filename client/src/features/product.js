@@ -37,7 +37,6 @@ export const setProductsByUserId = createAsyncThunk('products/setByUserId', asyn
 })
 
 export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
-  console.log(token, userId)
   try {
     const data = await fetchProductsByFavoredUserId(token, userId)
     return data

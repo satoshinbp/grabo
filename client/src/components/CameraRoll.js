@@ -29,7 +29,7 @@ export default (props) => {
       setSelectedImage({ localUri: pickerResult.uri })
       props.navigation.navigate('SelectLanguage', {})
     } catch (e) {
-      console.log(e)
+      console.error(e)
       alert('please try another photo')
     }
   }
