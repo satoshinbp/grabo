@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { Box, HStack, VStack, Pressable, Text, Avatar, FlatList } from 'native-base'
+import { View, Box, Center, HStack, VStack, Pressable, Text, SunIcon, FlatList } from 'native-base'
 import groups from '../utils/groups'
 
 export default () => {
@@ -9,8 +9,8 @@ export default () => {
   const navigation = useNavigation()
 
   return (
-    <>
-      <Box mx={3} my={2}>
+    <View mx={3} flex={1}>
+      <Box my={2}>
         <Text fontSize="md" bold>
           List of language groups that you speak
         </Text>
@@ -23,20 +23,11 @@ export default () => {
               navigation.navigate('Group', { language: item.language, code: item.code })
             }}
           >
-            <Box
-              mx={2}
-              mt={index === 0 ? 1.5 : 0}
-              mb={3}
-              px={3.5}
-              py={2.5}
-              borderLeftWidth={10}
-              borderColor="primary.500"
-              borderRadius="md"
-              backgroundColor="white"
-              shadow={2}
-            >
-              <HStack space={3} justifyContent="space-between">
-                <Avatar size={12} source={{ uri: item.image }} />
+            <Box index={index} variant="listItemColored">
+              <HStack space={3} alignItems="center" justifyContent="space-between">
+                <Center size={12} bg="primary.500" borderRadius="full">
+                  <SunIcon size={8} />
+                </Center>
                 <VStack flex={1}>
                   <Text fontSize="md" bold>
                     {item.language}
@@ -48,6 +39,6 @@ export default () => {
         )}
         keyExtractor={(item) => item.code}
       />
-    </>
+    </View>
   )
 }

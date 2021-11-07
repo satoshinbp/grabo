@@ -22,6 +22,7 @@ export default () => {
   const theme = extendTheme({
     colors: {
       primary: {
+        300: '#F6D25D', // override
         500: '#FFC814', // override
       },
     },
@@ -31,15 +32,36 @@ export default () => {
       mono: 'Roboto',
     },
     components: {
+      Box: {
+        variants: {
+          listItemPlain: ({ index }) => ({
+            mt: index === 0 ? 1.5 : 0,
+            mb: 3,
+            px: 3.5,
+            py: 2.5,
+            borderRadius: 'md',
+            backgroundColor: 'white',
+            shadow: 2,
+          }),
+          listItemColored: ({ index }) => ({
+            mt: index === 0 ? 1.5 : 0,
+            mb: 3,
+            px: 3.5,
+            py: 2.5,
+            borderLeftWidth: 10,
+            borderColor: 'primary.500',
+            borderRadius: 'md',
+            bg: 'white',
+            shadow: 2,
+          }),
+        },
+      },
       Text: {
-        baseStyle: {},
-        defaultProps: {},
         variants: {
           fab: () => ({
             textAlign: 'center',
           }),
         },
-        sizes: {},
       },
       Button: {
         variants: {
@@ -51,6 +73,7 @@ export default () => {
             height: 20,
             borderRadius: 'full',
             backgroundColor: 'primary.500',
+            shadow: '5',
           }),
         },
       },
