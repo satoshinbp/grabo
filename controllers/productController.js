@@ -28,6 +28,16 @@ const getProductsByUserId = (req, res) => {
     })
 }
 
+const getProductsByFavoredUserId = (req, res) => {
+  Product.find({ favoredUserIds: { $in: [req.params.id] } })
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
 const fixedQuestions = [
   'What is the name of this product?',
   'Who is the maker of this product?',
@@ -70,15 +80,13 @@ const createProduct = (req, res) => {
 
 /*const addAnswer = (req, res) => {
   console.log('req.body', req.body)
-  
-  }
   Product.updateOne(
     { _id: req.body.docId, 'fixedQandAs.question': fixedQuestions[req.body.questionIndex] },
     {
       $push: {
         'fixedQandAs.$.answers': {
           userId: req.user._id,
-          description: req.body.answer,
+          description: req.body.answer.description,
           report: {
             wrong: 0,
             affiliate: 0,
@@ -97,9 +105,10 @@ const addAnswer = async (req, res) => {
   let product = await Product.findOne({
     _id: req.body.docId,
   })
-  console.log(product.fixedQandAs[req.body.questionIndex].answers)
-  console.log(req.body.answer)
   product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
+  console.log('answer', product.fixedQandAs[0].answers)
+  product.markModified('fixedQandAs.answer')
+  console.log(product.markModified('fixedQandAs.answers'))
   //const updates =  // answerまでのパス
   // console.log(updates) 中身： [ 'docId', 'answer', 'questionIndex' ]
   // 下の例だと、product.docId product.answerみたいになってupdateされる
@@ -112,4 +121,12 @@ const addAnswer = async (req, res) => {
     .catch((error) => res.send(error))
 }
 
-module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct, addAnswer }
+module.exports = {
+  getProducts,
+  getProductById,
+  getProductsByGroup,
+  getProductsByUserId,
+  getProductsByFavoredUserId,
+  createProduct,
+  addAnswer,
+}

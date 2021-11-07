@@ -2,7 +2,7 @@ import { Image } from 'native-base'
 import React, { useState } from 'react'
 import { Modal, StyleSheet, Pressable, View } from 'react-native'
 import { VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
-import ReportList from '../utils/ReportList'
+import reportOptions from '../utils/reports'
 
 const ProductActionModal = (props) => {
   const [reports, setReports] = useState([])
@@ -43,7 +43,7 @@ const ProductActionModal = (props) => {
                     setReports([values])
                   }}
                 >
-                  {ReportList.map((report, index) => (
+                  {reportOptions.map((report, index) => (
                     <Checkbox value={index} my=".5">
                       {report}
                     </Checkbox>

@@ -4,19 +4,34 @@ import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
 import Loading from '../components/Loading'
 import { fetchProductById } from '../features/product'
-import { addAnswer } from '../utils/api'
+import { setProduct } from '../features/product'
 import Report from '../components/Report'
 import ProductActionModal from '../components/ProductActionModal'
+import axios from 'axios'
+import * as SecureStore from 'expo-secure-store'
+import { SERVER_ROOT_URI } from '@env'
 
 export default ({ navigation }) => {
   const route = useRoute()
+  const { token } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const { user } = useSelector((state) => state.auth)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const dispatch = useDispatch()
   const [questionIndex, setQuestionIndex] = useState()
   const [answer, setAnswer] = useState()
-  console.log(user)
+
+  const addAnswer = async (params) => {
+    try {
+      const token = await SecureStore.getItemAsync('token')
+      const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer`, params, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      return res
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const handleAnswerSubmit = async () => {
     const params = { docId: product._id, answer, questionIndex }
@@ -27,7 +42,7 @@ export default ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(fetchProductById(route.params.id))
+      dispatch(setProduct({ token, id: route.params.id }))
     })
 
     return unsubscribe

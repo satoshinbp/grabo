@@ -9,7 +9,6 @@ const userSchema = new Schema(
     email: { type: String, required: true },
     image: { type: String, required: true },
     groups: { type: [String], default: [] },
-    favProducts: { type: [ObjectId], default: [] },
     notifications: {
       type: [
         {

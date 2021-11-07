@@ -6,7 +6,7 @@ import grouplists from '../utils/groups'
 import { updateGroup } from '../features/auth'
 
 export default () => {
-  const { user } = useSelector((state) => state.auth)
+  const { token, user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const navigation = useNavigation()
 
@@ -22,7 +22,7 @@ export default () => {
       groups: groups,
       user_id: user._id,
     }
-    dispatch(updateGroup(params))
+    dispatch(updateGroup({ token, params }))
     navigation.navigate('Groups')
   }
 
