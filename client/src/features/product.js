@@ -1,40 +1,44 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
-import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI } from '@env'
+import {
+  fetchProductById,
+  fetchProductsByGroup,
+  fetchProductsByUserId,
+  fetchProductsByFavoredUserId,
+} from '../api/product'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
-export const fetchProductById = createAsyncThunk('products/fetchById', async (id, thunkAPI) => {
+export const setProduct = createAsyncThunk('product/set', async ({ token, id }) => {
   try {
-    const token = await SecureStore.getItemAsync('token')
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const data = await fetchProductById(token, id)
     return data
   } catch (e) {
     console.error(e)
   }
 })
 
-export const fetchProductsByGroup = createAsyncThunk('products/fetchByGroup', async (group, thunkAPI) => {
+export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   try {
-    const token = await SecureStore.getItemAsync('token')
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${group}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const data = await fetchProductsByGroup(token, code)
     return data
   } catch (e) {
     console.error(e)
   }
 })
 
-export const fetchProductsByUserId = createAsyncThunk('products/fetchByUserId', async (userId, thunkAPI) => {
+export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
   try {
-    const token = await SecureStore.getItemAsync('token')
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const data = await fetchProductsByUserId(token, userId)
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
+  try {
+    const data = await fetchProductsByFavoredUserId(token, userId)
     return data
   } catch (e) {
     console.error(e)
@@ -45,34 +49,44 @@ const productSlice = createSlice({
   name: 'product',
   initialState: { product: {}, products: [], loading: false },
   extraReducers: {
-    [fetchProductById.pending]: (state, action) => {
+    [setProduct.pending]: (state, action) => {
       state.loading = true
     },
-    [fetchProductById.fulfilled]: (state, action) => {
+    [setProduct.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [fetchProductById.rejected]: (state, action) => {
+    [setProduct.rejected]: (state, action) => {
       state.loading = false
     },
-    [fetchProductsByGroup.pending]: (state, action) => {
+    [setProductsByGroup.pending]: (state, action) => {
       state.loading = true
     },
-    [fetchProductsByGroup.fulfilled]: (state, action) => {
+    [setProductsByGroup.fulfilled]: (state, action) => {
       state.products = action.payload
       state.loading = false
     },
-    [fetchProductsByGroup.rejected]: (state, action) => {
+    [setProductsByGroup.rejected]: (state, action) => {
       state.loading = false
     },
-    [fetchProductsByUserId.pending]: (state, action) => {
+    [setProductsByUserId.pending]: (state, action) => {
       state.loading = true
     },
-    [fetchProductsByUserId.fulfilled]: (state, action) => {
+    [setProductsByUserId.fulfilled]: (state, action) => {
       state.products = action.payload
       state.loading = false
     },
-    [fetchProductsByUserId.rejected]: (state, action) => {
+    [setProductsByUserId.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [setProductsByFavoredUserId.pending]: (state, action) => {
+      state.loading = true
+    },
+    [setProductsByFavoredUserId.fulfilled]: (state, action) => {
+      state.products = action.payload
+      state.loading = false
+    },
+    [setProductsByFavoredUserId.rejected]: (state, action) => {
       state.loading = false
     },
   },

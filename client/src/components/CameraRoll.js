@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { StyleSheet } from 'react-native'
 import { Button } from 'native-base'
 import * as ImagePicker from 'expo-image-picker'
-import { sendImgToCloudVision } from '../utils/api'
+import { sendImgToCloudVision } from '../api/product'
 import { addImage, updateCode } from '../features/image'
 
 export default (props) => {
@@ -29,7 +29,7 @@ export default (props) => {
       setSelectedImage({ localUri: pickerResult.uri })
       props.navigation.navigate('SelectLanguage', {})
     } catch (e) {
-      console.log(e)
+      console.error(e)
       alert('please try another photo')
     }
   }

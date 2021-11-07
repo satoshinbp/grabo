@@ -3,29 +3,31 @@ const Product = require('../models/Product')
 const getProducts = (req, res) => {
   Product.find()
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
 const getProductById = (req, res) => {
   Product.findById(req.params.id)
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
 const getProductsByGroup = (req, res) => {
   Product.find({ group: req.params.group })
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
 const getProductsByUserId = (req, res) => {
   Product.find({ userId: req.params.id })
-    .then((result) => {
-      res.send(result)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+    .then((result) => res.send(result))
+    .catch((e) => console.error(e))
+}
+
+const getProductsByFavoredUserId = (req, res) => {
+  Product.find({ favoredUserIds: { $in: [req.params.id] } })
+    .then((result) => res.send(result))
+    .catch((e) => console.error(e))
 }
 
 const fixedQuestions = [
@@ -63,7 +65,14 @@ const createProduct = (req, res) => {
 
   Product.create(params)
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
-module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct }
+module.exports = {
+  getProducts,
+  getProductById,
+  getProductsByGroup,
+  getProductsByUserId,
+  getProductsByFavoredUserId,
+  createProduct,
+}

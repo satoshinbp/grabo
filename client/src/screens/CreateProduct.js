@@ -19,7 +19,7 @@ import {
   AddIcon,
   CloseIcon,
 } from 'native-base'
-import { postImage, postProduct } from '../utils/api'
+import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
 import { updateCode, deleteImage, deleteProduct } from '../features/image'
@@ -29,7 +29,7 @@ import { updateCode, deleteImage, deleteProduct } from '../features/image'
 export default (props) => {
   const dispatch = useDispatch()
   const image = useSelector((state) => state.image)
-  const { user } = useSelector((state) => state.auth)
+  const { token, user } = useSelector((state) => state.auth)
   // const [, setImage] = useState(props.route.params.imageUrl)
   const code = image.value.code
   const [highlitedQuestion, setHighlitedQuestion] = useState([])
@@ -51,7 +51,7 @@ export default (props) => {
   const uploadImage = async () => {
     const params = new FormData()
     params.append('image', { uri: image.value.imageUrl[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    const res = await postImage(params)
+    const res = await postImage(token, params)
   }
 
   const handleSubmit = async () => {
@@ -65,7 +65,7 @@ export default (props) => {
     }
 
     uploadImage()
-    const res = await postProduct(params)
+    const res = await postProduct(token, params)
     props.navigation.navigate('Scan', {})
     props.navigation.navigate('Product', { id: res.data._id })
     dispatch(deleteProduct())

@@ -1,22 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
-import axios from 'axios'
-import { SERVER_ROOT_URI } from '@env'
-import { updateUser } from '../utils/api'
-// SERVER_ROOT_URI might not work depends on dev environment
-// In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
+import { fetchUser, updateUser, signInWithGoogle } from '../api/auth'
 
-export const fetchCurrentUser = createAsyncThunk('users/fetch', async (token) => {
-  const res = await axios.get(`${SERVER_ROOT_URI}/api/users`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  const user = res.data
+export const setUser = createAsyncThunk('users/fetch', async (token, thunkAPI) => {
+  const user = await fetchUser(token)
   return { user, token }
 })
 
-export const login = createAsyncThunk('users/login', async (idToken) => {
-  const res = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken })
-  const { user, token } = res.data
+export const login = createAsyncThunk('users/login', async (idToken, thunkAPI) => {
+  const { user, token } = await signInWithGoogle(idToken)
   await SecureStore.setItemAsync('token', token)
   return { user, token }
 })
@@ -25,8 +17,8 @@ export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
 })
 
-export const updateGroup = createAsyncThunk('users/updateGroup', async (params) => {
-  const user = await updateUser(params)
+export const updateGroup = createAsyncThunk('users/updateGroup', async ({ token, params }, thunkAPI) => {
+  const user = await updateUser(token, params)
   return user.data.groups
 })
 
@@ -46,24 +38,24 @@ const authSlice = createSlice({
     user: initialUserState,
     token: null,
     loading: false,
-    appIsReady: false,
+    isReady: false,
     signingIn: false,
     signingOut: false,
   },
   reducers: {
     setAppReady: (state, action) => {
-      state.appIsReady = true
+      state.isReady = true
     },
   },
   extraReducers: {
-    [fetchCurrentUser.fulfilled]: (state, action) => {
+    [setUser.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
-      state.appIsReady = true
+      state.isReady = true
     },
-    [fetchCurrentUser.rejected]: (state, action) => {
+    [setUser.rejected]: (state, action) => {
       state.error = true
-      state.appIsReady = true
+      state.isReady = true
     },
     [login.pending]: (state, action) => {
       state.signingIn = true
@@ -71,7 +63,7 @@ const authSlice = createSlice({
     [login.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
-      state.appIsReady = true
+      state.isReady = true
       state.signingIn = false
     },
     [login.rejected]: (state, action) => {
