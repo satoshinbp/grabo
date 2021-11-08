@@ -77,18 +77,12 @@ export default ({ navigation }) => {
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
 
             <Button>Highlight</Button>
-            <FlatList
-              data={item.answers}
-              renderItem={({ item }) => (
-                <>
-                  <Text>{item.description}</Text>
-                  <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-                </>
-              )}
-              keyExtractor={(item) => item.description}
-              showsVerticalScrollIndicator={false}
-              w="100%"
-            />
+            {item.answers.map(() => (
+              <>
+                <Text>{item.description}</Text>
+                <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
+              </>
+            ))}
             <Divider my={2} w="100%" />
           </>
         )}

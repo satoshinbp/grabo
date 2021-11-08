@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { Box, Heading } from 'native-base'
+import { View } from 'native-base'
 import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
 import { setProductsByGroup } from '../features/product'
@@ -22,9 +22,8 @@ export default ({ navigation }) => {
 
   if (loading) return <Loading />
   return (
-    <Box>
-      <Heading>{route.params.group}</Heading>
+    <View variant="wrapper">
       <ProductList />
-    </Box>
+    </View>
   )
 }

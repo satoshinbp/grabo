@@ -38,24 +38,24 @@ const authSlice = createSlice({
     user: initialUserState,
     token: null,
     loading: false,
-    appIsReady: false,
+    isReady: false,
     signingIn: false,
     signingOut: false,
   },
   reducers: {
     setAppReady: (state, action) => {
-      state.appIsReady = true
+      state.isReady = true
     },
   },
   extraReducers: {
     [setUser.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
-      state.appIsReady = true
+      state.isReady = true
     },
     [setUser.rejected]: (state, action) => {
       state.error = true
-      state.appIsReady = true
+      state.isReady = true
     },
     [login.pending]: (state, action) => {
       state.signingIn = true
@@ -63,7 +63,7 @@ const authSlice = createSlice({
     [login.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
-      state.appIsReady = true
+      state.isReady = true
       state.signingIn = false
     },
     [login.rejected]: (state, action) => {

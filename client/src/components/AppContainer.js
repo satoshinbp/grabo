@@ -1,18 +1,30 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as SecureStore from 'expo-secure-store'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import { setAppReady, setUser } from '../features/auth'
 import Login from '../screens/Login'
 import Loading from '../components/Loading'
-import Header from '../components/Header'
 import Tabs from '../navigators/Tabs'
+import Onboarding from '../screens/Onboarding'
 
 export default () => {
   const dispatch = useDispatch()
-  const { token, appIsReady, signingIn, signingOut } = useSelector((state) => state.auth)
+  const { token, isReady, signingIn, signingOut } = useSelector((state) => state.auth)
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false)
 
   useEffect(() => {
+    // AsyncStorage.clear() // This is to test onboarding slides.
+    AsyncStorage.getItem('alreadyLaunched').then((value) => {
+      if (value) {
+        setIsFirstLaunch(false)
+      } else {
+        AsyncStorage.setItem('alreadyLaunched', 'true')
+        setIsFirstLaunch(true)
+      }
+    })
+
     const getCurrentUser = async () => {
       try {
         await SplashScreen.preventAutoHideAsync()
@@ -39,14 +51,14 @@ export default () => {
     }
 
     hideSplashScreen()
-  }, [appIsReady])
+  }, [isReady])
 
-  if (!appIsReady) return null
+  if (isFirstLaunch) return <Onboarding setIsFirstLaunch={setIsFirstLaunch} />
+  if (!isReady) return null
   if (signingIn || signingOut) return <Loading />
   if (!token) return <Login />
   return (
     <>
-      <Header />
       <Tabs />
     </>
   )

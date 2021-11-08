@@ -22,8 +22,16 @@ export default () => {
   const theme = extendTheme({
     colors: {
       primary: {
-        300: '#F6D25D', // override
-        500: '#FFC814', // override
+        50: '#ffffdc',
+        100: '#fff0b4',
+        200: '#ffe68c',
+        300: '#ffdc64',
+        400: '#ffd23c',
+        500: '#ffc814',
+        600: '#e6b000',
+        700: '#b38900',
+        800: '#806200',
+        900: '#4e3b00',
       },
     },
     fonts: {
@@ -32,6 +40,13 @@ export default () => {
       mono: 'Roboto',
     },
     components: {
+      View: {
+        variants: {
+          wrapper: () => ({
+            px: 3,
+          }),
+        },
+      },
       Box: {
         variants: {
           listItemPlain: ({ index }) => ({
@@ -48,32 +63,49 @@ export default () => {
             mb: 3,
             px: 3.5,
             py: 2.5,
-            borderLeftWidth: 10,
+            borderLeftWidth: '10px',
             borderColor: 'primary.500',
             borderRadius: 'md',
             bg: 'white',
             shadow: 2,
+          }),
+          productCard: () => ({
+            rounded: 'lg',
+            overflow: 'hidden',
+            width: '72px',
+            height: '72px',
           }),
         },
       },
       Text: {
         variants: {
           fab: () => ({
-            textAlign: 'center',
+            // textAlign: 'center',
           }),
         },
       },
       Button: {
+        baseStyle: {
+          width: '232px',
+          _text: {
+            color: 'black',
+            textAlign: 'center',
+          },
+        },
         variants: {
           fab: () => ({
             position: 'absolute',
             bottom: 4,
             right: 4,
-            width: 20,
-            height: 20,
+            width: '80px',
+            height: '80px',
             borderRadius: 'full',
             backgroundColor: 'primary.500',
-            shadow: '5',
+            shadow: 5,
+            _text: {
+              color: 'black',
+              textAlign: 'center',
+            },
           }),
         },
       },

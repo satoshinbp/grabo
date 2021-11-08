@@ -1,7 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Box, Heading } from 'native-base'
+import { View } from 'native-base'
 import Loading from '../components/Loading'
+import Header from '../components/Header'
 import ProductList from '../components/ProductList'
 
 export default () => {
@@ -9,9 +10,11 @@ export default () => {
   if (loading) return <Loading />
 
   return (
-    <Box>
-      <Heading>Favs</Heading>
-      <ProductList />
-    </Box>
+    <>
+      <Header />
+      <View variant="wrapper">
+        <ProductList />
+      </View>
+    </>
   )
 }

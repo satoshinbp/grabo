@@ -3,39 +3,31 @@ const Product = require('../models/Product')
 const getProducts = (req, res) => {
   Product.find()
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
 const getProductById = (req, res) => {
   Product.findById(req.params.id)
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
 const getProductsByGroup = (req, res) => {
   Product.find({ group: req.params.group })
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
 const getProductsByUserId = (req, res) => {
   Product.find({ userId: req.params.id })
-    .then((result) => {
-      res.send(result)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+    .then((result) => res.send(result))
+    .catch((e) => console.error(e))
 }
 
 const getProductsByFavoredUserId = (req, res) => {
   Product.find({ favoredUserIds: { $in: [req.params.id] } })
-    .then((result) => {
-      res.send(result)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+    .then((result) => res.send(result))
+    .catch((e) => console.error(e))
 }
 
 const fixedQuestions = [
@@ -60,22 +52,20 @@ const createProduct = (req, res) => {
 
     fixedQandAs: fixedQuestions.map((question, index) => ({
       question: question,
-      highlightedBy: req.body.highlitedQuestion.includes(index) ? [] : [],
+      highlightedBy: req.body.highlitedQuestions.includes(index) ? [req.body.userId] : [],
     })),
 
-    uniqQandAs: [
-      {
-        question: {
-          description: req.body.uniqQuestion,
-        },
-        highlightedBy: req.body.uniqQuestion ? [] : [],
+    uniqQandAs: req.body.uniqQuestions.map((uniqQuestion, index) => ({
+      question: {
+        description: uniqQuestion,
       },
-    ],
+      highlightedBy: uniqQuestion ? [req.body.userId] : [],
+    })),
   }
 
   Product.create(params)
     .then((result) => res.send(result))
-    .catch((err) => console.log(err))
+    .catch((e) => console.error(e))
 }
 
 const addAnswer = (req, res) => {
