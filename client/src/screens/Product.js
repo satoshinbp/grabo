@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { View, ScrollView, FlatList, Image, Text, Button, Divider } from 'native-base'
+import { View, FlatList, Image, Text, Button, Divider, Pressable } from 'native-base'
 import Loading from '../components/Loading'
 import { setProduct } from '../features/product'
 import Report from '../components/Report'
@@ -12,9 +12,11 @@ export default ({ navigation }) => {
 
   const { token } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [reportItem, setReportItem] = useState('')
   const dispatch = useDispatch()
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  console.log('oraaaa', reportItem)
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -24,60 +26,54 @@ export default ({ navigation }) => {
     return unsubscribe
   }, [navigation])
 
-  const modalHandler = () => setIsModalOpen(!isModalOpen)
-
-  const ImageList = ({ item }) => (
-    <>
-      <Image source={{ uri: item.url }} alt="product" size="xl" />
-      <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-    </>
-  )
-
-  const QuestionList = ({ item }) => (
-    <>
-      <Text>{item.question}</Text>
-      <Button>Highlight</Button>
-      {item.answers.map(() => (
-        <>
-          <Text>{item.description}</Text>
-          <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-        </>
-      ))}
-      <Divider my={2} w="100%" />
-    </>
-  )
+  const modalHandler = (item, fixedquestionIndex, answerIndex) => {
+    setIsModalOpen(!isModalOpen)
+    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
+  }
 
   if (loading) return <Loading />
   return (
     <>
       <FlatList
         data={product.images}
-        renderItem={ImageList}
+        renderItem={({ item }) => (
+          <>
+            <Image source={{ uri: item.url }} alt="product" size="xl" />
+            <Pressable onPress={() => setReportItem({ image: item._id })}>
+              <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
+            </Pressable>
+          </>
+        )}
         keyExtractor={(item) => item.url}
         showsVerticalScrollIndicator={false}
-        horizontal
-        showsHorizontalScrollIndicator
+        w="100%"
       />
-      <ScrollView>
-        <View variant="wrapper">
-          <FlatList data={product.fixedQandAs} renderItem={QuestionList} keyExtractor={(item) => item.question} />
-          {product.fixedQandAs?.map((QandA) => (
-            <>
-              <Text>{QandA.question}</Text>
-              <Button>Highlight</Button>
-              {QandA.answers.map(() => (
-                <>
-                  <Text>{QandA.description}</Text>
-                  <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-                </>
-              ))}
-              <Divider my={2} w="100%" />
-            </>
-          ))}
-        </View>
-      </ScrollView>
-      <ProductActionModal modalHandler={modalHandler} modalVisible={isModalOpen} />
-      <Button variant="fab">Create New Question</Button>
-    </>
+      <FlatList
+        data={product.fixedQandAs}
+        renderItem={({ item, index }) => (
+          <>
+            <Text>{item.question}</Text>
+            <Button>Highlight</Button>
+            {item.answers.map((answer, i) => (
+              <>
+                <Text>{answer.description}</Text>
+                <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
+              </>
+            ))}
+            <Divider my={2} w="100%" />
+          </>
+        )}
+        keyExtractor={(item) => item.question}
+        showsVerticalScrollIndicator={false}
+        w="100%"
+      />
+      <Button>Create New Question</Button>
+      <ProductActionModal
+        modalHandler={modalHandler}
+        modalVisible={isModalOpen}
+        reportItem={reportItem}
+        setReportItem={setReportItem}
+      />
+    </View>
   )
 }

@@ -2,14 +2,24 @@ import { Image } from 'native-base'
 import React, { useState } from 'react'
 import { Modal, StyleSheet, Pressable, View } from 'react-native'
 import { VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
+import { updateReview } from '../api/product'
 import reportOptions from '../utils/reports'
 
 const ProductActionModal = (props) => {
-  const [reports, setReports] = useState([])
+  const [reports, setReports] = useState('')
 
   const handleSave = () => {
-    //implement report function later
     props.modalHandler(false)
+    const params = {
+      reportKeys: reports,
+      target: props.reportItem,
+    }
+    updateReview(params)
+  }
+
+  const handleCloseButton = () => {
+    props.modalHandler(false)
+    props.setReportItem('')
   }
 
   return (
@@ -24,7 +34,7 @@ const ProductActionModal = (props) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Pressable onPress={() => props.modalHandler(false)}>
+            <Pressable onPress={() => handleCloseButton()}>
               <Image
                 source={require('../assets/close.jpeg')}
                 alt="image"
@@ -40,12 +50,12 @@ const ProductActionModal = (props) => {
                   colorScheme="green"
                   accessibilityLabel="Report"
                   onChange={(values) => {
-                    setReports([values])
+                    setReports(values)
                   }}
                 >
-                  {reportOptions.map((report, index) => (
-                    <Checkbox value={index} my=".5">
-                      {report}
+                  {reportOptions.map((report) => (
+                    <Checkbox value={report.value} my=".5">
+                      {report.message}
                     </Checkbox>
                   ))}
                 </Checkbox.Group>

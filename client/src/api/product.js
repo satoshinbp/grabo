@@ -99,6 +99,18 @@ const sendImgToCloudVision = async (image) => {
   }
 }
 
+const updateReview = async (params) => {
+  try {
+    const token = await SecureStore.getItemAsync('token')
+    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/review`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export {
   fetchProductById,
   fetchProductsByGroup,
@@ -107,4 +119,5 @@ export {
   sendImgToCloudVision,
   postImage,
   postProduct,
+  updateReview,
 }
