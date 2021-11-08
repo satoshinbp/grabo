@@ -68,9 +68,22 @@ const createProduct = (req, res) => {
     .catch((err) => console.log(err))
 }
 
-const updateReview = () => {
-  // let product = await Product.findOne({ _id: `${req.body.product_id}` })
-  console.log(' backendkiteru')
+const updateReview = async (req, res) => {
+  let targetProduct = await Product.findOne({ 'fixedQandAs._id': req.body.target.fixedQandAsId })
+  let targetreport = await targetProduct.fixedQandAs[req.body.target.fixedquestionIndex].answers[
+    req.body.target.answerIndex
+  ].report
+
+  req.body.reportKeys.forEach((reportKey) => {
+    targetreport[reportKey] += 1
+  })
+
+  await targetProduct
+    .save()
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((error) => res.send(error))
 }
 
 module.exports = { getProducts, getProductById, getProductsByGroup, getProductsByUserId, createProduct, updateReview }

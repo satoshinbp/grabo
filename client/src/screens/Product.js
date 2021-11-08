@@ -11,7 +11,7 @@ export default ({ navigation }) => {
   const route = useRoute()
   const { product, loading } = useSelector((state) => state.product)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [reportItem, setReportItem] = useState({})
+  const [reportItem, setReportItem] = useState('')
   const dispatch = useDispatch()
 
   console.log('oraaaa', reportItem)
@@ -24,8 +24,9 @@ export default ({ navigation }) => {
     return unsubscribe
   }, [navigation])
 
-  const modalHandler = () => {
+  const modalHandler = (item, fixedquestionIndex, answerIndex) => {
     setIsModalOpen(!isModalOpen)
+    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
   }
 
   if (loading) return <Loading />
@@ -47,24 +48,16 @@ export default ({ navigation }) => {
       />
       <FlatList
         data={product.fixedQandAs}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <>
             <Text>{item.question}</Text>
             <Button>Highlight</Button>
-            <FlatList
-              data={item.answers}
-              renderItem={({ item }) => (
-                <>
-                  <Text>{item.description}</Text>
-                  <Pressable onPress={() => setReportItem({ answer: item._id })}>
-                    <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-                  </Pressable>
-                </>
-              )}
-              keyExtractor={(item) => item.description}
-              showsVerticalScrollIndicator={false}
-              w="100%"
-            />
+            {item.answers.map((answer, i) => (
+              <>
+                <Text>{answer.description}</Text>
+                <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
+              </>
+            ))}
             <Divider my={2} w="100%" />
           </>
         )}
@@ -78,6 +71,7 @@ export default ({ navigation }) => {
         modalVisible={isModalOpen}
         product={product}
         reportItem={reportItem}
+        setReportItem={setReportItem}
       />
     </View>
   )

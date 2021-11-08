@@ -6,20 +6,22 @@ import ReportList from '../utils/ReportList'
 import { updateReview } from '../utils/api'
 
 const ProductActionModal = (props) => {
-  const [reports, setReports] = useState([])
+  const [reports, setReports] = useState('')
 
   const handleSave = () => {
     //implement report function later
     props.modalHandler(false)
     const params = {
-      reports: reports,
+      reportKeys: reports,
+      target: props.reportItem,
     }
     updateReview(params)
   }
 
-  console.log('product', props.product)
-  console.log('product fixandas', props.product.fixedQandAs)
-  console.log('product repoItem', props.reportItem)
+  const handleCloseButton = () => {
+    props.modalHandler(false)
+    props.setReportItem('')
+  }
 
   return (
     <View style={styles.centeredView}>
@@ -33,7 +35,7 @@ const ProductActionModal = (props) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Pressable onPress={() => props.modalHandler(false)}>
+            <Pressable onPress={() => handleCloseButton()}>
               <Image
                 source={require('../assets/close.jpeg')}
                 alt="image"
@@ -49,12 +51,12 @@ const ProductActionModal = (props) => {
                   colorScheme="green"
                   accessibilityLabel="Report"
                   onChange={(values) => {
-                    setReports([values])
+                    setReports(values)
                   }}
                 >
-                  {ReportList.map((report, index) => (
-                    <Checkbox value={index} my=".5">
-                      {report}
+                  {ReportList.map((report) => (
+                    <Checkbox value={report.value} my=".5">
+                      {report.message}
                     </Checkbox>
                   ))}
                 </Checkbox.Group>
