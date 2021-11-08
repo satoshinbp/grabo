@@ -26,7 +26,7 @@ export default () => {
     item.empty ? (
       <View flex={1} bg="transparent" style={{ width: 144, height: 144, alignSelf: 'center' }} />
     ) : (
-      <Pressable flex={1} my={3} onPress={() => navigation.navigate('My Product', { id: item._id })}>
+      <Pressable flex={1} my={3} onPress={() => navigation.navigate('Product', { id: item._id })}>
         <ImageBackground
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
           resizeMode="cover"

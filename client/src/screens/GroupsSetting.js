@@ -30,13 +30,12 @@ export default () => {
     <View variant="wrapper">
       <VStack space={2} alignItems="center">
         <Checkbox.Group
-          colorScheme="green"
           defaultValue={user.groups}
           accessibilityLabel="choose language groups"
           onChange={(values) => setGroups(values)}
         >
           {grouplists.map((group) => (
-            <Checkbox value={group.code} my=".5">
+            <Checkbox value={group.code} my={0.5}>
               {group.language}
             </Checkbox>
           ))}

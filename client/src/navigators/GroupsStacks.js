@@ -2,7 +2,7 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Groups from '../screens/Groups'
 import Group from '../screens/Group'
-import Product from '../screens/MyProduct'
+import Product from '../screens/Product'
 import GroupsSetting from '../screens/GroupsSetting'
 
 const GroupStack = createNativeStackNavigator()
