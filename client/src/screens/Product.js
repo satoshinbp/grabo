@@ -104,6 +104,6 @@ export default ({ navigation }) => {
         reportItem={reportItem}
         setReportItem={setReportItem}
       />
-    </View>
+    </>
   )
 }
