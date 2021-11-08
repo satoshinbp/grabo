@@ -26,8 +26,6 @@ export default ({ navigation }) => {
     setAnswer()
   }
 
-  console.log('oraaaa', reportItem)
-
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(setProduct({ token, id: route.params.id }))
