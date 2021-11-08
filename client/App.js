@@ -79,7 +79,6 @@ export default () => {
       },
       Button: {
         baseStyle: {
-          width: '232px',
           _text: {
             color: 'black',
             textAlign: 'center',
