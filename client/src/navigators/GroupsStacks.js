@@ -11,7 +11,7 @@ export default () => {
   return (
     <GroupStack.Navigator>
       <GroupStack.Screen name="Groups" component={Groups} options={{ headerShown: false }} />
-      <GroupStack.Screen name="Group" component={Group} />
+      <GroupStack.Screen name="Group" component={Group} options={({ route }) => ({ title: route.params.language })} />
       <GroupStack.Screen name="Product" component={Product} />
       <GroupStack.Screen name="SettingGroup" component={SettingGroup} />
     </GroupStack.Navigator>

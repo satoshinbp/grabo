@@ -6,7 +6,6 @@ import * as SplashScreen from 'expo-splash-screen'
 import { setAppReady, setUser } from '../features/auth'
 import Login from '../screens/Login'
 import Loading from '../components/Loading'
-import Header from '../components/Header'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
 
@@ -60,7 +59,6 @@ export default () => {
   if (!token) return <Login />
   return (
     <>
-      <Header />
       <Tabs />
     </>
   )

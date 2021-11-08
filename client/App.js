@@ -22,8 +22,16 @@ export default () => {
   const theme = extendTheme({
     colors: {
       primary: {
-        300: '#F6D25D', // override
-        500: '#FFC814', // override
+        50: '#ffffdc',
+        100: '#fff0b4',
+        200: '#ffe68c',
+        300: '#ffdc64',
+        400: '#ffd23c',
+        500: '#ffc814',
+        600: '#e6b000',
+        700: '#b38900',
+        800: '#806200',
+        900: '#4e3b00',
       },
     },
     fonts: {
@@ -32,6 +40,13 @@ export default () => {
       mono: 'Roboto',
     },
     components: {
+      View: {
+        variants: {
+          wrapper: () => ({
+            px: 3,
+          }),
+        },
+      },
       Box: {
         variants: {
           listItemPlain: ({ index }) => ({
@@ -53,6 +68,12 @@ export default () => {
             borderRadius: 'md',
             bg: 'white',
             shadow: 2,
+          }),
+          productCard: () => ({
+            rounded: 'lg',
+            overflow: 'hidden',
+            width: 72,
+            height: 72,
           }),
         },
       },
