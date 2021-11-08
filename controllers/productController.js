@@ -68,6 +68,21 @@ const createProduct = (req, res) => {
     .catch((e) => console.error(e))
 }
 
+const addAnswer = (req, res) => {
+  Product.findOne({
+    _id: req.body.docId,
+  }).then((product) => {
+    product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
+    product.fixedQandAs[req.body.questionIndex].highlightedBy = []
+    product.markModified('fixedQandAs')
+    product
+      .save()
+      .then((result) => {
+        res.send(result)
+      })
+      .catch((error) => console.log(error))
+  })
+  
 const updateReview = async (req, res) => {
   let targetProduct = await Product.findOne({ 'fixedQandAs._id': req.body.target.fixedQandAsId })
   let targetreport = await targetProduct.fixedQandAs[req.body.target.fixedquestionIndex].answers[
@@ -93,5 +108,6 @@ module.exports = {
   getProductsByUserId,
   getProductsByFavoredUserId,
   createProduct,
+  addAnswer,
   updateReview,
 }
