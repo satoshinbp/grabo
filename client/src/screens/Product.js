@@ -3,13 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
 import Loading from '../components/Loading'
-import { fetchProductById } from '../features/product'
 import { setProduct } from '../features/product'
+import { addAnswer, addQuestion } from '../api/product'
 import Report from '../components/Report'
 import ProductActionModal from '../components/ProductActionModal'
-import axios from 'axios'
-import * as SecureStore from 'expo-secure-store'
-import { SERVER_ROOT_URI } from '@env'
 
 export default ({ navigation }) => {
   const route = useRoute()
@@ -18,24 +15,11 @@ export default ({ navigation }) => {
   const { user } = useSelector((state) => state.auth)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const dispatch = useDispatch()
-  const [questionIndex, setQuestionIndex] = useState()
-  const [answer, setAnswer] = useState()
-
-  const addAnswer = async (params) => {
-    try {
-      const token = await SecureStore.getItemAsync('token')
-      const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer`, params, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      return res
-    } catch (err) {
-      console.error(err)
-    }
-  }
+  const [questionIndex, setQuestionIndex] = useState(null)
+  const [answer, setAnswer] = useState('')
 
   const handleAnswerSubmit = async () => {
     const params = { docId: product._id, answer, questionIndex }
-    //console.log('docId', params.docId, 'answer', params.answer, 'questionIdx', params.questionIdx)
     const res = await addAnswer(params)
     setAnswer()
   }
@@ -87,12 +71,6 @@ export default ({ navigation }) => {
                 setAnswer({
                   userId: user._id,
                   description: text,
-                  report: {
-                    wrong: 0,
-                    affiliate: 0,
-                    threats: 0,
-                    privacy: 0,
-                  },
                 })
               }}
             />

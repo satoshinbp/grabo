@@ -78,47 +78,20 @@ const createProduct = (req, res) => {
     .catch((err) => console.log(err))
 }
 
-/*const addAnswer = (req, res) => {
-  console.log('req.body', req.body)
-  Product.updateOne(
-    { _id: req.body.docId, 'fixedQandAs.question': fixedQuestions[req.body.questionIndex] },
-    {
-      $push: {
-        'fixedQandAs.$.answers': {
-          userId: req.user._id,
-          description: req.body.answer.description,
-          report: {
-            wrong: 0,
-            affiliate: 0,
-            threats: 0,
-            privacy: 0,
-          },
-        },
-      },
-    }
-  )
-    .then((result) => res.send(result))
-    .catch((err) => console.log(err))
-}*/
-
-const addAnswer = async (req, res) => {
-  let product = await Product.findOne({
+const addAnswer = (req, res) => {
+  Product.findOne({
     _id: req.body.docId,
+  }).then((product) => {
+    product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
+    product.fixedQandAs[req.body.questionIndex].highlightedBy = []
+    product.markModified('fixedQandAs')
+    product
+      .save()
+      .then((result) => {
+        res.send(result)
+      })
+      .catch((error) => console.log(error))
   })
-  product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
-  console.log('answer', product.fixedQandAs[0].answers)
-  product.markModified('fixedQandAs.answer')
-  console.log(product.markModified('fixedQandAs.answers'))
-  //const updates =  // answerまでのパス
-  // console.log(updates) 中身： [ 'docId', 'answer', 'questionIndex' ]
-  // 下の例だと、product.docId product.answerみたいになってupdateされる
-  //updates.forEach((update) => (product[update] = req.body[update]))
-  await product
-    .save()
-    .then((result) => {
-      res.send(result)
-    })
-    .catch((error) => res.send(error))
 }
 
 module.exports = {
