@@ -67,7 +67,7 @@ export default (props) => {
     uploadImage()
     const res = await postProduct(token, params)
     props.navigation.navigate('Scan', {})
-    props.navigation.navigate('Product', { id: res.data._id })
+    props.navigation.navigate('My Product', { id: res.data._id })
     dispatch(deleteProduct())
     setHighlitedQuestions([])
     setUniqQuestions([])

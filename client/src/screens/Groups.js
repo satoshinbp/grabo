@@ -11,8 +11,8 @@ export default () => {
     <>
       <Header />
       <GroupList />
-      <Button variant="fab" onPress={() => navigation.navigate('SettingGroup')}>
-        <Text variant="fab">Join / Leave Group</Text>
+      <Button variant="fab" onPress={() => navigation.navigate('Groups Setting')}>
+        Join / Leave Group
       </Button>
     </>
   )

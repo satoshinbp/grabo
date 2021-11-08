@@ -63,7 +63,7 @@ export default () => {
             mb: 3,
             px: 3.5,
             py: 2.5,
-            borderLeftWidth: 10,
+            borderLeftWidth: '10px',
             borderColor: 'primary.500',
             borderRadius: 'md',
             bg: 'white',
@@ -72,29 +72,40 @@ export default () => {
           productCard: () => ({
             rounded: 'lg',
             overflow: 'hidden',
-            width: 72,
-            height: 72,
+            width: '72px',
+            height: '72px',
           }),
         },
       },
       Text: {
         variants: {
           fab: () => ({
-            textAlign: 'center',
+            // textAlign: 'center',
           }),
         },
       },
       Button: {
+        baseStyle: {
+          width: '232px',
+          _text: {
+            color: 'black',
+            textAlign: 'center',
+          },
+        },
         variants: {
           fab: () => ({
             position: 'absolute',
             bottom: 4,
             right: 4,
-            width: 20,
-            height: 20,
+            width: '80px',
+            height: '80px',
             borderRadius: 'full',
             backgroundColor: 'primary.500',
-            shadow: '5',
+            shadow: 5,
+            _text: {
+              color: 'black',
+              textAlign: 'center',
+            },
           }),
         },
       },
