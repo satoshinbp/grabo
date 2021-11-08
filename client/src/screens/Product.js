@@ -69,7 +69,6 @@ export default ({ navigation }) => {
       <ProductActionModal
         modalHandler={modalHandler}
         modalVisible={isModalOpen}
-        product={product}
         reportItem={reportItem}
         setReportItem={setReportItem}
       />

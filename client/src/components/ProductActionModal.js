@@ -9,7 +9,6 @@ const ProductActionModal = (props) => {
   const [reports, setReports] = useState('')
 
   const handleSave = () => {
-    //implement report function later
     props.modalHandler(false)
     const params = {
       reportKeys: reports,
