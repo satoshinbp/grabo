@@ -41,7 +41,9 @@ export default () => {
           ))}
         </Checkbox.Group>
         {isError && <Text>You have to belong to at least one Group</Text>}
-        <Button onPress={handleSave}>Save</Button>
+        <Button w="232px" onPress={handleSave}>
+          Save
+        </Button>
       </VStack>
     </View>
   )

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { View, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
+import { View, FlatList, Image, Text, Button, Divider, Input, Pressable } from 'native-base'
 import Loading from '../components/Loading'
 import { setProduct } from '../features/product'
 import { addAnswer, addQuestion } from '../api/product'
@@ -10,10 +10,12 @@ import ProductActionModal from '../components/ProductActionModal'
 
 export default ({ navigation }) => {
   const route = useRoute()
+
   const { token } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const { user } = useSelector((state) => state.auth)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [reportItem, setReportItem] = useState('')
   const dispatch = useDispatch()
   const [questionIndex, setQuestionIndex] = useState(null)
   const [answer, setAnswer] = useState('')
@@ -24,6 +26,8 @@ export default ({ navigation }) => {
     setAnswer()
   }
 
+  console.log('oraaaa', reportItem)
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(setProduct({ token, id: route.params.id }))
@@ -32,19 +36,22 @@ export default ({ navigation }) => {
     return unsubscribe
   }, [navigation])
 
-  const modalHandler = () => {
+  const modalHandler = (item, fixedquestionIndex, answerIndex) => {
     setIsModalOpen(!isModalOpen)
+    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
   }
 
   if (loading) return <Loading />
   return (
-    <View>
+    <>
       <FlatList
         data={product.images}
         renderItem={({ item }) => (
           <>
             <Image source={{ uri: item.url }} alt="product" size="xl" />
-            <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
+            <Pressable onPress={() => setReportItem({ image: item._id })}>
+              <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
+            </Pressable>
           </>
         )}
         keyExtractor={(item) => item.url}
@@ -77,10 +84,10 @@ export default ({ navigation }) => {
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
 
             <Button>Highlight</Button>
-            {item.answers.map(() => (
+            {item.answers.map((answer, i) => (
               <>
-                <Text>{item.description}</Text>
-                <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
+                <Text>{answer.description}</Text>
+                <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
               </>
             ))}
             <Divider my={2} w="100%" />
@@ -91,7 +98,12 @@ export default ({ navigation }) => {
         w="100%"
       />
       <Button>Create New Question</Button>
-      <ProductActionModal modalHandler={modalHandler} modalVisible={isModalOpen} />
+      <ProductActionModal
+        modalHandler={modalHandler}
+        modalVisible={isModalOpen}
+        reportItem={reportItem}
+        setReportItem={setReportItem}
+      />
     </View>
   )
 }

@@ -77,16 +77,8 @@ export default () => {
           }),
         },
       },
-      Text: {
-        variants: {
-          fab: () => ({
-            // textAlign: 'center',
-          }),
-        },
-      },
       Button: {
         baseStyle: {
-          width: '232px',
           _text: {
             color: 'black',
             textAlign: 'center',

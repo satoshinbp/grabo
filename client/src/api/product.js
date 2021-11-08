@@ -106,8 +106,20 @@ const addAnswer = async (params) => {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
-  } catch (err) {
-    console.error(err)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const updateReview = async (params) => {
+  try {
+    const token = await SecureStore.getItemAsync('token')
+    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/review`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res
+  } catch (e) {
+    console.error(e)
   }
 }
 
@@ -120,4 +132,5 @@ export {
   postImage,
   postProduct,
   addAnswer,
+  updateReview,
 }
