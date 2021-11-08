@@ -77,13 +77,6 @@ export default () => {
           }),
         },
       },
-      Text: {
-        variants: {
-          fab: () => ({
-            // textAlign: 'center',
-          }),
-        },
-      },
       Button: {
         baseStyle: {
           width: '232px',

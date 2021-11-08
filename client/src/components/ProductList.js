@@ -7,7 +7,6 @@ import { View, Box, Pressable, FlatList, useTheme } from 'native-base'
 export default () => {
   const navigation = useNavigation()
   const { products } = useSelector((state) => state.product)
-  const { borderRadius } = useTheme()
 
   const format = (data, numColumns) => {
     const tempData = data.concat()
