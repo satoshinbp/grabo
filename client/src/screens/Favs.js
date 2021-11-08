@@ -1,10 +1,20 @@
 import React from 'react'
-import { Box, Heading } from 'native-base'
+import { useSelector } from 'react-redux'
+import { View } from 'native-base'
+import Loading from '../components/Loading'
+import Header from '../components/Header'
+import ProductList from '../components/ProductList'
 
 export default () => {
+  const { loading } = useSelector((state) => state.product)
+  if (loading) return <Loading />
+
   return (
-    <Box>
-      <Heading>Favs</Heading>
-    </Box>
+    <>
+      <Header />
+      <View variant="wrapper">
+        <ProductList />
+      </View>
+    </>
   )
 }

@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider, Pressable } from 'native-base'
 import Loading from '../components/Loading'
-import { fetchProductById } from '../features/product'
+import { setProduct } from '../features/product'
 import Report from '../components/Report'
 import ProductActionModal from '../components/ProductActionModal'
 
 export default ({ navigation }) => {
   const route = useRoute()
+  const { token } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reportItem, setReportItem] = useState('')
@@ -18,7 +19,7 @@ export default ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(fetchProductById(route.params.id))
+      dispatch(setProduct({ token, id: route.params.id }))
     })
 
     return unsubscribe
