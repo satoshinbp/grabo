@@ -9,6 +9,7 @@ import ProductActionModal from '../components/ProductActionModal'
 
 export default ({ navigation }) => {
   const route = useRoute()
+
   const { token } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -32,7 +33,7 @@ export default ({ navigation }) => {
 
   if (loading) return <Loading />
   return (
-    <View>
+    <>
       <FlatList
         data={product.images}
         renderItem={({ item }) => (
