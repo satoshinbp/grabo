@@ -69,35 +69,26 @@ const createProduct = (req, res) => {
 }
 
 const addAnswer = (req, res) => {
-  if (req.body.answer.isUniqQuestion === true) {
-    Product.findOne({
-      _id: req.body.docId,
-    }).then((product) => {
+  console.log(req.body)
+  Product.findOne({
+    _id: req.body.docId,
+  }).then((product) => {
+    if (req.body.answer.isUniqQuestion === true) {
       product.uniqQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
       product.uniqQandAs[req.body.answer.questionIndex].highlightedBy = []
       product.markModified('uniqQandAs')
-      product
-        .save()
-        .then((result) => {
-          res.send(result)
-        })
-        .catch((error) => console.log(error))
-    })
-  } else {
-    Product.findOne({
-      _id: req.body.docId,
-    }).then((product) => {
+    } else {
       product.fixedQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
       product.fixedQandAs[req.body.answer.questionIndex].highlightedBy = []
       product.markModified('fixedQandAs')
-      product
-        .save()
-        .then((result) => {
-          res.send(result)
-        })
-        .catch((error) => console.log(error))
-    })
-  }
+    }
+    product
+      .save()
+      .then((result) => {
+        res.send(result)
+      })
+      .catch((error) => console.log(error))
+  })
 }
 
 module.exports = {

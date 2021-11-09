@@ -51,49 +51,6 @@ export default ({ navigation }) => {
         w="100%"
       />
       <FlatList
-        data={product.fixedQandAs}
-        renderItem={({ item, index }) => (
-          <>
-            <Text>{item.question}</Text>
-            <Input
-              mb="10"
-              placeholder="Please write an answer here"
-              blurOnSubmit={true}
-              returnKeyType="done"
-              onSubmitEditing={() => {
-                Keyboard.dismiss()
-              }}
-              alignItems="center"
-              value={answer}
-              onChangeText={(text) => {
-                setQuestionIndex(index)
-                setAnswer({
-                  answer: {
-                    userId: user._id,
-                    description: text,
-                  },
-                  isUniqQuestion: false,
-                  questionIndex: index,
-                })
-              }}
-            />
-            <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-
-            <Button>Highlight</Button>
-            {item.answers.map((answer) => (
-              <>
-                <Text>{answer.description}</Text>
-                <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-              </>
-            ))}
-            <Divider my={2} w="100%" />
-          </>
-        )}
-        keyExtractor={(item) => item.question}
-        showsVerticalScrollIndicator={false}
-        w="100%"
-      />
-      <FlatList
         data={product.uniqQandAs}
         renderItem={({ item, index }) => (
           <>
@@ -135,6 +92,49 @@ export default ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         w="100%"
       />
+      <FlatList
+        data={product.fixedQandAs}
+        renderItem={({ item, index }) => (
+          <>
+            <Text>{item.question}</Text>
+            <Input
+              mb="10"
+              placeholder="Please write an answer here"
+              blurOnSubmit={true}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                Keyboard.dismiss()
+              }}
+              alignItems="center"
+              value={answer}
+              onChangeText={(text) => {
+                setAnswer({
+                  answer: {
+                    userId: user._id,
+                    description: text,
+                  },
+                  isUniqQuestion: false,
+                  questionIndex: index,
+                })
+              }}
+            />
+            <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
+
+            <Button>Highlight</Button>
+            {item.answers.map((answer) => (
+              <>
+                <Text>{answer.description}</Text>
+                <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
+              </>
+            ))}
+            <Divider my={2} w="100%" />
+          </>
+        )}
+        keyExtractor={(item) => item.question}
+        showsVerticalScrollIndicator={false}
+        w="100%"
+      />
+
       <Button>Create New Question</Button>
       <ProductActionModal modalHandler={modalHandler} modalVisible={isModalOpen} />
     </View>
