@@ -39,13 +39,11 @@ const fixedQuestions = [
 ]
 
 const createProduct = (req, res) => {
-  // console.log('This is req body' + JSON.stringify(req.body))
-
   const params = {
     userId: req.body.userId,
     group: req.body.code,
     keywords: req.body.text,
-    // userId, // userId shall be provided once autheintication gets ready
+    userId: req.body.userId,
     images: req.body.url.map((image, index) => ({
       url: image,
     })),
@@ -69,11 +67,10 @@ const createProduct = (req, res) => {
 }
 
 const addAnswer = (req, res) => {
-  console.log(req.body)
   Product.findOne({
-    _id: req.body.docId,
+    _id: req.body.id,
   }).then((product) => {
-    if (req.body.answer.isUniqQuestion === true) {
+    if (req.body.answer.isUniqQuestion) {
       product.uniqQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
       product.uniqQandAs[req.body.answer.questionIndex].highlightedBy = []
       product.markModified('uniqQandAs')
@@ -84,10 +81,8 @@ const addAnswer = (req, res) => {
     }
     product
       .save()
-      .then((result) => {
-        res.send(result)
-      })
-      .catch((error) => console.log(error))
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
   })
 }
 
@@ -103,10 +98,8 @@ const updateReview = async (req, res) => {
 
   await targetProduct
     .save()
-    .then((result) => {
-      res.send(result)
-    })
-    .catch((error) => res.send(error))
+    .then((result) => res.send(result))
+    .catch((e) => res.send(e))
 }
 
 module.exports = {

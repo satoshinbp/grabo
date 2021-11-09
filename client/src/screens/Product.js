@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { FlatList, Image, Text, Button, Divider, Input, Pressable } from 'native-base'
 import { useRoute } from '@react-navigation/core'
-import { View, FlatList, Image, Text, Button, Divider, Input, Pressable } from 'native-base'
-import Loading from '../components/Loading'
 import { setProduct } from '../features/product'
-import { addAnswer, addQuestion } from '../api/product'
-import Report from '../components/Report'
+import { addAnswer } from '../api/product'
+import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
+import Report from '../components/Report'
 
 export default ({ navigation }) => {
   const route = useRoute()
 
-  const { token } = useSelector((state) => state.auth)
+  const { token, user } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
-  const { user } = useSelector((state) => state.auth)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [reportItem, setReportItem] = useState('')
   const dispatch = useDispatch()
-  const [answer, setAnswer] = useState('')
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [reportItem, setReportItem] = useState(null)
+  const [answer, setAnswer] = useState(null)
 
   const handleAnswerSubmit = async () => {
-    const params = { docId: product._id, answer }
-    const res = await addAnswer(params)
-    setAnswer()
+    const params = { id: product._id, answer }
+    try {
+      await addAnswer(token, params)
+      setAnswer(null)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const modalHandler = (item, fixedquestionIndex, answerIndex) => {
+    setIsModalOpen(!isModalOpen)
+    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
   }
 
   useEffect(() => {
@@ -32,11 +41,6 @@ export default ({ navigation }) => {
 
     return unsubscribe
   }, [navigation])
-
-  const modalHandler = (item, fixedquestionIndex, answerIndex) => {
-    setIsModalOpen(!isModalOpen)
-    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
-  }
 
   if (loading) return <Loading />
   return (

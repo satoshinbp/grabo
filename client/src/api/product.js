@@ -99,9 +99,8 @@ const sendImgToCloudVision = async (image) => {
   }
 }
 
-const addAnswer = async (params) => {
+const addAnswer = async (token, params) => {
   try {
-    const token = await SecureStore.getItemAsync('token')
     const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
