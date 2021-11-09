@@ -16,7 +16,7 @@ export default () => {
         </Text>
       </Box>
       <FlatList
-        data={groups.filter((group) => user.groups.includes(group.code))}
+        data={groups.filter((group) => user?.groups?.includes(group.code))}
         renderItem={({ item, index }) => (
           <Pressable
             onPress={() => {

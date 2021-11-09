@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { View, Button } from 'native-base'
+import { View, Button, HStack } from 'native-base'
 import { useNavigation } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
@@ -73,13 +73,15 @@ export default () => {
   return (
     <View h="100%" flex={1} bg="#fff">
       <Camera flex={1} justifyContent="flex-end" alignItems="center" ref={cameraRef}>
-        <Button isDisabled={!hasPermission} width="232px" my={2} onPress={takePicture}>
-          Snap
-        </Button>
+        <HStack m={2} space={2}>
+          <Button flex={1} isDisabled={!hasPermission} onPress={takePicture}>
+            Snap
+          </Button>
+          <Button flex={1} onPress={openImagePickerAsync}>
+            Gallery
+          </Button>
+        </HStack>
       </Camera>
-      <Button variant="fab" top={4} onPress={openImagePickerAsync}>
-        Gallery
-      </Button>
     </View>
   )
 }
