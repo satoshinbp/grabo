@@ -17,11 +17,10 @@ export default ({ navigation }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reportItem, setReportItem] = useState('')
   const dispatch = useDispatch()
-  const [questionIndex, setQuestionIndex] = useState(null)
   const [answer, setAnswer] = useState('')
 
   const handleAnswerSubmit = async () => {
-    const params = { docId: product._id, answer, questionIndex }
+    const params = { docId: product._id, answer }
     const res = await addAnswer(params)
     setAnswer()
   }
@@ -57,10 +56,10 @@ export default ({ navigation }) => {
         w="100%"
       />
       <FlatList
-        data={product.fixedQandAs}
+        data={product.uniqQandAs}
         renderItem={({ item, index }) => (
           <>
-            <Text>{item.question}</Text>
+            <Text>{item.question.description}</Text>
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -72,10 +71,13 @@ export default ({ navigation }) => {
               alignItems="center"
               value={answer}
               onChangeText={(text) => {
-                setQuestionIndex(index)
                 setAnswer({
-                  userId: user._id,
-                  description: text,
+                  answer: {
+                    userId: user._id,
+                    description: text,
+                  },
+                  isUniqQuestion: true,
+                  questionIndex: index,
                 })
               }}
             />
@@ -95,6 +97,49 @@ export default ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         w="100%"
       />
+      <FlatList
+        data={product.fixedQandAs}
+        renderItem={({ item, index }) => (
+          <>
+            <Text>{item.question}</Text>
+            <Input
+              mb="10"
+              placeholder="Please write an answer here"
+              blurOnSubmit={true}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                Keyboard.dismiss()
+              }}
+              alignItems="center"
+              value={answer}
+              onChangeText={(text) => {
+                setAnswer({
+                  answer: {
+                    userId: user._id,
+                    description: text,
+                  },
+                  isUniqQuestion: false,
+                  questionIndex: index,
+                })
+              }}
+            />
+            <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
+
+            <Button>Highlight</Button>
+            {item.answers.map((answer) => (
+              <>
+                <Text>{answer.description}</Text>
+                <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
+              </>
+            ))}
+            <Divider my={2} w="100%" />
+          </>
+        )}
+        keyExtractor={(item) => item.question}
+        showsVerticalScrollIndicator={false}
+        w="100%"
+      />
+
       <Button>Create New Question</Button>
       <ProductActionModal
         modalHandler={modalHandler}

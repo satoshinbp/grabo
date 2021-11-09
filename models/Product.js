@@ -45,7 +45,7 @@ const productSchema = new Schema(
     uniqQandAs: {
       type: [
         {
-          question: { type: uniqCommentSchema, default: [] },
+          question: { type: uniqCommentSchema, required: true },
           answers: { type: [uniqCommentSchema], default: [] },
           highlightedBy: [ObjectId],
         },

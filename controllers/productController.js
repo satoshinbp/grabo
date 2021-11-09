@@ -69,12 +69,19 @@ const createProduct = (req, res) => {
 }
 
 const addAnswer = (req, res) => {
+  console.log(req.body)
   Product.findOne({
     _id: req.body.docId,
   }).then((product) => {
-    product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
-    product.fixedQandAs[req.body.questionIndex].highlightedBy = []
-    product.markModified('fixedQandAs')
+    if (req.body.answer.isUniqQuestion === true) {
+      product.uniqQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
+      product.uniqQandAs[req.body.answer.questionIndex].highlightedBy = []
+      product.markModified('uniqQandAs')
+    } else {
+      product.fixedQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
+      product.fixedQandAs[req.body.answer.questionIndex].highlightedBy = []
+      product.markModified('fixedQandAs')
+    }
     product
       .save()
       .then((result) => {
