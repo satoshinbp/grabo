@@ -9,6 +9,7 @@ router.get('/user/:id', productController.getProductsByUserId)
 router.get('/fav/user/:id', productController.getProductsByFavoredUserId)
 router.post('/', productController.createProduct)
 router.put('/answer', productController.addAnswer)
+router.put('/question', productController.addUniqQuestion)
 router.put('/review', productController.updateReview)
 
 module.exports = router

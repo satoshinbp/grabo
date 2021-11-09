@@ -3,33 +3,43 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FlatList, Image, Text, Button, Divider, Input, Pressable } from 'native-base'
 import { useRoute } from '@react-navigation/core'
 import { setProduct } from '../features/product'
-import { addAnswer } from '../api/product'
+import { addAnswer, addUniqQuestion } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
 import Report from '../components/Report'
 
 export default ({ navigation }) => {
   const route = useRoute()
-
   const { token, user } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
-
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reportItem, setReportItem] = useState(null)
-  const [answer, setAnswer] = useState(null)
+  const [answer, setAnswer] = useState('') // null causes error
+  const [question, setQuestion] = useState('')
 
   const handleAnswerSubmit = async () => {
     const params = { id: product._id, answer }
     try {
       await addAnswer(token, params)
-      setAnswer(null)
+      setAnswer('')
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleQuestionSubmit = async () => {
+    const params = { id: product._id, question }
+    try {
+      await addUniqQuestion(token, params)
+      setAnswer('')
     } catch (e) {
       console.error(e)
     }
   }
 
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
+    console.log(item)
     setIsModalOpen(!isModalOpen)
     setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
   }
@@ -64,6 +74,15 @@ export default ({ navigation }) => {
         renderItem={({ item, index }) => (
           <>
             <Text>{item.question.description}</Text>
+            {item.answers.length > 0 ? (
+              <Text>
+                This question has&nbsp;
+                {item.answers.length}
+                {item.answers.length > 1 ? ' answers' : ' answer'}
+              </Text>
+            ) : (
+              <Text>This question has 0 answer</Text>
+            )}
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -106,6 +125,15 @@ export default ({ navigation }) => {
         renderItem={({ item, index }) => (
           <>
             <Text>{item.question}</Text>
+            {item.answers.length > 0 ? (
+              <Text>
+                This question has&nbsp;
+                {item.answers.length}
+                {item.answers.length > 1 ? ' answers' : ' answer'}
+              </Text>
+            ) : (
+              <Text>This question has 0 answer</Text>
+            )}
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -144,7 +172,31 @@ export default ({ navigation }) => {
         w="100%"
       />
 
-      <Button>Create New Question</Button>
+      <Button>Ask a question</Button>
+      {/* to be inside a modal */}
+      <>
+        <Text>Asking a question</Text>
+        <Input
+          mb="10"
+          placeholder="Please write your question here"
+          blurOnSubmit={true}
+          returnKeyType="done"
+          onSubmitEditing={() => {
+            Keyboard.dismiss()
+          }}
+          alignItems="center"
+          value={question}
+          onChangeText={(text) => {
+            setQuestion({
+              question: {
+                userId: user._id,
+                description: text,
+              },
+            })
+          }}
+        />
+        <Button onPress={handleQuestionSubmit}>Submit Question</Button>
+      </>
       <ProductActionModal
         modalHandler={modalHandler}
         modalVisible={isModalOpen}
