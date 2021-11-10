@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { Box, View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion, onEndReached } from 'native-base'
-
+import { View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion } from 'native-base'
+import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
 import { addAnswer } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
-import Carousel, { Pagination } from 'react-native-snap-carousel'
 import Report from '../components/Report'
 
 export default ({ navigation }) => {
@@ -18,7 +17,6 @@ export default ({ navigation }) => {
   const dispatch = useDispatch()
   const [questionIndex, setQuestionIndex] = useState('')
   const [activeSlide, setActiveSlide] = useState(0)
-
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reportItem, setReportItem] = useState('')
   const [answer, setAnswer] = useState('')
@@ -35,7 +33,7 @@ export default ({ navigation }) => {
     const params = { id: product._id, answer }
     try {
       await addAnswer(token, params)
-      setAnswer('')
+      setAnswer(null)
     } catch (e) {
       console.error(e)
     }
@@ -46,9 +44,7 @@ export default ({ navigation }) => {
     setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
   }
 
-  const carouselImages = ({ item }) => {
-    return <Image source={{ uri: item.url }} alt="product image" size="100%" />
-  }
+  const carouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
 
   const PaginationComponent = (images) => {
     return (
