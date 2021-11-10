@@ -122,7 +122,6 @@ const addUniqQuestion = async (token, params) => {
 }
 
 const updateHighlight = async (token, params) => {
-  console.log(params)
   try {
     const res = await axios.put(`${SERVER_ROOT_URI}/api/products/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },

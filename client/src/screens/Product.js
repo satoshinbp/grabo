@@ -50,7 +50,6 @@ export default ({ navigation }) => {
 
   const handleHighlightSubmit = async (params) => {
     try {
-      console.log(params)
       await updateHighlight(token, params)
     } catch (e) {
       console.error(e)
@@ -150,7 +149,6 @@ export default ({ navigation }) => {
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-            {/* answers: to be acordion */}
             {item.answers.map((answer, i) => (
               <>
                 <Text>{answer.description}</Text>

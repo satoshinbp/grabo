@@ -101,7 +101,6 @@ const addUniqQuestion = (req, res) => {
 }
 
 const updateHighlight = (req, res) => {
-  console.log(req.body)
   if (req.body.isHighlighted) {
     Product.findOne({
       _id: req.body.id,
@@ -119,7 +118,6 @@ const updateHighlight = (req, res) => {
         product.markModified('fixedQandAs')
         product.fixedQandAs[req.body.questionIndex].highlightedBy = newHighlightArray
       }
-      console.log(product)
       product
         .save()
         .then((result) => res.send(result))
@@ -136,7 +134,6 @@ const updateHighlight = (req, res) => {
         product.markModified('fixedQandAs')
         product.fixedQandAs[req.body.questionIndex].highlightedBy.push(req.body.userId)
       }
-      console.log(product)
       product
         .save()
         .then((result) => res.send(result))
