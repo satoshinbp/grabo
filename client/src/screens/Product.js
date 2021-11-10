@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FlatList, Image, Text, Button, Divider, Input, Pressable } from 'native-base'
 import { useRoute } from '@react-navigation/core'
 import { setProduct } from '../features/product'
-import { addAnswer, addUniqQuestion } from '../api/product'
+import { addAnswer, addUniqQuestion, updateHighlight } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
 import Report from '../components/Report'
@@ -33,6 +33,15 @@ export default ({ navigation }) => {
     try {
       await addUniqQuestion(token, params)
       setAnswer('')
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleHighlightSubmit = async (params) => {
+    try {
+      console.log(params)
+      await updateHighlight(token, params)
     } catch (e) {
       console.error(e)
     }
@@ -74,6 +83,21 @@ export default ({ navigation }) => {
         renderItem={({ item, index }) => (
           <>
             <Text>{item.question.description}</Text>
+            <Button
+              onPress={() => {
+                const highlightStatus = item.highlightedBy.includes(user._id)
+                const params = {
+                  id: product._id,
+                  userId: user._id,
+                  isUniqQuestion: true,
+                  questionIndex: index,
+                  isHighlighed: highlightStatus,
+                }
+                handleHighlightSubmit(params)
+              }}
+            >
+              ★{item.highlightedBy.length}
+            </Button>
             {item.answers.length > 0 ? (
               <Text>
                 This question has&nbsp;
@@ -105,8 +129,7 @@ export default ({ navigation }) => {
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-
-            <Button>Highlight</Button>
+            {/* answers: to be acordion */}
             {item.answers.map((answer, i) => (
               <>
                 <Text>{answer.description}</Text>
@@ -125,6 +148,21 @@ export default ({ navigation }) => {
         renderItem={({ item, index }) => (
           <>
             <Text>{item.question}</Text>
+            <Button
+              onPress={() => {
+                const highlightStatus = item.highlightedBy.includes(user._id)
+                const params = {
+                  id: product._id,
+                  userId: user._id,
+                  isUniqQuestion: false,
+                  questionIndex: index,
+                  isHighlighed: highlightStatus,
+                }
+                handleHighlightSubmit(params)
+              }}
+            >
+              ★{item.highlightedBy.length}
+            </Button>
             {item.answers.length > 0 ? (
               <Text>
                 This question has&nbsp;
@@ -156,8 +194,6 @@ export default ({ navigation }) => {
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-
-            <Button>Highlight</Button>
             {item.answers.map((answer) => (
               <>
                 <Text>{answer.description}</Text>
