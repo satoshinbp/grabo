@@ -102,7 +102,7 @@ const addUniqQuestion = (req, res) => {
 
 const updateHighlight = (req, res) => {
   console.log(req.body)
-  if (req.body.isHighlighed) {
+  if (req.body.isHighlighted) {
     Product.findOne({
       _id: req.body.id,
     }).then((product) => {

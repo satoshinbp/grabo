@@ -91,7 +91,7 @@ export default ({ navigation }) => {
                   userId: user._id,
                   isUniqQuestion: true,
                   questionIndex: index,
-                  isHighlighed: highlightStatus,
+                  isHighlighted: highlightStatus,
                 }
                 handleHighlightSubmit(params)
               }}
@@ -156,7 +156,7 @@ export default ({ navigation }) => {
                   userId: user._id,
                   isUniqQuestion: false,
                   questionIndex: index,
-                  isHighlighed: highlightStatus,
+                  isHighlighted: highlightStatus,
                 }
                 handleHighlightSubmit(params)
               }}
