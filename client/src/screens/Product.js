@@ -15,14 +15,14 @@ export default ({ navigation }) => {
   const dispatch = useDispatch()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reportItem, setReportItem] = useState(null)
-  const [answer, setAnswer] = useState('') // null causes error
-  const [question, setQuestion] = useState('')
+  const [answer, setAnswer] = useState({})
+  const [question, setQuestion] = useState({})
 
   const handleAnswerSubmit = async () => {
     const params = { id: product._id, answer }
     try {
       await addAnswer(token, params)
-      setAnswer('')
+      setAnswer({})
     } catch (e) {
       console.error(e)
     }
@@ -32,14 +32,13 @@ export default ({ navigation }) => {
     const params = { id: product._id, question }
     try {
       await addUniqQuestion(token, params)
-      setAnswer('')
+      setQuestion({})
     } catch (e) {
       console.error(e)
     }
   }
 
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
-    console.log(item)
     setIsModalOpen(!isModalOpen)
     setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
   }
@@ -74,15 +73,11 @@ export default ({ navigation }) => {
         renderItem={({ item, index }) => (
           <>
             <Text>{item.question.description}</Text>
-            {item.answers.length > 0 ? (
-              <Text>
-                This question has&nbsp;
-                {item.answers.length}
-                {item.answers.length > 1 ? ' answers' : ' answer'}
-              </Text>
-            ) : (
-              <Text>This question has 0 answer</Text>
-            )}
+            <Text>
+              This question has&nbsp;
+              {item.answers.length}
+              {item.answers.length > 1 ? ' answers' : ' answer'}
+            </Text>
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -125,15 +120,11 @@ export default ({ navigation }) => {
         renderItem={({ item, index }) => (
           <>
             <Text>{item.question}</Text>
-            {item.answers.length > 0 ? (
-              <Text>
-                This question has&nbsp;
-                {item.answers.length}
-                {item.answers.length > 1 ? ' answers' : ' answer'}
-              </Text>
-            ) : (
-              <Text>This question has 0 answer</Text>
-            )}
+            <Text>
+              This question has&nbsp;
+              {item.answers.length}
+              {item.answers.length > 1 ? ' answers' : ' answer'}
+            </Text>
             <Input
               mb="10"
               placeholder="Please write an answer here"
