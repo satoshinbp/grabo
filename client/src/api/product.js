@@ -110,6 +110,17 @@ const addAnswer = async (token, params) => {
   }
 }
 
+const addUniqQuestion = async (token, params) => {
+  try {
+    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/question`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 const updateReview = async (params) => {
   try {
     const token = await SecureStore.getItemAsync('token')
@@ -131,5 +142,6 @@ export {
   postImage,
   postProduct,
   addAnswer,
+  addUniqQuestion,
   updateReview,
 }
