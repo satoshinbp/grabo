@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { View, FlatList, Image, Text, Button, Divider, Input, Center } from 'native-base'
+import { View, Center, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
+import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
 import { addAnswer } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
-import Carousel, { Pagination } from 'react-native-snap-carousel'
 import Report from '../components/Report'
 
 export default ({ navigation }) => {
@@ -15,12 +15,11 @@ export default ({ navigation }) => {
   const { token, user } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
-  const [questionIndex, setQuestionIndex] = useState(null)
-  const [activeSlide, setActiveSlide] = useState(0)
 
+  const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reportItem, setReportItem] = useState(null)
-  const [answer, setAnswer] = useState('')
+  const [answer, setAnswer] = useState(null)
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -34,7 +33,7 @@ export default ({ navigation }) => {
     const params = { id: product._id, answer }
     try {
       await addAnswer(token, params)
-      setAnswer('')
+      setAnswer(null)
     } catch (e) {
       console.error(e)
     }
@@ -45,9 +44,7 @@ export default ({ navigation }) => {
     setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
   }
 
-  const carouselImages = ({ item }) => {
-    return <Image source={{ uri: item.url }} alt="product image" size="100%" />
-  }
+  const carouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
 
   const PaginationComponent = (images) => {
     return (
