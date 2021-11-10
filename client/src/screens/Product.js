@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { View, FlatList, Image, Text, Button, Divider, Input, Center } from 'native-base'
+import { Box, View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion, onEndReached } from 'native-base'
+
 import { setProduct } from '../features/product'
 import { addAnswer } from '../api/product'
 import Loading from '../components/Loading'
@@ -15,11 +16,11 @@ export default ({ navigation }) => {
   const { token, user } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
-  const [questionIndex, setQuestionIndex] = useState(null)
+  const [questionIndex, setQuestionIndex] = useState('')
   const [activeSlide, setActiveSlide] = useState(0)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [reportItem, setReportItem] = useState(null)
+  const [reportItem, setReportItem] = useState('')
   const [answer, setAnswer] = useState('')
 
   useEffect(() => {
@@ -83,8 +84,8 @@ export default ({ navigation }) => {
       <Carousel
         data={product.images}
         renderItem={carouselImages}
-        itemWidth={650}
-        sliderWidth={650}
+        itemWidth={250}
+        sliderWidth={350}
         onSnapToItem={(index) => setActiveSlide(index)}
       />
       <Text>{product.images ? PaginationComponent(product.images) : <Loading />}</Text>
@@ -92,7 +93,43 @@ export default ({ navigation }) => {
         data={product.uniqQandAs}
         renderItem={({ item, index }) => (
           <>
-            <Text>{item.question.description}</Text>
+            <Accordion>
+              <Accordion.Item>
+                <Accordion.Summary>
+                  <View style={{ flexDirection: 'column' }}>
+                    <Text>{item.question.description}</Text>
+                    <Text>This has 3 ansers</Text>
+                  </View>
+                  <Text style={{ textAlign: 'right' }}>Answer</Text>
+                  <Accordion.Icon />
+                </Accordion.Summary>
+                <Accordion.Details
+                  style={{
+                    margin: 0,
+                    padding: 0,
+                    backgroundColor:
+                      'linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);',
+                  }}
+                >
+                  {item.answers.map((answer, i) => (
+                    <>
+                      <View
+                        style={{
+                          padding: 10,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <Text>{answer.description}</Text>
+                        <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
+                      </View>
+                      <Divider my={2} w="100%" />
+                    </>
+                  ))}
+                </Accordion.Details>
+              </Accordion.Item>
+            </Accordion>
+
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -117,24 +154,54 @@ export default ({ navigation }) => {
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
 
             <Button>Highlight</Button>
-            {item.answers.map((answer, i) => (
-              <>
-                <Text>{answer.description}</Text>
-                <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
-              </>
-            ))}
+
             <Divider my={2} w="100%" />
           </>
         )}
         keyExtractor={(item) => item.question}
         showsVerticalScrollIndicator={false}
-        w="100%"
       />
       <FlatList
         data={product.fixedQandAs}
         renderItem={({ item, index }) => (
           <>
-            <Text>{item.question}</Text>
+            <Accordion>
+              <Accordion.Item>
+                <Accordion.Summary>
+                  <View style={{ flexDirection: 'column' }}>
+                    <Text>{item.question.description}</Text>
+                    <Text>This has 3 ansers</Text>
+                  </View>
+                  <Text style={{ textAlign: 'right' }}>Answer</Text>
+                  <Accordion.Icon />
+                </Accordion.Summary>
+                <Accordion.Details
+                  style={{
+                    margin: 0,
+                    padding: 0,
+                    backgroundColor:
+                      'linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);',
+                  }}
+                >
+                  {item.answers.map((answer, i) => (
+                    <>
+                      <View
+                        style={{
+                          padding: 10,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <Text>{answer.description}</Text>
+                        <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
+                      </View>
+                      <Divider my={2} w="100%" />
+                    </>
+                  ))}
+                </Accordion.Details>
+              </Accordion.Item>
+            </Accordion>
+
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -157,14 +224,7 @@ export default ({ navigation }) => {
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-
             <Button>Highlight</Button>
-            {item.answers.map((answer) => (
-              <>
-                <Text>{answer.description}</Text>
-                <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-              </>
-            ))}
             <Divider my={2} w="100%" />
           </>
         )}
