@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FlatList, Image, Text, Button, Divider, Input, Pressable } from 'native-base'
 import { useRoute } from '@react-navigation/core'
 import { setProduct } from '../features/product'
-import { addAnswer, addUniqQuestion, updateHighlight } from '../api/product'
+import { addAnswer, addUniqQuestion, updateHighlight, updateFavorite } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
 import Report from '../components/Report'
@@ -47,6 +47,15 @@ export default ({ navigation }) => {
     }
   }
 
+  const handleFavoriteSubmit = async (params) => {
+    try {
+      console.log(params)
+      await updateFavorite(token, params)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
     console.log(item)
     setIsModalOpen(!isModalOpen)
@@ -70,6 +79,20 @@ export default ({ navigation }) => {
           <>
             <Image source={{ uri: item.url }} alt="product" size="xl" />
             <Pressable onPress={() => setReportItem({ image: item._id })}>
+              <Button
+                onPress={() => {
+                  const favoriteStatus = product.favoredUserIds.includes(user._id)
+                  console.log(favoriteStatus)
+                  const params = {
+                    id: product._id,
+                    userId: user._id,
+                    isFavored: favoriteStatus,
+                  }
+                  handleFavoriteSubmit(params)
+                }}
+              >
+                ❤︎
+              </Button>
               <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
             </Pressable>
           </>
