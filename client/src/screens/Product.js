@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion } from 'native-base'
+import { View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion, VStack } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
 import { addAnswer, addUniqQuestion } from '../api/product'
@@ -90,8 +90,8 @@ export default ({ navigation }) => {
       <Carousel
         data={product.images}
         renderItem={carouselImages}
-        itemWidth={250}
-        sliderWidth={350}
+        itemWidth={450}
+        sliderWidth={450}
         onSnapToItem={(index) => setActiveSlide(index)}
       />
       <Text>{product.images ? PaginationComponent(product.images) : <Loading />}</Text>
@@ -102,34 +102,25 @@ export default ({ navigation }) => {
             <Accordion>
               <Accordion.Item>
                 <Accordion.Summary>
-                  <View style={{ flexDirection: 'column' }}>
+                  <VStack>
                     <Text>{item.question.description}</Text>
                     <Text>
                       This question has&nbsp;
                       {item.answers.length}
                       {item.answers.length > 1 ? ' answers' : ' answer'}
                     </Text>
-                  </View>
-                  <Text style={{ textAlign: 'right' }}>Answer</Text>
+                  </VStack>
+                  <Text textAlign={'right'}>Answer</Text>
                   <Accordion.Icon />
                 </Accordion.Summary>
                 <Accordion.Details
-                  style={{
-                    margin: 0,
-                    padding: 0,
-                    backgroundColor:
-                      'linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);',
-                  }}
+                  margin="0px"
+                  padding="0px"
+                  backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
                 >
                   {item.answers.map((answer, i) => (
                     <>
-                      <View
-                        style={{
-                          padding: 10,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                        }}
-                      >
+                      <View flexDirection="row" justifyContent="space-between">
                         <Text>{answer.description}</Text>
                         <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
                       </View>
@@ -177,34 +168,25 @@ export default ({ navigation }) => {
             <Accordion>
               <Accordion.Item>
                 <Accordion.Summary>
-                  <View style={{ flexDirection: 'column' }}>
+                  <VStack>
                     <Text>{item.question.description}</Text>
                     <Text>
                       This question has&nbsp;
                       {item.answers.length}
                       {item.answers.length > 1 ? ' answers' : ' answer'}
                     </Text>
-                  </View>
-                  <Text style={{ textAlign: 'right' }}>Answer</Text>
+                  </VStack>
+                  <Text textAlign={'right'}>Answer</Text>
                   <Accordion.Icon />
                 </Accordion.Summary>
                 <Accordion.Details
-                  style={{
-                    margin: 0,
-                    padding: 0,
-                    backgroundColor:
-                      'linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);',
-                  }}
+                  margin={0}
+                  padding={0}
+                  backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
                 >
                   {item.answers.map((answer, i) => (
                     <>
-                      <View
-                        style={{
-                          padding: 10,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                        }}
-                      >
+                      <View padding={10} flexDirection="row" justifyContent="space-between">
                         <Text>{answer.description}</Text>
                         <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
                       </View>
