@@ -120,11 +120,11 @@ export default ({ navigation }) => {
                 >
                   {item.answers.map((answer, i) => (
                     <>
-                      <View flexDirection="row" justifyContent="space-between">
+                      <View padding={4} flexDirection="row" justifyContent="space-between">
                         <Text>{answer.description}</Text>
                         <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
                       </View>
-                      <Divider my={2} w="100%" />
+                      <Divider w="100%" />
                     </>
                   ))}
                 </Accordion.Details>
@@ -186,11 +186,11 @@ export default ({ navigation }) => {
                 >
                   {item.answers.map((answer, i) => (
                     <>
-                      <View padding={10} flexDirection="row" justifyContent="space-between">
+                      <View padding={4} flexDirection="row" justifyContent="space-between">
                         <Text>{answer.description}</Text>
                         <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
                       </View>
-                      <Divider my={2} w="100%" />
+                      <Divider w="100%" />
                     </>
                   ))}
                 </Accordion.Details>
