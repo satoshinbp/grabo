@@ -101,10 +101,10 @@ const addUniqQuestion = (req, res) => {
 }
 
 const updateHighlight = (req, res) => {
-  if (req.body.isHighlighted) {
-    Product.findOne({
-      _id: req.body.id,
-    }).then((product) => {
+  Product.findOne({
+    _id: req.body.id,
+  }).then((product) => {
+    if (req.body.isHighlighted) {
       if (req.body.isUniqQuestion) {
         const newHighlightArray = product.uniqQandAs[req.body.questionIndex].highlightedBy.filter((userId) => {
           return userId.toString() !== req.body.userId
@@ -118,15 +118,7 @@ const updateHighlight = (req, res) => {
         product.markModified('fixedQandAs')
         product.fixedQandAs[req.body.questionIndex].highlightedBy = newHighlightArray
       }
-      product
-        .save()
-        .then((result) => res.send(result))
-        .catch((e) => console.error(e))
-    })
-  } else {
-    Product.findOne({
-      _id: req.body.id,
-    }).then((product) => {
+    } else {
       if (req.body.isUniqQuestion) {
         product.markModified('uniqQandAs')
         product.uniqQandAs[req.body.questionIndex].highlightedBy.push(req.body.userId)
@@ -134,12 +126,12 @@ const updateHighlight = (req, res) => {
         product.markModified('fixedQandAs')
         product.fixedQandAs[req.body.questionIndex].highlightedBy.push(req.body.userId)
       }
-      product
-        .save()
-        .then((result) => res.send(result))
-        .catch((e) => console.error(e))
-    })
-  }
+    }
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
 }
 
 const updateReview = async (req, res) => {
