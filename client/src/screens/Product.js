@@ -3,11 +3,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
 import { View, Center, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
-import { setProduct } from '../features/product'
+import { setProduct, updateAnswer } from '../features/product'
 import { addAnswer, addUniqQuestion, updateHighlight } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
 import Report from '../components/Report'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default ({ navigation }) => {
   const route = useRoute()
@@ -30,8 +31,31 @@ export default ({ navigation }) => {
 
   const handleAnswerSubmit = async () => {
     const params = { id: product._id, answer }
+    let productToUpdate = cloneDeep(product)
+    const change = {
+      _id: user._id,
+      description: answer.answer.description,
+      report: { affiliate: 0, privacy: 0, threats: 0, wrong: 0 },
+    }
+    productToUpdate.uniqQandAs[params.answer.questionIndex].answers.push({
+      _id: user._id,
+      description: answer.answer.description,
+      report: { affiliate: 0, privacy: 0, threats: 0, wrong: 0 },
+    })
     try {
-      await addAnswer(token, params)
+      /*
+       if (req.body.answer.isUniqQuestion) {
+      product.uniqQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
+      product.uniqQandAs[req.body.answer.questionIndex].highlightedBy = []
+      product.markModified('uniqQandAs')
+    } else {
+      product.fixedQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
+      product.fixedQandAs[req.body.answer.questionIndex].highlightedBy = []
+      product.markModified('fixedQandAs')
+    }
+      */
+      //await addAnswer(token, params)
+      dispatch(updateAnswer(productToUpdate))
       setAnswer({})
     } catch (e) {
       console.error(e)
@@ -127,27 +151,33 @@ export default ({ navigation }) => {
               {item.answers.length}
               {item.answers.length > 1 ? ' answers' : ' answer'}
             </Text>
-            <Input
-              mb="10"
-              placeholder="Please write an answer here"
-              blurOnSubmit={true}
-              returnKeyType="done"
-              onSubmitEditing={() => {
-                Keyboard.dismiss()
-              }}
-              alignItems="center"
-              value={answer}
-              onChangeText={(text) => {
-                setAnswer({
-                  answer: {
-                    userId: user._id,
-                    description: text,
-                  },
-                  isUniqQuestion: true,
-                  questionIndex: index,
-                })
-              }}
-            />
+            <Button>Answer</Button>
+            {/* to be inside a modal */}
+            <>
+              <Text>Answering a question</Text>
+              <Text>{item.question.description}</Text>
+              <Input
+                mb="10"
+                placeholder="Please write an answer here"
+                blurOnSubmit={true}
+                returnKeyType="done"
+                onSubmitEditing={() => {
+                  Keyboard.dismiss()
+                }}
+                alignItems="center"
+                value={answer}
+                onChangeText={(text) => {
+                  setAnswer({
+                    answer: {
+                      userId: user._id,
+                      description: text,
+                    },
+                    isUniqQuestion: true,
+                    questionIndex: index,
+                  })
+                }}
+              />
+            </>
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
             {item.answers.map((answer, i) => (
               <>
@@ -187,28 +217,34 @@ export default ({ navigation }) => {
               {item.answers.length}
               {item.answers.length > 1 ? ' answers' : ' answer'}
             </Text>
-            <Input
-              mb="10"
-              placeholder="Please write an answer here"
-              blurOnSubmit={true}
-              returnKeyType="done"
-              onSubmitEditing={() => {
-                Keyboard.dismiss()
-              }}
-              alignItems="center"
-              value={answer}
-              onChangeText={(text) => {
-                setAnswer({
-                  answer: {
-                    userId: user._id,
-                    description: text,
-                  },
-                  isUniqQuestion: false,
-                  questionIndex: index,
-                })
-              }}
-            />
-            <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
+            <Button>Answer</Button>
+            {/* to be inside a modal */}
+            <>
+              <Text>Answering a question</Text>
+              <Text>{item.question}</Text>
+              <Input
+                mb="10"
+                placeholder="Please write an answer here"
+                blurOnSubmit={true}
+                returnKeyType="done"
+                onSubmitEditing={() => {
+                  Keyboard.dismiss()
+                }}
+                alignItems="center"
+                value={answer}
+                onChangeText={(text) => {
+                  setAnswer({
+                    answer: {
+                      userId: user._id,
+                      description: text,
+                    },
+                    isUniqQuestion: false,
+                    questionIndex: index,
+                  })
+                }}
+              />
+              <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
+            </>
             {item.answers.map((answer) => (
               <>
                 <Text>{answer.description}</Text>

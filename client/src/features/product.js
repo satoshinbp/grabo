@@ -48,6 +48,22 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
 const productSlice = createSlice({
   name: 'product',
   initialState: { product: {}, products: [], loading: false },
+  reducers: {
+    setQuestion: (state, action) => {
+      state.product = action.payload
+    },
+    updateAnswer: (state, action) => {
+      console.log(state, action)
+      state.product = action.payload
+      state.loading = false
+    },
+    setHighlight: (state, action) => {
+      state.product = action.payload
+    },
+    setFavorite: (state, action) => {
+      state.product = action.payload
+    },
+  },
   extraReducers: {
     [setProduct.pending]: (state, action) => {
       state.loading = true
@@ -92,4 +108,5 @@ const productSlice = createSlice({
   },
 })
 
+export const { updateAnswer } = productSlice.actions
 export default productSlice.reducer
