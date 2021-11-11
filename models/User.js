@@ -19,6 +19,7 @@ const userSchema = new Schema(
       default: [],
     },
     tokens: { type: [String], required: true },
+    notificationToken: { type: String },
   },
   { timestamps: true }
 )

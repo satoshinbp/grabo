@@ -23,6 +23,7 @@ import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
 import { updateCode, deleteImage, deleteProduct } from '../features/image'
+import { fetchUsersByGroup } from '../api/auth'
 
 // =========    Please leave this sheets comments as a reference ==========================
 
@@ -54,6 +55,26 @@ export default (props) => {
     const res = await postImage(token, params)
   }
 
+  async function sendPushNotification(expoPushToken) {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Help',
+      body: 'Someone need your help!',
+      data: { someData: 'goes here' },
+    }
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    })
+  }
+
   const handleSubmit = async () => {
     const params = {
       userId: user._id,
@@ -66,6 +87,12 @@ export default (props) => {
 
     uploadImage()
     const res = await postProduct(token, params)
+    const fetchUsers = await fetchUsersByGroup(token, image.value.code)
+    // const fetch = await fetchUser(token)
+    // console.log(fetchUsers)
+    const notificationTokens = await fetchUsers.map((user) => user.notificationToken)
+    // console.log(notificationTokens)
+    notificationTokens.map((token) => sendPushNotification(token))
     props.navigation.navigate('Scan', {})
     props.navigation.navigate('Product', { id: res.data._id })
     dispatch(deleteProduct())
