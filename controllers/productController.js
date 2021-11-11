@@ -102,6 +102,20 @@ const updateReview = async (req, res) => {
     .catch((e) => res.send(e))
 }
 
+const addUniqQuestion = (req, res) => {
+  Product.findOne({
+    _id: req.body.id,
+  }).then((product) => {
+    product.markModified('uniqQandAs')
+    product.uniqQandAs.push(req.body.question)
+
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
+}
+
 module.exports = {
   getProducts,
   getProductById,
@@ -111,4 +125,5 @@ module.exports = {
   createProduct,
   addAnswer,
   updateReview,
+  addUniqQuestion,
 }

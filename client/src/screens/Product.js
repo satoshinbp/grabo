@@ -4,22 +4,22 @@ import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
-import { addAnswer } from '../api/product'
+import { addAnswer, addUniqQuestion } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
 import Report from '../components/Report'
 
 export default ({ navigation }) => {
   const route = useRoute()
-
   const { token, user } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
   const [questionIndex, setQuestionIndex] = useState('')
   const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [reportItem, setReportItem] = useState('')
-  const [answer, setAnswer] = useState('')
+  const [reportItem, setReportItem] = useState(null)
+  const [answer, setAnswer] = useState({})
+  const [question, setQuestion] = useState({})
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -33,7 +33,17 @@ export default ({ navigation }) => {
     const params = { id: product._id, answer }
     try {
       await addAnswer(token, params)
-      setAnswer(null)
+      setAnswer({})
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleQuestionSubmit = async () => {
+    const params = { id: product._id, question }
+    try {
+      await addUniqQuestion(token, params)
+      setQuestion({})
     } catch (e) {
       console.error(e)
     }
@@ -94,7 +104,11 @@ export default ({ navigation }) => {
                 <Accordion.Summary>
                   <View style={{ flexDirection: 'column' }}>
                     <Text>{item.question.description}</Text>
-                    <Text>This has 3 ansers</Text>
+                    <Text>
+                      This question has&nbsp;
+                      {item.answers.length}
+                      {item.answers.length > 1 ? ' answers' : ' answer'}
+                    </Text>
                   </View>
                   <Text style={{ textAlign: 'right' }}>Answer</Text>
                   <Accordion.Icon />
@@ -125,7 +139,6 @@ export default ({ navigation }) => {
                 </Accordion.Details>
               </Accordion.Item>
             </Accordion>
-
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -166,7 +179,11 @@ export default ({ navigation }) => {
                 <Accordion.Summary>
                   <View style={{ flexDirection: 'column' }}>
                     <Text>{item.question.description}</Text>
-                    <Text>This has 3 ansers</Text>
+                    <Text>
+                      This question has&nbsp;
+                      {item.answers.length}
+                      {item.answers.length > 1 ? ' answers' : ' answer'}
+                    </Text>
                   </View>
                   <Text style={{ textAlign: 'right' }}>Answer</Text>
                   <Accordion.Icon />
@@ -197,7 +214,6 @@ export default ({ navigation }) => {
                 </Accordion.Details>
               </Accordion.Item>
             </Accordion>
-
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -229,7 +245,31 @@ export default ({ navigation }) => {
         w="100%"
       />
 
-      <Button>Create New Question</Button>
+      <Button>Ask a question</Button>
+      {/* to be inside a modal */}
+      <>
+        <Text>Asking a question</Text>
+        <Input
+          mb="10"
+          placeholder="Please write your question here"
+          blurOnSubmit={true}
+          returnKeyType="done"
+          onSubmitEditing={() => {
+            Keyboard.dismiss()
+          }}
+          alignItems="center"
+          value={question}
+          onChangeText={(text) => {
+            setQuestion({
+              question: {
+                userId: user._id,
+                description: text,
+              },
+            })
+          }}
+        />
+        <Button onPress={handleQuestionSubmit}>Submit Question</Button>
+      </>
       <ProductActionModal
         modalHandler={modalHandler}
         modalVisible={isModalOpen}
