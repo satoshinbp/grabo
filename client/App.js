@@ -43,12 +43,24 @@ export default () => {
       View: {
         variants: {
           wrapper: () => ({
+            flex: 1,
+            px: 3,
+          }),
+        },
+      },
+      ScrollView: {
+        variants: {
+          wrapper: () => ({
+            flex: 1,
             px: 3,
           }),
         },
       },
       Box: {
         variants: {
+          container: {
+            my: 2,
+          },
           listItemPlain: ({ index }) => ({
             mt: index === 0 ? 1.5 : 0,
             mb: 3,
@@ -85,6 +97,11 @@ export default () => {
           },
         },
         variants: {
+          primary: () => ({
+            width: '232px',
+            alignSelf: 'center',
+            backgroundColor: 'primary.500',
+          }),
           fab: () => ({
             position: 'absolute',
             bottom: 4,
