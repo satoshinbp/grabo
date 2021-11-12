@@ -79,7 +79,7 @@ export default () => {
 
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
     setIsModalOpen(!isModalOpen)
-    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex: fixedquestionIndex, answerIndex: answerIndex })
+    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex, answerIndex })
   }
 
   const carouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
@@ -125,7 +125,7 @@ export default () => {
                     const params = {
                       id: product._id,
                       userId: user._id,
-                      isUniqQuestion: true,
+                      isUniqQuestion: type === 'uniq',
                       questionIndex: index,
                       isHighlighted: highlightStatus,
                     }
@@ -166,7 +166,7 @@ export default () => {
                 userId: user._id,
                 description: text,
               },
-              isUniqQuestion: true,
+              isUniqQuestion: type === 'uniq',
               questionIndex: index,
             })
           }}
