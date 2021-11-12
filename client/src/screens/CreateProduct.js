@@ -25,6 +25,7 @@ import { fetchUsersByGroup } from '../api/auth'
 import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
+import Loading from '../components/Loading'
 
 // ========== Please leave comments as a reference ========== //
 export default () => {
@@ -37,6 +38,7 @@ export default () => {
   // const [, setImage] = useState(props.route.params.imageUrl)
   const [highlitedQuestions, setHighlitedQuestions] = useState([])
   const [uniqQuestions, setUniqQuestions] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const uploadImage = async () => {
     const params = new FormData()
@@ -67,6 +69,7 @@ export default () => {
   const onCancel = () => deleteAlert()
 
   const handleSubmit = async () => {
+    setLoading(true)
     try {
       await uploadImage()
 
@@ -89,15 +92,18 @@ export default () => {
       setHighlitedQuestions([])
       setUniqQuestions([])
 
+      setLoading(false)
+
       navigation.navigate('Scan')
       navigation.navigate('Product', { id: res.data._id })
     } catch (e) {
       cosole.error(e)
+      setLoading(false)
     }
   }
 
   const deleteAlert = () =>
-    Alert.alert('Alert', 'Are you sure to delete this product', [
+    Alert.alert('Alert', 'Are you sure to cancel posting this product?', [
       {
         text: 'Cancel',
         style: 'cancel',
@@ -107,7 +113,7 @@ export default () => {
         onPress: () => {
           dispatch(clearProduct())
           setHighlitedQuestions([])
-          setUniqQuestion('')
+          setUniqQuestions([])
           navigation.navigate('Scan')
         },
       },
@@ -136,8 +142,8 @@ export default () => {
     setUniqQuestions(newUniqQuestions)
   }
 
-  // Icon position to be fixed
   // FormContorl might be useful rather thatn Box, to be considered
+  if (loading) return <Loading />
   return (
     <ScrollView variant="wrapper">
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -149,28 +155,29 @@ export default () => {
               Image
             </Text>
             <VStack alignItems="center" space={2}>
-              {/* display selected image */}
               {imageUrl.length > 0 ? (
-                imageUrl.map((image, index) => (
-                  <Box key={image} position="relative" w="100px" h="100px">
-                    <Image source={{ uri: image }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
-                    <Center
-                      position="absolute"
-                      top={1}
-                      right={1}
-                      w="30px"
-                      h="30px"
-                      borderRadius="full"
-                      bg="primary.500"
-                    >
-                      <MaterialIcons name="delete" size={18} color="black" onPress={() => onImageRemove(index)} />
-                    </Center>
-                  </Box>
-                ))
+                <HStack space={2}>
+                  {imageUrl.map((image, index) => (
+                    <Box key={image} position="relative" w="100px" h="100px">
+                      <Image source={{ uri: image }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
+                      <Center
+                        position="absolute"
+                        top={1}
+                        right={1}
+                        w="30px"
+                        h="30px"
+                        borderRadius="full"
+                        bg="primary.500"
+                      >
+                        <MaterialIcons name="delete" size={18} color="black" onPress={() => onImageRemove(index)} />
+                      </Center>
+                    </Box>
+                  ))}
+                </HStack>
               ) : (
                 <Text>At lease one picture is required.</Text>
               )}
-              <Button onPress={addImage}>{imageUrl.length > 0 ? 'Take another pircute' : 'Take a picture'}</Button>
+              <Button onPress={addImage}>{imageUrl.length > 0 ? 'Take another picture' : 'Take a picture'}</Button>
             </VStack>
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
