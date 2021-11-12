@@ -92,7 +92,6 @@ export default ({ navigation }) => {
   }
 
   if (loading) return <Loading />
-
   return (
     <>
       <Carousel

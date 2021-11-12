@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import { MaterialIcons } from '@expo/vector-icons'
 import {
   View,
   ScrollView,
   Box,
   Center,
   VStack,
+  HStack,
   CheckIcon,
   Checkbox,
   Input,
@@ -18,13 +17,14 @@ import {
   Image,
   Button,
   AddIcon,
-  CloseIcon,
 } from 'native-base'
-import { updateCode, deleteImage, deleteProduct } from '../features/image'
+import { useNavigation } from '@react-navigation/native'
+import { MaterialIcons } from '@expo/vector-icons'
+import { updateCode, deleteImage, clearProduct } from '../features/image'
+import { fetchUsersByGroup } from '../api/auth'
 import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
-import { fetchUsersByGroup } from '../api/auth'
 
 // ========== Please leave comments as a reference ========== //
 export default () => {
@@ -44,7 +44,7 @@ export default () => {
     const res = await postImage(token, params)
   }
 
-  async function sendPushNotification(expoPushToken) {
+  const sendPushNotification = async (expoPushToken) => {
     const message = {
       to: expoPushToken,
       sound: 'default',
@@ -67,27 +67,33 @@ export default () => {
   const onCancel = () => deleteAlert()
 
   const handleSubmit = async () => {
-    const params = {
-      userId: user._id,
-      code,
-      url: imageUrl,
-      text: ocrText,
-      highlitedQuestions: highlitedQuestions,
-      uniqQuestions: uniqQuestions,
-    }
+    try {
+      await uploadImage()
 
-    uploadImage()
-    const res = await postProduct(token, params)
-    const fetchUsers = await fetchUsersByGroup(token, image.value.code)
-    // const fetch = await fetchUser(token)
-    // console.log(fetchUsers)
-    const notificationTokens = await fetchUsers.map((user) => user.notificationToken)
-    // console.log(notificationTokens)
-    notificationTokens.map((token) => sendPushNotification(token))
-    navigation.navigate('Product', { id: res.data._id })
-    dispatch(deleteProduct())
-    setHighlitedQuestions([])
-    setUniqQuestions([])
+      const params = {
+        userId: user._id,
+        code,
+        url: imageUrl,
+        text: ocrText,
+        highlitedQuestions: highlitedQuestions,
+        uniqQuestions: uniqQuestions,
+      }
+
+      const res = await postProduct(token, params)
+
+      const fetchedUsers = await fetchUsersByGroup(token, code)
+      const notificationTokens = await fetchedUsers.map((user) => user.notificationToken)
+      notificationTokens.map((token) => sendPushNotification(token))
+
+      dispatch(clearProduct())
+      setHighlitedQuestions([])
+      setUniqQuestions([])
+
+      navigation.navigate('Scan')
+      navigation.navigate('Product', { id: res.data._id })
+    } catch (e) {
+      cosole.error(e)
+    }
   }
 
   const deleteAlert = () =>
@@ -99,7 +105,7 @@ export default () => {
       {
         text: 'OK',
         onPress: () => {
-          dispatch(deleteProduct())
+          dispatch(clearProduct())
           setHighlitedQuestions([])
           setUniqQuestion('')
           navigation.navigate('Scan')
@@ -148,9 +154,17 @@ export default () => {
                 imageUrl.map((image, index) => (
                   <Box key={image} position="relative" w="100px" h="100px">
                     <Image source={{ uri: image }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
-                    <Box position="absolute" top={2} right={2}>
-                      <MaterialIcons name="delete" size={24} color="black" onPress={() => onImageRemove(index)} />
-                    </Box>
+                    <Center
+                      position="absolute"
+                      top={1}
+                      right={1}
+                      w="30px"
+                      h="30px"
+                      borderRadius="full"
+                      bg="primary.500"
+                    >
+                      <MaterialIcons name="delete" size={18} color="black" onPress={() => onImageRemove(index)} />
+                    </Center>
                   </Box>
                 ))
               ) : (
@@ -203,27 +217,26 @@ export default () => {
             <Text fontSize="lg" bold>
               Ask your own question
             </Text>
-            {uniqQuestions.map((uniqQuestion, index) => (
-              <Box key={index}>
-                <Input
-                  mb="10"
-                  placeholder="Write your own question here"
-                  blurOnSubmit={true}
-                  returnKeyType="done"
-                  onSubmitEditing={() => {
-                    Keyboard.dismiss()
-                  }}
-                  alignItems="center"
-                  value={uniqQuestion}
-                  onChangeText={(e) => handleChange(index, e)}
-                />
-
-                {index && <CloseIcon size={4} onPress={() => removeFormFields(index)} />}
-              </Box>
-            ))}
-            <Center>
-              <AddIcon size="4" onPress={addFormFields} />
-            </Center>
+            <VStack space={2} alignItems="center">
+              {uniqQuestions.map((uniqQuestion, index) => (
+                <HStack key={index} alignItems="center" space={2}>
+                  <Input
+                    placeholder="Write your own question here"
+                    blurOnSubmit={true}
+                    returnKeyType="done"
+                    onSubmitEditing={() => Keyboard.dismiss()}
+                    value={uniqQuestion}
+                    onChangeText={(e) => handleChange(index, e)}
+                    flex={1}
+                    alignItems="center"
+                  />
+                  <MaterialIcons name="delete" size={18} color="black" onPress={() => removeFormFields(index)} />
+                </HStack>
+              ))}
+              <Center w="36px" h="36px" borderRadius="full" bg="primary.500">
+                <AddIcon size="4" onPress={addFormFields} />
+              </Center>
+            </VStack>
           </View>
 
           <Button variant="primary" onPress={onCancel}>
