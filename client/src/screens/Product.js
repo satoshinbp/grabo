@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute } from '@react-navigation/core'
-import { View, Center, FlatList, Image, Text, Button, Divider, Input } from 'native-base'
+import { View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion, VStack } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
 import { addAnswer, addUniqQuestion } from '../api/product'
@@ -14,6 +14,7 @@ export default ({ navigation }) => {
   const { token, user } = useSelector((state) => state.auth)
   const { product, loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
+  const [questionIndex, setQuestionIndex] = useState('')
   const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reportItem, setReportItem] = useState(null)
@@ -89,8 +90,8 @@ export default ({ navigation }) => {
       <Carousel
         data={product.images}
         renderItem={carouselImages}
-        itemWidth={650}
-        sliderWidth={650}
+        itemWidth={450}
+        sliderWidth={450}
         onSnapToItem={(index) => setActiveSlide(index)}
       />
       <Text>{product.images ? PaginationComponent(product.images) : <Loading />}</Text>
@@ -98,12 +99,37 @@ export default ({ navigation }) => {
         data={product.uniqQandAs}
         renderItem={({ item, index }) => (
           <>
-            <Text>{item.question.description}</Text>
-            <Text>
-              This question has&nbsp;
-              {item.answers.length}
-              {item.answers.length > 1 ? ' answers' : ' answer'}
-            </Text>
+            <Accordion>
+              <Accordion.Item>
+                <Accordion.Summary>
+                  <VStack>
+                    <Text>{item.question.description}</Text>
+                    <Text>
+                      This question has&nbsp;
+                      {item.answers.length}
+                      {item.answers.length > 1 ? ' answers' : ' answer'}
+                    </Text>
+                  </VStack>
+                  <Text textAlign={'right'}>Answer</Text>
+                  <Accordion.Icon />
+                </Accordion.Summary>
+                <Accordion.Details
+                  margin="0px"
+                  padding="0px"
+                  backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
+                >
+                  {item.answers.map((answer, i) => (
+                    <>
+                      <View padding={4} flexDirection="row" justifyContent="space-between">
+                        <Text>{answer.description}</Text>
+                        <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
+                      </View>
+                      <Divider w="100%" />
+                    </>
+                  ))}
+                </Accordion.Details>
+              </Accordion.Item>
+            </Accordion>
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -128,29 +154,48 @@ export default ({ navigation }) => {
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
 
             <Button>Highlight</Button>
-            {item.answers.map((answer, i) => (
-              <>
-                <Text>{answer.description}</Text>
-                <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
-              </>
-            ))}
+
             <Divider my={2} w="100%" />
           </>
         )}
         keyExtractor={(item) => item.question}
         showsVerticalScrollIndicator={false}
-        w="100%"
       />
       <FlatList
         data={product.fixedQandAs}
         renderItem={({ item, index }) => (
           <>
-            <Text>{item.question}</Text>
-            <Text>
-              This question has&nbsp;
-              {item.answers.length}
-              {item.answers.length > 1 ? ' answers' : ' answer'}
-            </Text>
+            <Accordion>
+              <Accordion.Item>
+                <Accordion.Summary>
+                  <VStack>
+                    <Text>{item.question.description}</Text>
+                    <Text>
+                      This question has&nbsp;
+                      {item.answers.length}
+                      {item.answers.length > 1 ? ' answers' : ' answer'}
+                    </Text>
+                  </VStack>
+                  <Text textAlign={'right'}>Answer</Text>
+                  <Accordion.Icon />
+                </Accordion.Summary>
+                <Accordion.Details
+                  margin={0}
+                  padding={0}
+                  backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
+                >
+                  {item.answers.map((answer, i) => (
+                    <>
+                      <View padding={4} flexDirection="row" justifyContent="space-between">
+                        <Text>{answer.description}</Text>
+                        <Report modalHandler={() => modalHandler(item, index, i)} isModalOpen={isModalOpen} />
+                      </View>
+                      <Divider w="100%" />
+                    </>
+                  ))}
+                </Accordion.Details>
+              </Accordion.Item>
+            </Accordion>
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -173,14 +218,7 @@ export default ({ navigation }) => {
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-
             <Button>Highlight</Button>
-            {item.answers.map((answer) => (
-              <>
-                <Text>{answer.description}</Text>
-                <Report modalHandler={modalHandler} isModalOpen={isModalOpen} />
-              </>
-            ))}
             <Divider my={2} w="100%" />
           </>
         )}
