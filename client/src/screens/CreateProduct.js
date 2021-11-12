@@ -23,7 +23,6 @@ import { updateCode, deleteImage, deleteProduct } from '../features/image'
 import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
-import { updateCode, deleteImage, deleteProduct } from '../features/image'
 import { fetchUsersByGroup } from '../api/auth'
 
 // ========== Please leave comments as a reference ========== //
@@ -63,7 +62,7 @@ export default () => {
       body: JSON.stringify(message),
     })
   }
-  
+
   const onCancel = () => deleteAlert()
 
   const handleSubmit = async () => {
