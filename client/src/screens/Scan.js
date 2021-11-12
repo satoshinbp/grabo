@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { View, Button, HStack } from 'native-base'
-import { useNavigation } from '@react-navigation/native'
+import { View, Button, HStack, VStack, Text } from 'native-base'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { addImage, updateCode } from '../features/image'
@@ -10,9 +10,12 @@ import Loading from '../components/Loading'
 
 export default () => {
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
+
   const dispatch = useDispatch()
+
   const cameraRef = useRef(null)
-  const [hasPermission, setHasPermission] = useState(false)
+  const [hasPermission, setHasPermission] = useState(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -69,19 +72,36 @@ export default () => {
     }
   }
 
+  const actionButtons = (
+    <HStack my={2} space={2}>
+      <Button flex={1} isDisabled={!hasPermission} onPress={takePicture}>
+        Snap
+      </Button>
+      <Button flex={1} onPress={openImagePickerAsync}>
+        Gallery
+      </Button>
+    </HStack>
+  )
+
+  if (!isFocused) return <View />
   if (loading) return <Loading />
+  if (!hasPermission) {
+    return (
+      <View variant="wrapper" flex={1}>
+        <VStack justifyContent="flex-end" h="100%">
+          {hasPermission === false && (
+            <Text flex={1} my={2}>
+              No access to camera
+            </Text>
+          )}
+          {actionButtons}
+        </VStack>
+      </View>
+    )
+  }
   return (
-    <View h="100%" flex={1} bg="#fff">
-      <Camera flex={1} justifyContent="flex-end" alignItems="center" ref={cameraRef}>
-        <HStack m={2} space={2}>
-          <Button flex={1} isDisabled={!hasPermission} onPress={takePicture}>
-            Snap
-          </Button>
-          <Button flex={1} onPress={openImagePickerAsync}>
-            Gallery
-          </Button>
-        </HStack>
-      </Camera>
-    </View>
+    <Camera flex={1} justifyContent="flex-end" ref={cameraRef}>
+      <View variant="wrapper">{actionButtons}</View>
+    </Camera>
   )
 }
