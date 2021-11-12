@@ -185,12 +185,11 @@ export default ({ navigation }) => {
         data={product.fixedQandAs}
         renderItem={({ item, index }) => (
           <>
-            <Text>{item.question}</Text>
             <Accordion>
               <Accordion.Item>
                 <Accordion.Summary>
                   <VStack>
-                    <Text>{item.question.description}</Text>
+                    <Text>{item.question}</Text>
                     <Text>
                       This question has&nbsp;
                       {item.answers.length}
