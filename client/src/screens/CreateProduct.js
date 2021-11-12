@@ -7,6 +7,7 @@ import {
   View,
   ScrollView,
   Box,
+  Center,
   VStack,
   CheckIcon,
   Checkbox,
@@ -134,31 +135,28 @@ export default () => {
   return (
     <ScrollView variant="wrapper">
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <VStack space={2} my={2}>
+        <VStack variant="container">
           <Heading>Product Information</Heading>
 
-          <Box>
+          <View>
             <Text fontSize="lg" bold>
               Image
             </Text>
             <VStack alignItems="center" space={2}>
               {/* display selected image */}
-              {imageUrl.length > 0 &&
+              {imageUrl.length > 0 ? (
                 imageUrl.map((image, index) => (
                   <Box key={image} position="relative" w="100px" h="100px">
                     <Image source={{ uri: image }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
-                    <MaterialIcons
-                      name="delete"
-                      size={24}
-                      color="black"
-                      position="absolute"
-                      top={2}
-                      right={2}
-                      onPress={() => onImageRemove(index)}
-                    />
+                    <Box position="absolute" top={2} right={2}>
+                      <MaterialIcons name="delete" size={24} color="black" onPress={() => onImageRemove(index)} />
+                    </Box>
                   </Box>
-                ))}
-              <Button onPress={addImage}>Take another picture</Button>
+                ))
+              ) : (
+                <Text>At lease one picture is required.</Text>
+              )}
+              <Button onPress={addImage}>{imageUrl.length > 0 ? 'Take another pircute' : 'Take a picture'}</Button>
             </VStack>
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
@@ -167,9 +165,9 @@ export default () => {
               alt="image"
               style={{ width: 300, height: 300 }}
             /> */}
-          </Box>
+          </View>
 
-          <Box>
+          <View>
             <Text fontSize="lg" bold>
               Language
             </Text>
@@ -188,9 +186,9 @@ export default () => {
                 <Select.Item value={group.code} label={group.language} />
               ))}
             </Select>
-          </Box>
+          </View>
 
-          <Box>
+          <View>
             <Text fontSize="lg" bold>
               Choose which default questions to highlight
             </Text>
@@ -199,9 +197,9 @@ export default () => {
                 <Checkbox value={index}>{question}</Checkbox>
               ))}
             </Checkbox.Group>
-          </Box>
+          </View>
 
-          <Box>
+          <View>
             <Text fontSize="lg" bold>
               Ask your own question
             </Text>
@@ -223,14 +221,16 @@ export default () => {
                 {index && <CloseIcon size={4} onPress={() => removeFormFields(index)} />}
               </Box>
             ))}
-            <AddIcon size="4" onPress={addFormFields} />
-          </Box>
+            <Center>
+              <AddIcon size="4" onPress={addFormFields} />
+            </Center>
+          </View>
 
           <Button variant="primary" onPress={onCancel}>
             Cancel
           </Button>
 
-          <Button variant="primary" onPress={handleSubmit}>
+          <Button variant="primary" isDisabled={imageUrl.length === 0} onPress={handleSubmit}>
             Create a Product
           </Button>
         </VStack>

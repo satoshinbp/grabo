@@ -58,9 +58,6 @@ export default () => {
       },
       Box: {
         variants: {
-          container: {
-            my: 2,
-          },
           listItemPlain: ({ index }) => ({
             mt: index === 0 ? 1.5 : 0,
             mb: 3,
@@ -87,6 +84,14 @@ export default () => {
             width: '72px',
             height: '72px',
           }),
+        },
+      },
+      VStack: {
+        variants: {
+          container: {
+            my: 2,
+            space: 3,
+          },
         },
       },
       Button: {
