@@ -8,9 +8,19 @@ const updateUser = async (req, res) => {
   await user
     .save()
     .then((result) => {
+      console.log(result)
       res.send(result)
     })
     .catch((error) => res.send(error))
+}
+
+const getUsersByGroup = (req, res) => {
+  User.find({ groups: { $in: req.params.group } })
+    .then((result) => {
+      // console.log(result)
+      res.send(result)
+    })
+    .catch((e) => console.error(e))
 }
 
 const getCurrentUser = async (req, res) => res.send(req.user)
@@ -26,4 +36,4 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = { getCurrentUser, updateUser, logout }
+module.exports = { getCurrentUser, updateUser, logout, getUsersByGroup }

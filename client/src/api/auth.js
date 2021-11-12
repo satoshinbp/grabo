@@ -34,4 +34,15 @@ const updateUser = async (token, data) => {
   }
 }
 
-export { signInWithGoogle, fetchUser, updateUser }
+const fetchUsersByGroup = async (token, code) => {
+  try {
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${code}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export { signInWithGoogle, fetchUser, updateUser, fetchUsersByGroup }
