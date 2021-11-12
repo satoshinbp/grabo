@@ -86,6 +86,54 @@ const addAnswer = (req, res) => {
   })
 }
 
+const addUniqQuestion = (req, res) => {
+  Product.findOne({
+    _id: req.body.id,
+  }).then((product) => {
+    product.markModified('uniqQandAs')
+    product.uniqQandAs.push(req.body.question)
+
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
+}
+
+const updateHighlight = (req, res) => {
+  Product.findOne({
+    _id: req.body.id,
+  }).then((product) => {
+    if (req.body.isHighlighted) {
+      if (req.body.isUniqQuestion) {
+        const newHighlightArray = product.uniqQandAs[req.body.questionIndex].highlightedBy.filter((userId) => {
+          return userId.toString() !== req.body.userId
+        })
+        product.markModified('uniqQandAs')
+        product.uniqQandAs[req.body.questionIndex].highlightedBy = newHighlightArray
+      } else {
+        const newHighlightArray = product.fixedQandAs[req.body.questionIndex].highlightedBy.filter((userId) => {
+          return userId.toString() !== req.body.userId
+        })
+        product.markModified('fixedQandAs')
+        product.fixedQandAs[req.body.questionIndex].highlightedBy = newHighlightArray
+      }
+    } else {
+      if (req.body.isUniqQuestion) {
+        product.markModified('uniqQandAs')
+        product.uniqQandAs[req.body.questionIndex].highlightedBy.push(req.body.userId)
+      } else {
+        product.markModified('fixedQandAs')
+        product.fixedQandAs[req.body.questionIndex].highlightedBy.push(req.body.userId)
+      }
+    }
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
+}
+
 const updateReview = async (req, res) => {
   let targetProduct = await Product.findOne({ 'fixedQandAs._id': req.body.target.fixedQandAsId })
   let targetreport = await targetProduct.fixedQandAs[req.body.target.fixedquestionIndex].answers[
@@ -102,20 +150,6 @@ const updateReview = async (req, res) => {
     .catch((e) => res.send(e))
 }
 
-const addUniqQuestion = (req, res) => {
-  Product.findOne({
-    _id: req.body.id,
-  }).then((product) => {
-    product.markModified('uniqQandAs')
-    product.uniqQandAs.push(req.body.question)
-
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => console.error(e))
-  })
-}
-
 module.exports = {
   getProducts,
   getProductById,
@@ -124,6 +158,7 @@ module.exports = {
   getProductsByFavoredUserId,
   createProduct,
   addAnswer,
-  updateReview,
   addUniqQuestion,
+  updateHighlight,
+  updateReview,
 }

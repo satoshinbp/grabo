@@ -4,7 +4,7 @@ import { useRoute } from '@react-navigation/core'
 import { View, FlatList, Image, Text, Button, Divider, Input, Center, Accordion, VStack } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
-import { addAnswer, addUniqQuestion } from '../api/product'
+import { addAnswer, addUniqQuestion, updateHighlight } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
 import Report from '../components/Report'
@@ -44,6 +44,14 @@ export default ({ navigation }) => {
     try {
       await addUniqQuestion(token, params)
       setQuestion({})
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleHighlightSubmit = async (params) => {
+    try {
+      await updateHighlight(token, params)
     } catch (e) {
       console.error(e)
     }
@@ -130,6 +138,21 @@ export default ({ navigation }) => {
                 </Accordion.Details>
               </Accordion.Item>
             </Accordion>
+            <Button
+              onPress={() => {
+                const highlightStatus = item.highlightedBy.includes(user._id)
+                const params = {
+                  id: product._id,
+                  userId: user._id,
+                  isUniqQuestion: true,
+                  questionIndex: index,
+                  isHighlighted: highlightStatus,
+                }
+                handleHighlightSubmit(params)
+              }}
+            >
+              ★{item.highlightedBy.length}
+            </Button>
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -152,9 +175,6 @@ export default ({ navigation }) => {
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-
-            <Button>Highlight</Button>
-
             <Divider my={2} w="100%" />
           </>
         )}
@@ -169,7 +189,7 @@ export default ({ navigation }) => {
               <Accordion.Item>
                 <Accordion.Summary>
                   <VStack>
-                    <Text>{item.question.description}</Text>
+                    <Text>{item.question}</Text>
                     <Text>
                       This question has&nbsp;
                       {item.answers.length}
@@ -196,6 +216,21 @@ export default ({ navigation }) => {
                 </Accordion.Details>
               </Accordion.Item>
             </Accordion>
+            <Button
+              onPress={() => {
+                const highlightStatus = item.highlightedBy.includes(user._id)
+                const params = {
+                  id: product._id,
+                  userId: user._id,
+                  isUniqQuestion: false,
+                  questionIndex: index,
+                  isHighlighted: highlightStatus,
+                }
+                handleHighlightSubmit(params)
+              }}
+            >
+              ★{item.highlightedBy.length}
+            </Button>
             <Input
               mb="10"
               placeholder="Please write an answer here"
@@ -218,7 +253,6 @@ export default ({ navigation }) => {
               }}
             />
             <Button onPress={handleAnswerSubmit}>Submit Answer</Button>
-            <Button>Highlight</Button>
             <Divider my={2} w="100%" />
           </>
         )}
