@@ -50,17 +50,6 @@ export default () => {
     return unsubscribe
   }, [navigation])
 
-  const handleAnswerSubmit = async () => {
-    const params = { id: product._id, answer }
-    console.log(answer)
-    try {
-      await addAnswer(token, params)
-      setAnswer({})
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   const handleQuestionSubmit = async () => {
     const params = { id: product._id, question }
     try {
@@ -93,6 +82,11 @@ export default () => {
     setIndex(index)
     setType(type)
     setQuestion(questionDescription)
+  }
+
+  const askQuestionClickHandler = () => {
+    setIsModalOpen(true)
+    setContentType('question')
   }
 
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
@@ -248,6 +242,9 @@ export default () => {
           question={question}
         />
       </ScrollView>
+      <Button variant="fab" onPress={() => askQuestionClickHandler()}>
+        Ask a Question
+      </Button>
     </>
   )
 }
