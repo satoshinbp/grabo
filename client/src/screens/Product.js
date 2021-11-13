@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute, useNavigation } from '@react-navigation/core'
-import { Dimensions } from 'react-native'
+import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
   ScrollView,
@@ -39,7 +39,9 @@ export default () => {
   const [reportItem, setReportItem] = useState(null)
   const [answer, setAnswer] = useState({})
   const [question, setQuestion] = useState({})
-
+  const [contentType, setContentType] = useState('')
+  const [index, setIndex] = useState(0)
+  const [type, setType] = useState('')
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(setProduct({ token, id: route.params.id }))
@@ -85,9 +87,18 @@ export default () => {
     }
   }
 
+  const answerClickHandler = (index, type, questionDescription) => {
+    setIsModalOpen(true)
+    setContentType('answer')
+    setIndex(index)
+    setType(type)
+    setQuestion(questionDescription)
+  }
+
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
     setIsModalOpen(!isModalOpen)
     setReportItem({ fixedQandAsId: item._id, fixedquestionIndex, answerIndex })
+    setContentType('report')
   }
 
   const carouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
@@ -126,6 +137,13 @@ export default () => {
                     {QandA.answers.length}
                     {QandA.answers.length > 1 ? ' answers' : ' answer'}
                   </Text>
+                  <Text
+                    onPress={() =>
+                      answerClickHandler(index, type, type === 'uniq' ? QandA.question.description : QandA.question)
+                    }
+                  >
+                    Answer
+                  </Text>
                 </VStack>
                 <Pressable
                   onPress={() => {
@@ -162,25 +180,6 @@ export default () => {
             </Accordion.Details>
           </Accordion.Item>
         </Accordion>
-        <Input
-          placeholder="Please write an answer here"
-          blurOnSubmit={true}
-          returnKeyType="done"
-          onSubmitEditing={() => Keyboard.dismiss()}
-          value={answer}
-          onChangeText={(text) => {
-            setAnswer({
-              answer: {
-                userId: user._id,
-                description: text,
-              },
-              isUniqQuestion: type === 'uniq',
-              questionIndex: index,
-            })
-          }}
-          alignItems="center"
-        />
-        <Button onPress={handleAnswerSubmit}>Answer</Button>
         <Divider w="100%" my={4} />
       </>
     ))
@@ -238,14 +237,17 @@ export default () => {
           />
           <Button onPress={handleQuestionSubmit}>Question</Button>
         </>
+        <ProductActionModal
+          modalHandler={modalHandler}
+          modalVisible={isModalOpen}
+          reportItem={reportItem}
+          setReportItem={setReportItem}
+          contentType={contentType}
+          index={index}
+          type={type}
+          question={question}
+        />
       </ScrollView>
-
-      {/* <ProductActionModal
-        modalHandler={modalHandler}
-        modalVisible={isModalOpen}
-        reportItem={reportItem}
-        setReportItem={setReportItem}
-      /> */}
     </>
   )
 }

@@ -1,12 +1,18 @@
 import { Image } from 'native-base'
 import React, { useState } from 'react'
-import { Modal, StyleSheet, Pressable, View } from 'react-native'
-import { VStack, HStack, Checkbox, Box, Heading, Button } from 'native-base'
+import { useSelector } from 'react-redux'
+import { Modal, StyleSheet, Pressable, View, Keyboard } from 'react-native'
+import { VStack, HStack, Checkbox, Box, Heading, Button, Text, Input } from 'native-base'
 import { updateReview } from '../api/product'
 import reportOptions from '../utils/reports'
+import { addAnswer, addUniqQuestion, updateHighlight, updateFavorite } from '../api/product'
+import Loading from '../components/Loading'
 
 const ProductActionModal = (props) => {
+  const { token, user } = useSelector((state) => state.auth)
+  const { product, loading } = useSelector((state) => state.product)
   const [reports, setReports] = useState('')
+  const [answer, setAnswer] = useState({})
 
   const handleSave = () => {
     props.modalHandler(false)
@@ -21,6 +27,78 @@ const ProductActionModal = (props) => {
     props.modalHandler(false)
     props.setReportItem('')
   }
+
+  const handleAnswerSubmit = async () => {
+    const params = { id: product._id, answer }
+    try {
+      await addAnswer(token, params)
+      setAnswer({})
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const modalContents = () => {
+    if (props.contentType === 'answer') {
+      return (
+        <Box>
+          <VStack space={2}>
+            <HStack alignItems="baseline">
+              <Heading fontSize="lg">Answering a question</Heading>
+            </HStack>
+            <Text>{props.question}</Text>
+            <Input
+              placeholder="Write your answer here"
+              blurOnSubmit={true}
+              returnKeyType="done"
+              onSubmitEditing={() => Keyboard.dismiss()}
+              value={answer}
+              onChangeText={(text) => {
+                setAnswer({
+                  answer: {
+                    userId: user._id,
+                    description: text,
+                  },
+                  isUniqQuestion: props.type === 'uniq',
+                  questionIndex: props.index,
+                })
+              }}
+              alignItems="center"
+            />
+            <Button onPress={handleAnswerSubmit}>ANSWER</Button>
+          </VStack>
+        </Box>
+      )
+    }
+    if (props.contentType === 'report') {
+      return (
+        <Box>
+          <VStack space={2}>
+            <HStack alignItems="baseline">
+              <Heading fontSize="lg">Report</Heading>
+            </HStack>
+            <Checkbox.Group
+              colorScheme="green"
+              accessibilityLabel="Report"
+              onChange={(values) => {
+                setReports(values)
+              }}
+            >
+              {reportOptions.map((report) => (
+                <Checkbox value={report.value} my=".5">
+                  {report.message}
+                </Checkbox>
+              ))}
+            </Checkbox.Group>
+          </VStack>
+          <Button onPress={handleSave}>Report</Button>
+        </Box>
+      )
+    } else {
+      return <Text> question</Text>
+    }
+  }
+  if (loading) return <Loading />
 
   return (
     <View style={styles.centeredView}>
@@ -41,27 +119,7 @@ const ProductActionModal = (props) => {
                 style={{ width: 30, height: 30, marginBottom: 15 }}
               />
             </Pressable>
-            <Box>
-              <VStack space={2}>
-                <HStack alignItems="baseline">
-                  <Heading fontSize="lg">Report</Heading>
-                </HStack>
-                <Checkbox.Group
-                  colorScheme="green"
-                  accessibilityLabel="Report"
-                  onChange={(values) => {
-                    setReports(values)
-                  }}
-                >
-                  {reportOptions.map((report) => (
-                    <Checkbox value={report.value} my=".5">
-                      {report.message}
-                    </Checkbox>
-                  ))}
-                </Checkbox.Group>
-              </VStack>
-              <Button onPress={handleSave}>Report</Button>
-            </Box>
+            <Box>{modalContents()}</Box>
           </View>
         </View>
       </Modal>
