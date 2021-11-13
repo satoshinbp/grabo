@@ -9,13 +9,13 @@ export default () => {
   const { user } = useSelector((state) => state.auth)
   const navigation = useNavigation()
 
-  const onPress = () => navigation.navigate('Group', { language: item.language, code: item.code })
+  const onPress = (item) => navigation.navigate('Group', { language: item.language, code: item.code })
 
   return (
     <FlatList
       data={groups.filter((group) => user?.groups?.includes(group.code))}
       renderItem={({ item }) => (
-        <ListItemBarColored text={item.language} icon={<SunIcon size={8} />} onPress={onPress} />
+        <ListItemBarColored text={item.language} icon={<SunIcon size={8} />} onPress={() => onPress(item)} />
       )}
       keyExtractor={(item) => item.code}
       showsVerticalScrollIndicator={false}
