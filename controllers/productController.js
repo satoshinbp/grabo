@@ -134,6 +134,25 @@ const updateHighlight = (req, res) => {
   })
 }
 
+const updateFavorite = (req, res) => {
+  Product.findOne({
+    _id: req.body.id,
+  }).then((product) => {
+    if (req.body.isFavored) {
+      const newFavoredArray = product.favoredUserIds.filter((userId) => {
+        return userId.toString() !== req.body.userId
+      })
+      product.favoredUserIds = newFavoredArray
+    } else {
+      product.favoredUserIds.push(req.body.userId)
+    }
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
+}
+
 const updateReview = async (req, res) => {
   let targetProduct = await Product.findOne({ 'fixedQandAs._id': req.body.target.fixedQandAsId })
   let targetreport = await targetProduct.fixedQandAs[req.body.target.fixedquestionIndex].answers[
@@ -160,5 +179,6 @@ module.exports = {
   addAnswer,
   addUniqQuestion,
   updateHighlight,
+  updateFavorite,
   updateReview,
 }

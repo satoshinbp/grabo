@@ -19,7 +19,7 @@ import {
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
-import { addAnswer, addUniqQuestion, updateHighlight } from '../api/product'
+import { addAnswer, addUniqQuestion, updateHighlight, updateFavorite } from '../api/product'
 import Loading from '../components/Loading'
 import ProductActionModal from '../components/ProductActionModal'
 import Report from '../components/Report'
@@ -72,6 +72,14 @@ export default () => {
   const handleHighlightSubmit = async (params) => {
     try {
       await updateHighlight(token, params)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleFavoriteSubmit = async (params) => {
+    try {
+      await updateFavorite(token, params)
     } catch (e) {
       console.error(e)
     }
@@ -190,6 +198,21 @@ export default () => {
         />
         <Text>{product.images?.length > 0 ? PaginationComponent(product.images) : null}</Text>
       </View>
+      <>
+        <Button
+          onPress={() => {
+            const favoriteStatus = product.favoredUserIds.includes(user._id)
+            const params = {
+              id: product._id,
+              userId: user._id,
+              isFavored: favoriteStatus,
+            }
+            handleFavoriteSubmit(params)
+          }}
+        >
+          ❤︎
+        </Button>
+      </>
 
       <ScrollView variant="wrapper" flex={0.5} mb={2}>
         {product.fixedQandAs && QandAAccordions(product.fixedQandAs, 'fixed')}
