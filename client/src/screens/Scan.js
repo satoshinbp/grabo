@@ -87,7 +87,7 @@ export default () => {
   if (loading) return <Loading />
   if (!hasPermission) {
     return (
-      <View variant="wrapper" flex={1}>
+      <View variant="wrapper">
         <VStack justifyContent="flex-end" h="100%">
           {hasPermission === false && (
             <Text flex={1} my={2}>
@@ -100,8 +100,10 @@ export default () => {
     )
   }
   return (
-    <Camera flex={1} justifyContent="flex-end" ref={cameraRef}>
-      <View variant="wrapper">{actionButtons}</View>
+    <Camera flex={1} ref={cameraRef}>
+      <View variant="wrapper" justifyContent="flex-end">
+        {actionButtons}
+      </View>
     </Camera>
   )
 }

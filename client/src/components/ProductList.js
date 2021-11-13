@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { ImageBackground } from 'react-native'
-import { View, Box, Pressable, FlatList, useTheme } from 'native-base'
+import { View, Box, Pressable, FlatList } from 'native-base'
 
 export default () => {
   const navigation = useNavigation()
@@ -22,9 +22,7 @@ export default () => {
   }
 
   const ProductCard = ({ item }) =>
-    item.empty ? (
-      <View flex={1} bg="transparent" style={{ width: 144, height: 144, alignSelf: 'center' }} />
-    ) : (
+    !item.empty && item.images.length > 0 ? (
       <Pressable flex={1} my={3} onPress={() => navigation.navigate('Product', { id: item._id })}>
         <ImageBackground
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
@@ -34,6 +32,8 @@ export default () => {
           <Box variant="productCard"></Box>
         </ImageBackground>
       </Pressable>
+    ) : (
+      <View flex={1} bg="transparent" style={{ width: 144, height: 144, alignSelf: 'center' }} />
     )
 
   const numColumns = 2

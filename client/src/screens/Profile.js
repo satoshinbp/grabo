@@ -17,15 +17,15 @@ export default () => {
         </Center>
         <View my={2} px={3}>
           <Text fontSize="lg" bold>
-            {user.name}
+            {user?.name}
           </Text>
           <Text my={1} fontSize="sm" color="darkText">
-            {user.email}
+            {user?.email}
           </Text>
         </View>
         <Avatar
           alignSelf="center"
-          source={{ uri: user.image }}
+          source={{ uri: user?.image }}
           size="2xl"
           alt="user portrait"
           borderRadius="full"

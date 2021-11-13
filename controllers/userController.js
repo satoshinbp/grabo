@@ -1,5 +1,13 @@
 const User = require('../models/User')
 
+const getCurrentUser = async (req, res) => res.send(req.user)
+
+const getUsersByGroup = (req, res) => {
+  User.find({ groups: { $in: req.params.group } })
+    .then((result) => res.send(result))
+    .catch((e) => console.error(e))
+}
+
 const updateUser = async (req, res) => {
   let user = await User.findOne({ _id: `${req.body.user_id}` })
   const updates = Object.keys(req.body)
@@ -7,13 +15,9 @@ const updateUser = async (req, res) => {
 
   await user
     .save()
-    .then((result) => {
-      res.send(result)
-    })
+    .then((result) => res.send(result))
     .catch((error) => res.send(error))
 }
-
-const getCurrentUser = async (req, res) => res.send(req.user)
 
 const logout = async (req, res) => {
   try {
@@ -26,4 +30,4 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = { getCurrentUser, updateUser, logout }
+module.exports = { getCurrentUser, getUsersByGroup, updateUser, logout }
