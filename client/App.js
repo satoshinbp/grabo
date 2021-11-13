@@ -43,6 +43,15 @@ export default () => {
       View: {
         variants: {
           wrapper: () => ({
+            flex: 1,
+            px: 3,
+          }),
+        },
+      },
+      ScrollView: {
+        variants: {
+          wrapper: () => ({
+            flex: 1,
             px: 3,
           }),
         },
@@ -77,6 +86,14 @@ export default () => {
           }),
         },
       },
+      VStack: {
+        variants: {
+          container: {
+            my: 2,
+            space: 3,
+          },
+        },
+      },
       Button: {
         baseStyle: {
           _text: {
@@ -85,6 +102,11 @@ export default () => {
           },
         },
         variants: {
+          primary: () => ({
+            width: '232px',
+            alignSelf: 'center',
+            backgroundColor: 'primary.500',
+          }),
           fab: () => ({
             position: 'absolute',
             bottom: 4,

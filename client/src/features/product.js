@@ -66,6 +66,15 @@ export const setProductWithNewQuestion = createAsyncThunk('products/setQuestion'
   }
 })
 
+export const setProductWithUpdatedHighlight = createAsyncThunk('products/setHighlight', async ({ token, params }) => {
+  try {
+    const data = await updateHighlight(token, params)
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+})
+
 const productSlice = createSlice({
   name: 'product',
   initialState: { product: {}, products: [], loading: false },
@@ -128,6 +137,16 @@ const productSlice = createSlice({
       state.loading = false
     },
     [setProductWithNewQuestion.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [setProductWithUpdatedHighlight.pending]: (state, action) => {
+      state.loading = true
+    },
+    [setProductWithUpdatedHighlight.fulfilled]: (state, action) => {
+      state.product = action.payload.data
+      state.loading = false
+    },
+    [setProductWithUpdatedHighlight.rejected]: (state, action) => {
       state.loading = false
     },
   },

@@ -28,7 +28,7 @@ export default () => {
 
   return (
     <View variant="wrapper">
-      <VStack space={2} alignItems="center">
+      <VStack variant="container">
         <Checkbox.Group
           defaultValue={user.groups}
           accessibilityLabel="choose language groups"
@@ -41,7 +41,7 @@ export default () => {
           ))}
         </Checkbox.Group>
         {isError && <Text>You have to belong to at least one Group</Text>}
-        <Button w="232px" onPress={handleSave}>
+        <Button variant="primary" onPress={handleSave}>
           Save
         </Button>
       </VStack>
