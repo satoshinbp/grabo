@@ -47,8 +47,12 @@ export default () => {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
+        header="Logout"
         body="Are you sure to logout from Grabo?"
-        action={() => dispatch(logout())}
+        primaryAction={() => dispatch(logout())}
+        primaryActionLabel="Logout"
+        secondaryAction={() => setModalOpen(false)}
+        secondaryActionLabel="Cancel"
       />
     </View>
   )
