@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout } from '../features/auth'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
+import Modal from '../elements/Modal'
 
 export default () => {
   const { user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
+  const [modalOpen, setModalOpen] = useState(false)
+
   const menu = [
     { text: 'Account Info', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
     { text: 'Settings', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
-    { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => dispatch(logout()) },
+    { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setModalOpen(true) },
   ]
 
   return (
@@ -40,6 +43,13 @@ export default () => {
           <ListItemBarPlain text={text} icon={icon} onPress={onPress} />
         ))}
       </View>
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        body="Are you sure to logout from Grabo?"
+        action={() => dispatch(logout())}
+      />
     </View>
   )
 }
