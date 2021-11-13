@@ -1,11 +1,16 @@
 import { Image } from 'native-base'
 import React, { useState } from 'react'
-import { Modal, StyleSheet, Pressable, View } from 'react-native'
+import { useSelector } from 'react-redux'
+import { Modal, StyleSheet, Pressable, View, Keyboard } from 'react-native'
 import { VStack, HStack, Checkbox, Box, Heading, Button, Text, Input } from 'native-base'
 import { updateReview } from '../api/product'
 import reportOptions from '../utils/reports'
 import { addAnswer, addUniqQuestion, updateHighlight, updateFavorite } from '../api/product'
+import Loading from '../components/Loading'
+
 const ProductActionModal = (props) => {
+  const { token, user } = useSelector((state) => state.auth)
+  const { product, loading } = useSelector((state) => state.product)
   const [reports, setReports] = useState('')
   const [answer, setAnswer] = useState({})
 
@@ -24,12 +29,9 @@ const ProductActionModal = (props) => {
   }
 
   const handleAnswerSubmit = async () => {
-    console.log('produect', props.productId)
-    console.log('answer', answer)
-    const params = { id: props.productId, answer }
-    console.log(answer)
+    const params = { id: product._id, answer }
     try {
-      await addAnswer(props.token, params)
+      await addAnswer(token, params)
       setAnswer({})
     } catch (e) {
       console.error(e)
@@ -43,10 +45,11 @@ const ProductActionModal = (props) => {
         <Box>
           <VStack space={2}>
             <HStack alignItems="baseline">
-              <Heading fontSize="lg">Answer</Heading>
+              <Heading fontSize="lg">Answering a question</Heading>
             </HStack>
+            <Text>{props.question}</Text>
             <Input
-              placeholder="Please write an answer here"
+              placeholder="Write your answer here"
               blurOnSubmit={true}
               returnKeyType="done"
               onSubmitEditing={() => Keyboard.dismiss()}
@@ -54,7 +57,7 @@ const ProductActionModal = (props) => {
               onChangeText={(text) => {
                 setAnswer({
                   answer: {
-                    userId: props.user._id,
+                    userId: user._id,
                     description: text,
                   },
                   isUniqQuestion: props.type === 'uniq',
@@ -63,7 +66,7 @@ const ProductActionModal = (props) => {
               }}
               alignItems="center"
             />
-            <Button onPress={handleAnswerSubmit}>Answer</Button>
+            <Button onPress={handleAnswerSubmit}>ANSWER</Button>
           </VStack>
         </Box>
       )
@@ -93,9 +96,10 @@ const ProductActionModal = (props) => {
         </Box>
       )
     } else {
-      return <Text> questionだばかやろう</Text>
+      return <Text> question</Text>
     }
   }
+  if (loading) return <Loading />
 
   return (
     <View style={styles.centeredView}>

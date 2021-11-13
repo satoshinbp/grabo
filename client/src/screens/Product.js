@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute, useNavigation } from '@react-navigation/core'
-import { Dimensions } from 'react-native'
+import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
   ScrollView,
@@ -87,11 +87,12 @@ export default () => {
     }
   }
 
-  const answerClickHandler = (index, type) => {
+  const answerClickHandler = (index, type, questionDescription) => {
     setIsModalOpen(true)
     setContentType('answer')
     setIndex(index)
     setType(type)
+    setQuestion(questionDescription)
   }
 
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
@@ -136,7 +137,13 @@ export default () => {
                     {QandA.answers.length}
                     {QandA.answers.length > 1 ? ' answers' : ' answer'}
                   </Text>
-                  <Text onPress={() => answerClickHandler(index, type)}>Answer</Text>
+                  <Text
+                    onPress={() =>
+                      answerClickHandler(index, type, type === 'uniq' ? QandA.question.description : QandA.question)
+                    }
+                  >
+                    Answer
+                  </Text>
                 </VStack>
                 <Pressable
                   onPress={() => {
@@ -255,11 +262,9 @@ export default () => {
           reportItem={reportItem}
           setReportItem={setReportItem}
           contentType={contentType}
-          user={user}
           index={index}
           type={type}
-          productId={product._id}
-          token={token}
+          question={question}
         />
       </ScrollView>
     </>
