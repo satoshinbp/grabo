@@ -39,7 +39,9 @@ export default () => {
   const [reportItem, setReportItem] = useState(null)
   const [answer, setAnswer] = useState({})
   const [question, setQuestion] = useState({})
-
+  const [contentType, setContentType] = useState('')
+  const [index, setIndex] = useState(0)
+  const [type, setType] = useState('')
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(setProduct({ token, id: route.params.id }))
@@ -85,9 +87,17 @@ export default () => {
     }
   }
 
+  const answerClickHandler = (index, type) => {
+    setIsModalOpen(true)
+    setContentType('answer')
+    setIndex(index)
+    setType(type)
+  }
+
   const modalHandler = (item, fixedquestionIndex, answerIndex) => {
     setIsModalOpen(!isModalOpen)
     setReportItem({ fixedQandAsId: item._id, fixedquestionIndex, answerIndex })
+    setContentType('report')
   }
 
   const carouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
@@ -126,6 +136,7 @@ export default () => {
                     {QandA.answers.length}
                     {QandA.answers.length > 1 ? ' answers' : ' answer'}
                   </Text>
+                  <Text onPress={() => answerClickHandler(index, type)}>Answer</Text>
                 </VStack>
                 <Pressable
                   onPress={() => {
@@ -238,14 +249,19 @@ export default () => {
           />
           <Button onPress={handleQuestionSubmit}>Question</Button>
         </>
+        <ProductActionModal
+          modalHandler={modalHandler}
+          modalVisible={isModalOpen}
+          reportItem={reportItem}
+          setReportItem={setReportItem}
+          contentType={contentType}
+          user={user}
+          index={index}
+          type={type}
+          productId={product._id}
+          token={token}
+        />
       </ScrollView>
-
-      {/* <ProductActionModal
-        modalHandler={modalHandler}
-        modalVisible={isModalOpen}
-        reportItem={reportItem}
-        setReportItem={setReportItem}
-      /> */}
     </>
   )
 }
