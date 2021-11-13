@@ -6,8 +6,8 @@ const ProdileStack = createNativeStackNavigator()
 
 export default () => {
   return (
-    <ProdileStack.Navigator>
-      <ProdileStack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+    <ProdileStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProdileStack.Screen name="Profile" component={Profile} />
     </ProdileStack.Navigator>
   )
 }

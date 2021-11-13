@@ -6,8 +6,8 @@ const FavsStack = createNativeStackNavigator()
 
 export default () => {
   return (
-    <FavsStack.Navigator>
-      <FavsStack.Screen name="Favorites" component={Favs} options={{ headerShown: false }} />
+    <FavsStack.Navigator screenOptions={{ headerShown: false }}>
+      <FavsStack.Screen name="Favorites" component={Favs} />
     </FavsStack.Navigator>
   )
 }

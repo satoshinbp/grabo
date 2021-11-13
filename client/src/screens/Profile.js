@@ -1,46 +1,45 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { View, Box, Center, HStack, Pressable, Text, Avatar, SunIcon, ChevronRightIcon } from 'native-base'
+import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout } from '../features/auth'
+import ListItemBarPlain from '../elements/ListItemBarPlain'
 
 export default () => {
   const { user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
+  const menu = [
+    { text: 'Account Info', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
+    { text: 'Settings', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
+    { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => dispatch(logout()) },
+  ]
+
   return (
     <View variant="wrapper">
-      <Center>
-        <Box position="absolute" top={0} h={32} w="100%" my={2} borderRadius="md" bg="primary.400" />
-      </Center>
-      <View my={2} px={3}>
+      <VStack alignItems="center" space={1} mb={3}>
+        <Box position="absolute" top={0} h="128px" w="100%" my={2} borderRadius="md" bg="primary.500" />
+        <View h="64px" />
+        <Avatar
+          source={{ uri: user.image }}
+          size="2xl"
+          alt="user portrait"
+          position="relative"
+          alignSelf="center"
+          borderRadius="full"
+        />
         <Text fontSize="lg" bold>
-          {user?.name}
+          {user.name}
         </Text>
-        <Text my={1} fontSize="sm" color="darkText">
-          {user?.email}
+        <Text fontSize="sm" color="darkText">
+          {user.email}
         </Text>
+      </VStack>
+
+      <View>
+        {menu.map(({ text, icon, onPress }) => (
+          <ListItemBarPlain text={text} icon={icon} onPress={onPress} />
+        ))}
       </View>
-      <Avatar
-        alignSelf="center"
-        source={{ uri: user?.image }}
-        size="2xl"
-        alt="user portrait"
-        borderRadius="full"
-        position="relative"
-      />
-      <Pressable onPress={() => dispatch(logout())}>
-        <Box index={0} variant="listItemPlain">
-          <HStack space={3} alignItems="center">
-            <Center size={12} bg="primary.500" borderRadius="full">
-              <SunIcon size={8} />
-            </Center>
-            <Text fontSize="md" bold flex={1}>
-              Logout
-            </Text>
-            <ChevronRightIcon size="5" mt="0.5" color="black" />
-          </HStack>
-        </Box>
-      </Pressable>
     </View>
   )
 }

@@ -8,10 +8,10 @@ const ScanStack = createNativeStackNavigator()
 
 export default () => {
   return (
-    <ScanStack.Navigator>
-      <ScanStack.Screen name="Scan" component={Scan} options={{ headerShown: false }} />
-      <ScanStack.Screen name="SelectLanguage" component={SelectLanguage} options={{ headerShown: false }} />
-      <ScanStack.Screen name="CreateProduct" component={CreateProduct} options={{ headerShown: false }} />
+    <ScanStack.Navigator screenOptions={{ headerShown: false }}>
+      <ScanStack.Screen name="Scan" component={Scan} />
+      <ScanStack.Screen name="SelectLanguage" component={SelectLanguage} />
+      <ScanStack.Screen name="CreateProduct" component={CreateProduct} />
     </ScanStack.Navigator>
   )
 }
