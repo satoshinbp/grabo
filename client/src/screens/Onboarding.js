@@ -92,15 +92,15 @@ export default ({ setIsFirstLaunch }) => {
 
   return (
     <View flex={1} bg="lightText">
-      <Backdrop scrollX={scrollX} />
-      <Square scrollX={scrollX} />
+      {/* <Backdrop scrollX={scrollX} /> */}
+      {/* <Square scrollX={scrollX} /> */}
       <Animated.FlatList
         data={onboardingSlides}
         renderItem={({ item }) => <OnboardingItem item={item} />}
         horizontal
         scrollEventThrottle={32}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false })}
-        showsHorizontalScrollIndicator
+        showsHorizontalScrollIndicator={false}
         pagingEnabled
         bounces={false}
         keyExtractor={(item) => item.id}
