@@ -135,33 +135,22 @@ const updateHighlight = (req, res) => {
 }
 
 const updateFavorite = (req, res) => {
-  console.log(req.body)
-  if (req.body.isFavored) {
-    Product.findOne({
-      _id: req.body.id,
-    }).then((product) => {
+  Product.findOne({
+    _id: req.body.id,
+  }).then((product) => {
+    if (req.body.isFavored) {
       const newFavoredArray = product.favoredUserIds.filter((userId) => {
         return userId.toString() !== req.body.userId
       })
       product.favoredUserIds = newFavoredArray
-      console.log(product)
-      product
-        .save()
-        .then((result) => res.send(result))
-        .catch((e) => console.error(e))
-    })
-  } else {
-    Product.findOne({
-      _id: req.body.id,
-    }).then((product) => {
+    } else {
       product.favoredUserIds.push(req.body.userId)
-      console.log(product)
-      product
-        .save()
-        .then((result) => res.send(result))
-        .catch((e) => console.error(e))
-    })
-  }
+    }
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
 }
 
 const updateReview = async (req, res) => {
