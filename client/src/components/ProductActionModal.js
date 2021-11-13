@@ -39,7 +39,6 @@ const ProductActionModal = (props) => {
   }
 
   const modalContents = () => {
-    console.log('baklaba')
     if (props.contentType === 'answer') {
       return (
         <Box>

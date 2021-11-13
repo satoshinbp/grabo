@@ -180,25 +180,6 @@ export default () => {
             </Accordion.Details>
           </Accordion.Item>
         </Accordion>
-        <Input
-          placeholder="Please write an answer here"
-          blurOnSubmit={true}
-          returnKeyType="done"
-          onSubmitEditing={() => Keyboard.dismiss()}
-          value={answer}
-          onChangeText={(text) => {
-            setAnswer({
-              answer: {
-                userId: user._id,
-                description: text,
-              },
-              isUniqQuestion: type === 'uniq',
-              questionIndex: index,
-            })
-          }}
-          alignItems="center"
-        />
-        <Button onPress={handleAnswerSubmit}>Answer</Button>
         <Divider w="100%" my={4} />
       </>
     ))
