@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { Box, Center, HStack, VStack, Pressable, Text, SunIcon, FlatList } from 'native-base'
+import { FlatList, SunIcon } from 'native-base'
 import groups from '../utils/groups'
 import ListItemBarColored from '../elements/ListItemBarColored'
 
