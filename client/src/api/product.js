@@ -1,7 +1,6 @@
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
-import groups from '../utils/groups'
 // SERVER_ROOT_URI might not work depends on dev environment
 // In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
@@ -76,36 +75,29 @@ const postProduct = async (token, params) => {
 
 const sendImgToCloudVision = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
-  const params = {
+  const data = {
     requests: [
       {
         features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
         image: { content: image },
-        imageContext: { languageHints: groups.map((group) => group.code) },
+        imageContext: { languageHints: ['ja', 'ru', 'ko', 'es', 'ar', 'de', 'pt', 'fr', 'zh', 'hi', 'pa', 'uk', 'fa'] },
       },
     ],
   }
 
   try {
-    const { data } = await axios.post(url, params, {
+    const res = await axios.post(url, data, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     })
 
-    const locale = data.responses[0].textAnnotations[0].locale
-    const descriptions = data.responses[0].textAnnotations
-      .filter((_, index) => index !== 0)
-      .map((annotation) => annotation.description)
-
-    return { locale, descriptions }
+    return res.data.responses[0].textAnnotations[0]
   } catch (e) {
     console.error(e)
   }
 }
-
-const searchProducts = (keywords) => console.log('keywords', keywords)
 
 const addAnswer = async (token, params) => {
   try {
@@ -151,9 +143,10 @@ const updateFavorite = async (token, params) => {
   }
 }
 
-const updateReport = async (token, params) => {
+const updateReview = async (params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/report`, params, {
+    const token = await SecureStore.getItemAsync('token')
+    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/review`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
@@ -168,12 +161,11 @@ export {
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
   sendImgToCloudVision,
-  searchProducts,
   postImage,
   postProduct,
   addAnswer,
   addUniqQuestion,
   updateHighlight,
   updateFavorite,
-  updateReport,
+  updateReview,
 }

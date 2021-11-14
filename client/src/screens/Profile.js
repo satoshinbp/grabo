@@ -63,11 +63,11 @@ export default () => {
         secondaryActionLabel="Cancel"
       />
 
-      <Modal
+      <FadeModal
         isOpen={notificationModalOpen}
         onClose={() => setNotificationModalOpen(false)}
-        header="Notification"
-        body="Mute Notification?"
+        title="Notification"
+        content="Mute Notification?"
         primaryAction={() => setNotificationHandler(false)}
         primaryActionLabel="Mute"
         secondaryAction={() => setNotificationHandler(true)}

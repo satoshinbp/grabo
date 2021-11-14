@@ -87,8 +87,10 @@ export default () => {
       const res = await postProduct(token, params)
 
       const fetchedUsers = await fetchUsersByGroup(token, code)
-      console.log('this is a', fetchedUsers)
-      const notificationTokens = await fetchedUsers.map((user) => user.notificationToken)
+      // console.log('this is a', fetchedUsers)
+      const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn === true)
+      // console.log('notified users', notifiedUsers)
+      const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
       notificationTokens.map((token) => sendPushNotification(token))
 
       setLoading(false)
@@ -98,7 +100,7 @@ export default () => {
       navigation.navigate('Scan')
       navigation.navigate('Product', { id: res.data._id })
     } catch (e) {
-      cosole.error(e)
+      console.error(e)
       setLoading(false)
     }
   }
