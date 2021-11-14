@@ -55,9 +55,9 @@ export default () => {
   }
   const removeImage = (index) => dispatch(deleteImage({ index }))
 
-  const addQuestion = () => setUniqQuestions((prevQuestions) => prevQuestions.push(''))
-  const changeQuestion = (index, text) => setUniqQuestions((prevQuestions) => (prevQuestions[index] = text))
-  const removeQuestion = (index) => setUniqQuestions((prevQuestions) => prevQuestions.splice(index, 1))
+  const addQuestion = () => setUniqQuestions([...uniqQuestions, ''])
+  const changeQuestion = (index, text) => setUniqQuestions(uniqQuestions.map((q, i) => (i === index ? text : q)))
+  const removeQuestion = (index) => setUniqQuestions(uniqQuestions.filter((_, i) => i !== index))
 
   const clearProduct = () => {
     dispatch(clearImage())
