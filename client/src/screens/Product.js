@@ -315,7 +315,11 @@ export default () => {
       <ScrollView variant="wrapper" flex={0.5} mb={2}>
         {product.fixedQandAs && qaAccordions(product.fixedQandAs, 'fixed')}
         {product.uniqQandAs && qaAccordions(product.uniqQandAs, 'uniq')}
+        {/* avoid conents to be hidden by FAB */}
+        <View h="60px" />
       </ScrollView>
+
+      <Button variant="fab">Ask a Question</Button>
 
       <SlideModal
         isOpen={isModalOpen}
