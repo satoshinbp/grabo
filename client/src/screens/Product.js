@@ -38,7 +38,7 @@ export default () => {
 
   const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalContentType, setModalContentType] = useState('')
+  const [modalContentType, setModalContentType] = useState('') // "question", "answer", or "report"
   const [questionType, setQuestionType] = useState('') // "fixed" or "uniq"
   const [questionIndex, setQuestionIndex] = useState(0)
   const [question, setQuestion] = useState({})
