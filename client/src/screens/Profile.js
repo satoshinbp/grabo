@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout } from '../features/auth'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
-import Modal from '../elements/Modal'
+import FadeModal from '../elements/FadeModal'
 
 export default () => {
   const { user } = useSelector((state) => state.auth)
@@ -44,7 +44,7 @@ export default () => {
         ))}
       </View>
 
-      <Modal
+      <FadeModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         title="Logout"
