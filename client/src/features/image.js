@@ -1,33 +1,57 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { sendImgToCloudVision, searchProducts } from '../api/product'
+
+export const addImage = createAsyncThunk('image/add', async ({ base64, uri }) => {
+  try {
+    const { descriptions, locale } = await sendImgToCloudVision(base64)
+    const keywords = [...new Set(descriptions)] // to remove keyword duplication
+    await searchProducts(keywords) // WIP
+    return { keywords, uri, locale }
+  } catch (e) {
+    console.error(e)
+  }
+})
 
 const initialStateValue = {
-  ocrText: [],
+  texts: [],
   uris: [],
   code: '',
 }
 
 const imageSlice = createSlice({
   name: 'image',
-  initialState: initialStateValue,
+  initialState: { value: initialStateValue, loading: false },
   reducers: {
-    addImage: (state, action) => {
-      action.payload.keywords.forEach((keyword) => {
-        if (!state.ocrText.includes(keyword)) {
-          state.ocrText.push(keyword)
-        }
-      })
-      state.uris.push(action.payload.uri)
-      state.code = action.payload.code
+    updateCode: (state, action) => {
+      state.value.code = action.payload
     },
     deleteImage: (state, action) => {
-      state.ocrText = state.ocrText.filter((_, index) => index !== action.payload.index)
-      state.uris = state.uris.filter((_, index) => index !== action.payload.index)
+      state.value.texts = state.value.texts.filter((_, index) => index !== action.payload.index)
+      state.value.uris = state.value.uris.filter((_, index) => index !== action.payload.index)
     },
     clearImage: (state) => {
-      state = initialStateValue
+      state.value = initialStateValue
+    },
+  },
+  extraReducers: {
+    [addImage.pending]: (state) => {
+      state.loading = true
+    },
+    [addImage.fulfilled]: (state, action) => {
+      action.payload.keywords.forEach((keyword) => {
+        if (!state.value.texts.includes(keyword)) {
+          state.value.texts.push(keyword)
+        }
+      })
+      state.value.uris.push(action.payload.uri)
+      state.value.code = action.payload.locale
+      state.loading = false
+    },
+    [addImage.rejected]: (state) => {
+      state.loading = false
     },
   },
 })
 
-export const { addImage, deleteImage, clearImage } = imageSlice.actions
+export const { updateCode, deleteImage, clearImage } = imageSlice.actions
 export default imageSlice.reducer

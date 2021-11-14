@@ -30,7 +30,7 @@ import Loading from '../components/Loading'
 // ========== Please leave comments as a reference ========== //
 export default () => {
   const { token, user } = useSelector((state) => state.auth)
-  const { code, uris, ocrText } = useSelector((state) => state.image)
+  const { texts, uris, code } = useSelector((state) => state.image.value)
   const dispatch = useDispatch()
 
   const navigation = useNavigation()
@@ -40,10 +40,66 @@ export default () => {
   const [uniqQuestions, setUniqQuestions] = useState([])
   const [loading, setLoading] = useState(false)
 
+  const openCamera = () => {
+    if (uris.length >= 3) {
+      alert('You can upload up to 3 images')
+    } else {
+      navigation.navigate('Scan')
+    }
+  }
+
   const uploadImage = async () => {
     const params = new FormData()
     params.append('image', { uri: uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
     await postImage(token, params)
+  }
+  const removeImage = (index) => dispatch(deleteImage({ index }))
+
+  const addQuestion = () => setUniqQuestions((prevQuestions) => prevQuestions.push(''))
+  const changeQuestion = (index, text) => setUniqQuestions((prevQuestions) => (prevQuestions[index] = text))
+  const removeQuestion = (index) => setUniqQuestions((prevQuestions) => prevQuestions.splice(index, 1))
+
+  const clearProduct = () => {
+    dispatch(clearImage())
+    setHighlitedQuestions([])
+    setUniqQuestions([])
+    navigation.navigate('Scan')
+  }
+  const cancelProduct = () =>
+    Alert.alert('Alert', 'Are you sure to cancel posting this product?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'OK', onPress: clearProduct },
+    ])
+  const submitProduct = async () => {
+    setLoading(true)
+    try {
+      await uploadImage()
+
+      const params = {
+        userId: user._id,
+        code,
+        url: uris,
+        text: texts,
+        highlitedQuestions: highlitedQuestions,
+        uniqQuestions: uniqQuestions,
+      }
+
+      const res = await postProduct(token, params)
+
+      const fetchedUsers = await fetchUsersByGroup(token, code)
+      const notificationTokens = await fetchedUsers.map((user) => user.notificationToken)
+      notificationTokens.map((token) => sendPushNotification(token))
+
+      setLoading(false)
+
+      clearProduct()
+
+      navigation.navigate('Scan')
+      navigation.navigate('Product', { id: res.data._id })
+    } catch (e) {
+      cosole.error(e)
+      setLoading(false)
+    }
   }
 
   const sendPushNotification = async (expoPushToken) => {
@@ -64,82 +120,6 @@ export default () => {
       },
       body: JSON.stringify(message),
     })
-  }
-
-  const onCancel = () => deleteAlert()
-
-  const handleSubmit = async () => {
-    setLoading(true)
-    try {
-      await uploadImage()
-
-      const params = {
-        userId: user._id,
-        code,
-        url: uris,
-        text: ocrText,
-        highlitedQuestions: highlitedQuestions,
-        uniqQuestions: uniqQuestions,
-      }
-
-      const res = await postProduct(token, params)
-
-      const fetchedUsers = await fetchUsersByGroup(token, code)
-      const notificationTokens = await fetchedUsers.map((user) => user.notificationToken)
-      notificationTokens.map((token) => sendPushNotification(token))
-
-      dispatch(clearImage())
-      setHighlitedQuestions([])
-      setUniqQuestions([])
-
-      setLoading(false)
-
-      navigation.navigate('Scan')
-      navigation.navigate('Product', { id: res.data._id })
-    } catch (e) {
-      cosole.error(e)
-      setLoading(false)
-    }
-  }
-
-  const deleteAlert = () =>
-    Alert.alert('Alert', 'Are you sure to cancel posting this product?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: () => {
-          dispatch(clearImage())
-          setHighlitedQuestions([])
-          setUniqQuestions([])
-          navigation.navigate('Scan')
-        },
-      },
-    ])
-
-  const addImage = () => {
-    if (uris.length >= 3) {
-      alert('You can upload up to 3 images')
-    } else {
-      navigation.navigate('Scan')
-    }
-  }
-  const onImageRemove = (index) => dispatch(deleteImage({ index }))
-
-  const handleChange = (i, text) => {
-    const newUniqQuestions = [...uniqQuestions]
-    newUniqQuestions[i] = text
-    setUniqQuestions(newUniqQuestions)
-  }
-
-  const addFormFields = () => setUniqQuestions([...uniqQuestions, ''])
-
-  const removeFormFields = (i) => {
-    const newUniqQuestions = [...uniqQuestions]
-    newUniqQuestions.splice(i, 1)
-    setUniqQuestions(newUniqQuestions)
   }
 
   // FormContorl might be useful rather thatn Box, to be considered
@@ -169,7 +149,7 @@ export default () => {
                         borderRadius="full"
                         bg="primary.500"
                       >
-                        <MaterialIcons name="delete" size={18} color="black" onPress={() => onImageRemove(index)} />
+                        <MaterialIcons name="delete" size={18} color="black" onPress={() => removeImage(index)} />
                       </Center>
                     </Box>
                   ))}
@@ -177,7 +157,7 @@ export default () => {
               ) : (
                 <Text>At lease one picture is required.</Text>
               )}
-              <Button onPress={addImage}>{uris.length > 0 ? 'Take another picture' : 'Take a picture'}</Button>
+              <Button onPress={openCamera}>{uris.length > 0 ? 'Take another picture' : 'Take a picture'}</Button>
             </VStack>
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
@@ -233,24 +213,24 @@ export default () => {
                     returnKeyType="done"
                     onSubmitEditing={() => Keyboard.dismiss()}
                     value={uniqQuestion}
-                    onChangeText={(e) => handleChange(index, e)}
+                    onChangeText={(e) => changeQuestion(index, e)}
                     flex={1}
                     alignItems="center"
                   />
-                  <MaterialIcons name="delete" size={18} color="black" onPress={() => removeFormFields(index)} />
+                  <MaterialIcons name="delete" size={18} color="black" onPress={() => removeQuestion(index)} />
                 </HStack>
               ))}
               <Center w="36px" h="36px" borderRadius="full" bg="primary.500">
-                <AddIcon size="4" onPress={addFormFields} />
+                <AddIcon size="4" onPress={addQuestion} />
               </Center>
             </VStack>
           </View>
 
-          <Button variant="primary" onPress={onCancel}>
+          <Button variant="primary" onPress={cancelProduct}>
             Cancel
           </Button>
 
-          <Button variant="primary" isDisabled={uris.length === 0} onPress={handleSubmit}>
+          <Button variant="primary" isDisabled={uris.length === 0} onPress={submitProduct}>
             Create a Product
           </Button>
         </VStack>
