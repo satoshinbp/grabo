@@ -168,7 +168,7 @@ export {
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
   sendImgToCloudVision,
-  searchProducts,
+  // searchProducts,
   postImage,
   postProduct,
   addAnswer,
