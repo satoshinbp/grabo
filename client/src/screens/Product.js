@@ -106,7 +106,7 @@ export default () => {
   }
 
   // Sub components to be rendered on the screen
-  const carouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
+  const CarouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
 
   const PaginationComponent = (images) => (
     <View>
@@ -128,7 +128,7 @@ export default () => {
     </View>
   )
 
-  const qaAccordions = (qas, type) =>
+  const QaAccordions = (qas, type) =>
     qas.map((qa, qaIndex) => (
       <>
         <Accordion>
@@ -291,7 +291,7 @@ export default () => {
       <View flex={0.5}>
         <Carousel
           data={product.images}
-          renderItem={carouselImages}
+          renderItem={CarouselImages}
           itemWidth={windowWidth}
           sliderWidth={windowWidth}
           onSnapToItem={(index) => setActiveSlide(index)}
@@ -313,8 +313,8 @@ export default () => {
       </Button>
 
       <ScrollView variant="wrapper" flex={0.5} mb={2}>
-        {product.fixedQandAs && qaAccordions(product.fixedQandAs, 'fixed')}
-        {product.uniqQandAs && qaAccordions(product.uniqQandAs, 'uniq')}
+        {product.fixedQandAs && QaAccordions(product.fixedQandAs, 'fixed')}
+        {product.uniqQandAs && QaAccordions(product.uniqQandAs, 'uniq')}
         {/* avoid conents to be hidden by FAB */}
         <View h="60px" />
       </ScrollView>
