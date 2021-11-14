@@ -94,7 +94,6 @@ export default () => {
 
       clearProduct()
 
-      navigation.navigate('Scan')
       navigation.navigate('Product', { id: res.data._id })
     } catch (e) {
       cosole.error(e)

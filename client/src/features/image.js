@@ -5,7 +5,7 @@ export const addImage = createAsyncThunk('image/add', async ({ base64, uri }) =>
   try {
     const { descriptions, locale } = await sendImgToCloudVision(base64)
     const keywords = [...new Set(descriptions)] // to remove keyword duplication
-    await searchProducts(keywords) // WIP
+    // await searchProducts(keywords) // WIP
     return { keywords, uri, locale }
   } catch (e) {
     console.error(e)

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import * as SecureStore from 'expo-secure-store'
 import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
 import groups from '../utils/groups'
 // SERVER_ROOT_URI might not work depends on dev environment
@@ -76,12 +75,13 @@ const postProduct = async (token, params) => {
 
 const sendImgToCloudVision = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
+  const languageHints = groups.map((group) => group.code)
   const params = {
     requests: [
       {
         features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
         image: { content: image },
-        imageContext: { languageHints: groups.map((group) => group.code) },
+        imageContext: { languageHints },
       },
     ],
   }
@@ -105,7 +105,7 @@ const sendImgToCloudVision = async (image) => {
   }
 }
 
-const searchProducts = (keywords) => console.log('keywords', keywords)
+// const searchProducts = async (keywords) => console.log('keywords', keywords) // WIP
 
 const addAnswer = async (token, params) => {
   try {
