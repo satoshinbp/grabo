@@ -30,20 +30,20 @@ import Loading from '../components/Loading'
 // ========== Please leave comments as a reference ========== //
 export default () => {
   const { token, user } = useSelector((state) => state.auth)
-  const { code, imageUrl, ocrText } = useSelector((state) => state.image.value)
+  const { code, uris, ocrText } = useSelector((state) => state.image)
   const dispatch = useDispatch()
 
   const navigation = useNavigation()
 
-  // const [, setImage] = useState(props.route.params.imageUrl)
+  // const [, setImage] = useState(props.route.params.uris)
   const [highlitedQuestions, setHighlitedQuestions] = useState([])
   const [uniqQuestions, setUniqQuestions] = useState([])
   const [loading, setLoading] = useState(false)
 
   const uploadImage = async () => {
     const params = new FormData()
-    params.append('image', { uri: imageUrl[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    const res = await postImage(token, params)
+    params.append('image', { uri: uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    await postImage(token, params)
   }
 
   const sendPushNotification = async (expoPushToken) => {
@@ -76,7 +76,7 @@ export default () => {
       const params = {
         userId: user._id,
         code,
-        url: imageUrl,
+        url: uris,
         text: ocrText,
         highlitedQuestions: highlitedQuestions,
         uniqQuestions: uniqQuestions,
@@ -120,7 +120,7 @@ export default () => {
     ])
 
   const addImage = () => {
-    if (imageUrl.length >= 3) {
+    if (uris.length >= 3) {
       alert('You can upload up to 3 images')
     } else {
       navigation.navigate('Scan')
@@ -155,11 +155,11 @@ export default () => {
               Image
             </Text>
             <VStack alignItems="center" space={2}>
-              {imageUrl.length > 0 ? (
+              {uris.length > 0 ? (
                 <HStack space={2}>
-                  {imageUrl.map((image, index) => (
-                    <Box key={image} position="relative" w="100px" h="100px">
-                      <Image source={{ uri: image }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
+                  {uris.map((uri, index) => (
+                    <Box key={uri} position="relative" w="100px" h="100px">
+                      <Image source={{ uri }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
                       <Center
                         position="absolute"
                         top={1}
@@ -177,7 +177,7 @@ export default () => {
               ) : (
                 <Text>At lease one picture is required.</Text>
               )}
-              <Button onPress={addImage}>{imageUrl.length > 0 ? 'Take another picture' : 'Take a picture'}</Button>
+              <Button onPress={addImage}>{uris.length > 0 ? 'Take another picture' : 'Take a picture'}</Button>
             </VStack>
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
@@ -250,7 +250,7 @@ export default () => {
             Cancel
           </Button>
 
-          <Button variant="primary" isDisabled={imageUrl.length === 0} onPress={handleSubmit}>
+          <Button variant="primary" isDisabled={uris.length === 0} onPress={handleSubmit}>
             Create a Product
           </Button>
         </VStack>

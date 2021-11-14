@@ -12,13 +12,12 @@ const upload = multer({
   storage: multerS3({
     s3,
     bucket: 'grabo1',
-    metadata: (req, file, cb) => cb(null, { fieldName: file.fieldname }),
-    key: (req, file, cb) => cb(null, Date.now().toString()),
+    metadata: (_, file, cb) => cb(null, { fieldName: file.fieldname }),
+    key: (_, _, cb) => cb(null, Date.now().toString()),
   }),
 })
 
 const uploadImage = (req, res) => {
-  console.log(req)
   console.log('Image successfully uploaded')
   res.send('Image successfully uploaded')
 }

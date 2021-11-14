@@ -5,7 +5,7 @@ import { updateCode } from '../features/image'
 import groups from '../utils/groups'
 
 export default (props) => {
-  const { code } = useSelector((state) => state.image.value)
+  const { code } = useSelector((state) => state.image)
   const dispatch = useDispatch()
 
   const [isTextDetected, setIsTextDetected] = useState(false)

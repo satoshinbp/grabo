@@ -2,30 +2,34 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialStateValue = {
   ocrText: [],
-  imageUrl: [],
+  uris: [],
   code: '',
 }
 
 const imageSlice = createSlice({
   name: 'image',
-  initialState: { value: initialStateValue },
+  initialState: initialStateValue,
   reducers: {
     addImage: (state, action) => {
-      state.value.ocrText.push(action.payload.text)
-      state.value.imageUrl.push(action.payload.imageUrl)
+      action.payload.keywords.forEach((keyword) => {
+        if (!state.ocrText.includes(keyword)) {
+          state.ocrText.push(keyword)
+        }
+      })
+      state.uris.push(action.payload.uri)
     },
     deleteImage: (state, action) => {
-      state.value.ocrText = state.value.ocrText.filter((ocrText, index) => index !== action.payload.index)
-      state.value.imageUrl = state.value.imageUrl.filter((imageUrl, index) => index !== action.payload.index)
+      state.ocrText = state.ocrText.filter((_, index) => index !== action.payload.index)
+      state.uris = state.uris.filter((_, index) => index !== action.payload.index)
     },
-    clearProduct: (state, action) => {
-      state.value = initialStateValue
+    clearProduct: (state) => {
+      state = initialStateValue
     },
     updateCode: (state, action) => {
-      state.value.code = action.payload
+      state.code = action.payload
     },
   },
 })
 
-export const { addImage, updateCode, deleteImage, clearProduct } = imageSlice.actions
+export const { addImage, updateCode, deleteImage, uploadImage, clearProduct } = imageSlice.actions
 export default imageSlice.reducer
