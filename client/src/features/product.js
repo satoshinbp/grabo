@@ -1,13 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { SERVER_ROOT_URI } from '@env'
 import {
   fetchProductById,
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
 } from '../api/product'
-// SERVER_ROOT_URI might not work depends on dev environment
-// In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
 
 export const setProduct = createAsyncThunk('product/set', async ({ token, id }) => {
   try {

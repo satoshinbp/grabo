@@ -153,7 +153,7 @@ const updateFavorite = (req, res) => {
   })
 }
 
-const updateReview = async (req, res) => {
+const updateReport = async (req, res) => {
   let targetProduct = await Product.findOne({ 'fixedQandAs._id': req.body.target.fixedQandAsId })
   let targetreport = await targetProduct.fixedQandAs[req.body.target.fixedquestionIndex].answers[
     req.body.target.answerIndex
@@ -180,5 +180,5 @@ module.exports = {
   addUniqQuestion,
   updateHighlight,
   updateFavorite,
-  updateReview,
+  updateReport,
 }
