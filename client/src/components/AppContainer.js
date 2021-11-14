@@ -104,6 +104,7 @@ export default () => {
         })
         const params = {
           notificationToken: expotoken,
+          isNotificationOn: true,
           user_id: user?._id,
         }
         updateUser(token, params)

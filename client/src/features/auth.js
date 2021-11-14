@@ -22,6 +22,14 @@ export const updateGroup = createAsyncThunk('users/updateGroup', async ({ token,
   return user.data.groups
 })
 
+export const updateIsNotificationOn = createAsyncThunk(
+  'users/updateNotification',
+  async ({ token, params }, thunkAPI) => {
+    const user = await updateUser(token, params)
+    return user.data.isNotificationOn
+  }
+)
+
 const initialUserState = {
   googleId: '',
   name: '',
@@ -30,6 +38,7 @@ const initialUserState = {
   groups: [],
   favProducts: [],
   notifications: [],
+  isNotificationOn: true,
 }
 
 const authSlice = createSlice({
@@ -88,6 +97,16 @@ const authSlice = createSlice({
       state.loading = false
     },
     [updateGroup.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [updateIsNotificationOn.pending]: (state, action) => {
+      state.loading = true
+    },
+    [updateIsNotificationOn.fulfilled]: (state, action) => {
+      state.user = { ...state.user, isNotificationOn: action.payload }
+      state.loading = false
+    },
+    [updateIsNotificationOn.rejected]: (state, action) => {
       state.loading = false
     },
   },

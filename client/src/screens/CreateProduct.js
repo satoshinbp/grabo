@@ -85,6 +85,7 @@ export default () => {
       const res = await postProduct(token, params)
 
       const fetchedUsers = await fetchUsersByGroup(token, code)
+      console.log('this is a', fetchedUsers)
       const notificationTokens = await fetchedUsers.map((user) => user.notificationToken)
       notificationTokens.map((token) => sendPushNotification(token))
 

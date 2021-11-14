@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "986093176584",
+    "project_id": "grabo-674e1",
+    "storage_bucket": "grabo-674e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986093176584:android:0c4b9011fcada1faa78ebd",
+        "android_client_info": {
+          "package_name": "com.grabo.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986093176584-gidgbim5pv560ph3mfvkcsngj6dvushq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLiF8WoNM6Rl5ealQNopXQodvMp0e6TtU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986093176584-gidgbim5pv560ph3mfvkcsngj6dvushq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
