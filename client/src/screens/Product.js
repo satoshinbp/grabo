@@ -208,6 +208,11 @@ export default () => {
     setQuestion(questionDescription)
   }
 
+  const setQuestionForm = () => {
+    setIsModalOpen(true)
+    setModalContentType('question')
+  }
+
   const setReportForm = (item, fixedquestionIndex, answerIndex) => {
     setIsModalOpen(true)
     setModalContentType('report')
@@ -320,7 +325,9 @@ export default () => {
         <View h="60px" />
       </ScrollView>
 
-      <Button variant="fab">Ask a Question</Button>
+      <Button variant="fab" onPress={() => setQuestionForm()}>
+        Ask a Question
+      </Button>
 
       <SlideModal
         isOpen={isModalOpen}
