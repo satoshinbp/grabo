@@ -315,7 +315,8 @@ export default () => {
       <ScrollView variant="wrapper" flex={0.5} mb={2}>
         {product.fixedQandAs && QaAccordions(product.fixedQandAs, 'fixed')}
         {product.uniqQandAs && QaAccordions(product.uniqQandAs, 'uniq')}
-        {/* avoid conents to be hidden by FAB */}
+
+        {/* add extra space to avoid contents to be hidden by FAB */}
         <View h="60px" />
       </ScrollView>
 
