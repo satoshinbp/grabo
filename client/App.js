@@ -121,6 +121,13 @@ export default () => {
           }),
         },
       },
+      TextArea: {
+        baseStyle: {
+          bg: 'muted.100',
+          color: 'muted.500',
+          fontSize: 'sm',
+        },
+      },
     },
   })
 

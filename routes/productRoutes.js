@@ -12,6 +12,6 @@ router.put('/answer', productController.addAnswer)
 router.put('/question', productController.addUniqQuestion)
 router.put('/highlight', productController.updateHighlight)
 router.put('/favorite', productController.updateFavorite)
-router.put('/review', productController.updateReview)
+router.put('/report', productController.updateReport)
 
 module.exports = router

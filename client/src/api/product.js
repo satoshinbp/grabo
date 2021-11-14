@@ -143,10 +143,9 @@ const updateFavorite = async (token, params) => {
   }
 }
 
-const updateReview = async (params) => {
+const updateReport = async (token, params) => {
   try {
-    const token = await SecureStore.getItemAsync('token')
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/review`, params, {
+    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/report`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
@@ -167,5 +166,5 @@ export {
   addUniqQuestion,
   updateHighlight,
   updateFavorite,
-  updateReview,
+  updateReport,
 }

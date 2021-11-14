@@ -1,18 +1,9 @@
 import React from 'react'
 import { Modal, Button } from 'native-base'
 
-export default ({
-  isOpen,
-  onClose,
-  title,
-  content,
-  primaryAction,
-  primaryActionLabel,
-  secondaryAction,
-  secondaryActionLabel,
-}) => (
-  <Modal isOpen={isOpen} onClose={onClose} size="xl">
-    <Modal.Content bg="white">
+export default ({ isOpen, onClose, title, content, action, actionLabel }) => (
+  <Modal isOpen={isOpen} animationType="slide" onClose={onClose} size="full" justifyContent="flex-end">
+    <Modal.Content bg="white" borderRadius="xl">
       <Modal.CloseButton right="auto" left={3} borderWidth="2px" borderColor="primary.500" borderRadius="full" />
 
       <Modal.Header
@@ -26,13 +17,10 @@ export default ({
         {content}
       </Modal.Body>
 
-      <Modal.Footer bg="white">
-        <Button.Group space={2}>
-          <Button variant="ghost" colorScheme="gray" onPress={secondaryAction}>
-            {secondaryActionLabel}
-          </Button>
-          <Button onPress={primaryAction}>{primaryActionLabel}</Button>
-        </Button.Group>
+      <Modal.Footer bg="white" justifyContent="center">
+        <Button variant="primary" onPress={action}>
+          {actionLabel}
+        </Button>
       </Modal.Footer>
     </Modal.Content>
   </Modal>

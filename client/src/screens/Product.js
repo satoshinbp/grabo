@@ -11,18 +11,20 @@ import {
   Center,
   Pressable,
   Accordion,
+  Divider,
   Image,
   Text,
+  FormControl,
+  TextArea,
   Button,
-  Divider,
-  Input,
+  Checkbox,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { setProduct } from '../features/product'
-import { addAnswer, addUniqQuestion, updateHighlight, updateFavorite } from '../api/product'
+import { addAnswer, addUniqQuestion, updateHighlight, updateFavorite, updateReport } from '../api/product'
+import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
-import ProductActionModal from '../components/ProductActionModal'
-import Report from '../components/Report'
+import SlideModal from '../elements/SlideModal'
 
 const windowWidth = Dimensions.get('window').width
 
@@ -36,12 +38,14 @@ export default () => {
 
   const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [reportItem, setReportItem] = useState(null)
-  const [answer, setAnswer] = useState({})
+  const [modalContentType, setModalContentType] = useState('')
+  const [questionType, setQuestionType] = useState('') // "fixed" or "uniq"
+  const [questionIndex, setQuestionIndex] = useState(0)
   const [question, setQuestion] = useState({})
-  const [contentType, setContentType] = useState('')
-  const [index, setIndex] = useState(0)
-  const [type, setType] = useState('')
+  const [answer, setAnswer] = useState({})
+  const [reportItem, setReportItem] = useState(null)
+  const [reports, setReports] = useState([])
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(setProduct({ token, id: route.params.id }))
@@ -50,18 +54,9 @@ export default () => {
     return unsubscribe
   }, [navigation])
 
-  const handleAnswerSubmit = async () => {
-    const params = { id: product._id, answer }
-    console.log(answer)
-    try {
-      await addAnswer(token, params)
-      setAnswer({})
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const handleQuestionSubmit = async () => {
+  // Handle submission from modal
+  const submitQuestion = async () => {
+    setIsModalOpen(false)
     const params = { id: product._id, question }
     try {
       await addUniqQuestion(token, params)
@@ -71,7 +66,30 @@ export default () => {
     }
   }
 
-  const handleHighlightSubmit = async (params) => {
+  const submitAnswer = async () => {
+    setIsModalOpen(false)
+    const params = { id: product._id, answer }
+    try {
+      await addAnswer(token, params)
+      setAnswer({})
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const submitReport = async () => {
+    setIsModalOpen(false)
+    const params = { reportKeys: reports, target: reportItem }
+    try {
+      await updateReport(token, params)
+      setReports([])
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  // Handle icon on press actions
+  const highlightQuestion = async (params) => {
     try {
       await updateHighlight(token, params)
     } catch (e) {
@@ -79,7 +97,7 @@ export default () => {
     }
   }
 
-  const handleFavoriteSubmit = async (params) => {
+  const addToFavorite = async (params) => {
     try {
       await updateFavorite(token, params)
     } catch (e) {
@@ -87,20 +105,7 @@ export default () => {
     }
   }
 
-  const answerClickHandler = (index, type, questionDescription) => {
-    setIsModalOpen(true)
-    setContentType('answer')
-    setIndex(index)
-    setType(type)
-    setQuestion(questionDescription)
-  }
-
-  const modalHandler = (item, fixedquestionIndex, answerIndex) => {
-    setIsModalOpen(!isModalOpen)
-    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex, answerIndex })
-    setContentType('report')
-  }
-
+  // Sub components to be rendered on the screen
   const carouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
 
   const PaginationComponent = (images) => (
@@ -123,23 +128,23 @@ export default () => {
     </View>
   )
 
-  const QandAAccordions = (QandAs, type) =>
-    QandAs.map((QandA, index) => (
+  const qaAccordions = (qas, type) =>
+    qas.map((qa, qaIndex) => (
       <>
         <Accordion>
           <Accordion.Item>
             <Accordion.Summary>
               <HStack alignItems="center">
                 <VStack flex={1}>
-                  <Text>{type === 'uniq' ? QandA.question.description : QandA.question}</Text>
+                  <Text>{type === 'uniq' ? qa.question.description : qa.question}</Text>
                   <Text fontSize="xs">
                     This question has&nbsp;
-                    {QandA.answers.length}
-                    {QandA.answers.length > 1 ? ' answers' : ' answer'}
+                    {qa.answers.length}
+                    {qa.answers.length > 1 ? ' answers' : ' answer'}
                   </Text>
                   <Text
                     onPress={() =>
-                      answerClickHandler(index, type, type === 'uniq' ? QandA.question.description : QandA.question)
+                      setAnswerForm(qaIndex, type, type === 'uniq' ? qa.question.description : qa.question)
                     }
                   >
                     Answer
@@ -147,32 +152,40 @@ export default () => {
                 </VStack>
                 <Pressable
                   onPress={() => {
-                    const highlightStatus = QandA.highlightedBy.includes(user._id)
+                    const highlightStatus = qa.highlightedBy.includes(user._id)
                     const params = {
                       id: product._id,
                       userId: user._id,
-                      isUniqQuestion: type === 'uniq',
-                      questionIndex: index,
+                      isUniqQuestion: questionType === 'uniq',
+                      questionIndex,
                       isHighlighted: highlightStatus,
                     }
-                    handleHighlightSubmit(params)
+                    highlightQuestion(params)
                   }}
                 >
-                  <Box>{`★ ${QandA.highlightedBy.length}`}</Box>
+                  <Box>{`★ ${qa.highlightedBy.length}`}</Box>
                 </Pressable>
                 <Accordion.Icon />
               </HStack>
             </Accordion.Summary>
             <Accordion.Details
-              margin={0}
-              padding={0}
+              m={0}
+              p={0}
               backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
             >
-              {QandA.answers.map((answer, i) => (
+              {qa.answers.map((answer, answerIndex) => (
                 <>
-                  <View padding={4} flexDirection="row" justifyContent="space-between">
+                  <View p={4} flexDirection="row" justifyContent="space-between">
                     <Text>{answer.description}</Text>
-                    <Report modalHandler={() => modalHandler(QandA, index, i)} isModalOpen={isModalOpen} />
+                    <Pressable onPress={() => setReportForm(qa, qaIndex, answerIndex)}>
+                      <Image
+                        source={require('../assets/exclamation.jpeg')}
+                        alt="exclamation"
+                        width="18px"
+                        height="18px"
+                        padding={2}
+                      />
+                    </Pressable>
                   </View>
                   <Divider w="100%" />
                 </>
@@ -183,6 +196,94 @@ export default () => {
         <Divider w="100%" my={4} />
       </>
     ))
+
+  // Set up modal forms
+  // setQuestionForm to be created
+  const setAnswerForm = (index, type, questionDescription) => {
+    setIsModalOpen(true)
+    setModalContentType('answer')
+
+    setQuestionIndex(index)
+    setQuestionType(type)
+    setQuestion(questionDescription)
+  }
+
+  const setReportForm = (item, fixedquestionIndex, answerIndex) => {
+    setIsModalOpen(true)
+    setModalContentType('report')
+
+    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex, answerIndex })
+  }
+
+  // set up modal props
+  const modalTitle =
+    modalContentType === 'question'
+      ? 'Ask a Question'
+      : modalContentType === 'answer'
+      ? 'Answer the Question'
+      : modalContentType === 'report'
+      ? 'Report the question'
+      : ''
+
+  const modalContent =
+    modalContentType === 'question' ? (
+      <FormControl>
+        <TextArea
+          placeholder="Please write your question here"
+          blurOnSubmit
+          returnKeyType="done"
+          onSubmitEditing={() => Keyboard.dismiss()}
+          value={question}
+          onChangeText={(text) =>
+            setQuestion({
+              question: {
+                userId: user._id,
+                description: text,
+              },
+            })
+          }
+        />
+      </FormControl>
+    ) : modalContentType === 'answer' ? (
+      <FormControl>
+        <FormControl.Label>{question}</FormControl.Label>
+        <TextArea
+          placeholder="Write your answer here"
+          blurOnSubmit
+          returnKeyType="done"
+          onSubmitEditing={() => Keyboard.dismiss()}
+          value={answer}
+          onChangeText={(text) =>
+            setAnswer({
+              answer: {
+                userId: user._id,
+                description: text,
+              },
+              isUniqQuestion: questionType === 'uniq',
+              questionIndex,
+            })
+          }
+          textAlignVertical="top"
+        />
+      </FormControl>
+    ) : modalContentType === 'report' ? (
+      <Checkbox.Group colorScheme="green" accessibilityLabel="Report" onChange={(values) => setReports(values)}>
+        {reportOptions.map((report) => (
+          <Checkbox value={report.value} my={0.5}>
+            {report.message}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    ) : null
+
+  const modalAction =
+    modalContentType === 'question'
+      ? submitQuestion
+      : modalContentType === 'answer'
+      ? submitAnswer
+      : modalContentType === 'report'
+      ? submitReport
+      : null
 
   if (loading) return <Loading />
   return (
@@ -197,57 +298,33 @@ export default () => {
         />
         <Text>{product.images?.length > 0 ? PaginationComponent(product.images) : null}</Text>
       </View>
-      <>
-        <Button
-          onPress={() => {
-            const favoriteStatus = product.favoredUserIds.includes(user._id)
-            const params = {
-              id: product._id,
-              userId: user._id,
-              isFavored: favoriteStatus,
-            }
-            handleFavoriteSubmit(params)
-          }}
-        >
-          ❤︎
-        </Button>
-      </>
+      <Button
+        onPress={() => {
+          const favoriteStatus = product.favoredUserIds.includes(user._id)
+          const params = {
+            id: product._id,
+            userId: user._id,
+            isFavored: favoriteStatus,
+          }
+          addToFavorite(params)
+        }}
+      >
+        ❤︎
+      </Button>
 
       <ScrollView variant="wrapper" flex={0.5} mb={2}>
-        {product.fixedQandAs && QandAAccordions(product.fixedQandAs, 'fixed')}
-        {product.uniqQandAs && QandAAccordions(product.uniqQandAs, 'uniq')}
-
-        {/* to be inside a modal */}
-        <>
-          <Input
-            placeholder="Please write your question here"
-            blurOnSubmit={true}
-            returnKeyType="done"
-            onSubmitEditing={() => Keyboard.dismiss()}
-            alignItems="center"
-            value={question}
-            onChangeText={(text) => {
-              setQuestion({
-                question: {
-                  userId: user._id,
-                  description: text,
-                },
-              })
-            }}
-          />
-          <Button onPress={handleQuestionSubmit}>Question</Button>
-        </>
-        <ProductActionModal
-          modalHandler={modalHandler}
-          modalVisible={isModalOpen}
-          reportItem={reportItem}
-          setReportItem={setReportItem}
-          contentType={contentType}
-          index={index}
-          type={type}
-          question={question}
-        />
+        {product.fixedQandAs && qaAccordions(product.fixedQandAs, 'fixed')}
+        {product.uniqQandAs && qaAccordions(product.uniqQandAs, 'uniq')}
       </ScrollView>
+
+      <SlideModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={modalTitle}
+        content={modalContent}
+        action={modalAction}
+        actionLabel="Submit"
+      />
     </>
   )
 }
