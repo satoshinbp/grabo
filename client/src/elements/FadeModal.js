@@ -4,8 +4,8 @@ import { Modal, Button } from 'native-base'
 export default ({
   isOpen,
   onClose,
-  header,
-  body,
+  title,
+  content,
   primaryAction,
   primaryActionLabel,
   secondaryAction,
@@ -19,11 +19,11 @@ export default ({
         borderBottomWidth="0px"
         _text={{ fontSize: 'lg', fontWeight: 'bold', position: 'relative', left: 12 }}
       >
-        {header}
+        {title}
       </Modal.Header>
 
       <Modal.Body pt={3} _text={{ fontSize: 'md', color: 'black' }}>
-        {body}
+        {content}
       </Modal.Body>
 
       <Modal.Footer bg="white">

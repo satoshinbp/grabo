@@ -3,9 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { View, VStack, Text, Radio, Button } from 'native-base'
 import { updateCode } from '../features/image'
 import groups from '../utils/groups'
+import Loading from '../components/Loading'
 
 export default (props) => {
-  const { code } = useSelector((state) => state.image.value)
+  const { value, loading } = useSelector((state) => state.image)
+  const { code } = value
   const dispatch = useDispatch()
 
   const [isTextDetected, setIsTextDetected] = useState(false)
@@ -18,6 +20,7 @@ export default (props) => {
     })
   }, [])
 
+  if (loading) return <Loading />
   return (
     <View variant="wrapper">
       <VStack variant="container">
@@ -39,7 +42,7 @@ export default (props) => {
           )}
         </View>
         <View>
-          <Radio.Group name="Group" value={code} onChange={(nextValue) => dispatch(updateCode(nextValue))}>
+          <Radio.Group name="Group" value={code} onChange={(newCode) => dispatch(updateCode(newCode))}>
             {groups.map((group) => (
               <Radio value={group.code}>{group.language}</Radio>
             ))}

@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { View, Button, HStack, VStack, Text } from 'native-base'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
-import { addImage, updateCode } from '../features/image'
-import { sendImgToCloudVision } from '../api/product'
+import { addImage } from '../features/image'
 import Loading from '../components/Loading'
 
 export default () => {
   const navigation = useNavigation()
   const isFocused = useIsFocused()
 
+  const { loading } = useSelector((state) => state.image)
   const dispatch = useDispatch()
 
   const cameraRef = useRef(null)
   const [hasPermission, setHasPermission] = useState(null)
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getPermission = async () => {
@@ -29,28 +28,19 @@ export default () => {
 
   const takePicture = async () => {
     if (!cameraRef) return
-
     try {
       const { base64, uri } = await cameraRef.current.takePictureAsync({ base64: true })
-
-      setLoading(true)
-      const { description, locale } = await sendImgToCloudVision(base64)
-      setLoading(false)
-
-      dispatch(addImage({ text: description, imageUrl: uri }))
-      dispatch(updateCode(locale))
-
+      dispatch(addImage({ base64, uri }))
       navigation.navigate('SelectLanguage')
     } catch (e) {
       alert('Failed. Please take it again.')
-      setLoading(false)
     }
   }
 
   const openImagePickerAsync = async () => {
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      if (!permissionResult.granted) {
+      const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (!granted) {
         alert('Permission to access camera roll is required.')
         return
       }
@@ -58,17 +48,10 @@ export default () => {
       const { cancelled, base64, uri } = await ImagePicker.launchImageLibraryAsync({ base64: true })
       if (cancelled) return
 
-      setLoading(true)
-      const { description, locale } = await sendImgToCloudVision(base64)
-      setLoading(false)
-
-      dispatch(addImage({ text: description, imageUrl: uri }))
-      dispatch(updateCode(locale))
-
+      dispatch(addImage({ base64, uri }))
       navigation.navigate('SelectLanguage')
     } catch (e) {
       alert('Fialed. Please try another photo.')
-      setLoading(false)
     }
   }
 

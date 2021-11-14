@@ -18,7 +18,6 @@ const upload = multer({
 })
 
 const uploadImage = (req, res) => {
-  console.log(req)
   console.log('Image successfully uploaded')
   res.send('Image successfully uploaded')
 }
