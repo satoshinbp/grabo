@@ -33,16 +33,14 @@ export default () => {
     try {
       const { base64, uri } = await cameraRef.current.takePictureAsync({ base64: true })
 
+      // shall be one action
       setLoading(true)
-
       const { descriptions, locale } = await sendImgToCloudVision(base64)
       const keywords = [...new Set(descriptions)] // remove duplication
-
       dispatch(addImage({ keywords, uri, locale }))
-
-      searchProducts(keywords)
-
+      await searchProducts(keywords) // WIP
       setLoading(false)
+
       navigation.navigate('SelectLanguage')
     } catch (e) {
       alert('Failed. Please take it again.')
@@ -52,8 +50,8 @@ export default () => {
 
   const openImagePickerAsync = async () => {
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      if (!permissionResult.granted) {
+      const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (!granted) {
         alert('Permission to access camera roll is required.')
         return
       }
@@ -61,11 +59,13 @@ export default () => {
       const { cancelled, base64, uri } = await ImagePicker.launchImageLibraryAsync({ base64: true })
       if (cancelled) return
 
+      // shall be one action
       setLoading(true)
-      const { description, locale } = await sendImgToCloudVision(base64)
-      setLoading(false)
-
+      const { descriptions, locale } = await sendImgToCloudVision(base64)
+      const keywords = [...new Set(descriptions)] // remove duplication
       dispatch(addImage({ text: description, uri, locale }))
+      await searchProducts(keywords) // WIP
+      setLoading(false)
 
       navigation.navigate('SelectLanguage')
     } catch (e) {
