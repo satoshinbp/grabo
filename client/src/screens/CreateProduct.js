@@ -20,7 +20,7 @@ import {
 } from 'native-base'
 import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons } from '@expo/vector-icons'
-import { updateCode, deleteImage, clearProduct } from '../features/image'
+import { updateCode, deleteImage, clearImage } from '../features/image'
 import { fetchUsersByGroup } from '../api/auth'
 import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
@@ -88,7 +88,7 @@ export default () => {
       const notificationTokens = await fetchedUsers.map((user) => user.notificationToken)
       notificationTokens.map((token) => sendPushNotification(token))
 
-      dispatch(clearProduct())
+      dispatch(clearImage())
       setHighlitedQuestions([])
       setUniqQuestions([])
 
@@ -111,7 +111,7 @@ export default () => {
       {
         text: 'OK',
         onPress: () => {
-          dispatch(clearProduct())
+          dispatch(clearImage())
           setHighlitedQuestions([])
           setUniqQuestions([])
           navigation.navigate('Scan')

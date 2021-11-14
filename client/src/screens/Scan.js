@@ -4,7 +4,7 @@ import { View, Button, HStack, VStack, Text } from 'native-base'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
-import { addImage, updateCode } from '../features/image'
+import { addImage } from '../features/image'
 import { sendImgToCloudVision, searchProducts } from '../api/product'
 import Loading from '../components/Loading'
 
@@ -32,17 +32,17 @@ export default () => {
 
     try {
       const { base64, uri } = await cameraRef.current.takePictureAsync({ base64: true })
-      setLoading(true)
-      const { descriptions, locale } = await sendImgToCloudVision(base64)
-      setLoading(false)
 
+      setLoading(true)
+
+      const { descriptions, locale } = await sendImgToCloudVision(base64)
       const keywords = [...new Set(descriptions)] // remove duplication
 
-      dispatch(addImage({ keywords, uri }))
-      dispatch(updateCode(locale))
+      dispatch(addImage({ keywords, uri, locale }))
 
       searchProducts(keywords)
 
+      setLoading(false)
       navigation.navigate('SelectLanguage')
     } catch (e) {
       alert('Failed. Please take it again.')
@@ -65,8 +65,7 @@ export default () => {
       const { description, locale } = await sendImgToCloudVision(base64)
       setLoading(false)
 
-      dispatch(addImage({ text: description, uri }))
-      dispatch(updateCode(locale))
+      dispatch(addImage({ text: description, uri, locale }))
 
       navigation.navigate('SelectLanguage')
     } catch (e) {

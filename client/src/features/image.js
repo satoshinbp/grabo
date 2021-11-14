@@ -17,19 +17,17 @@ const imageSlice = createSlice({
         }
       })
       state.uris.push(action.payload.uri)
+      state.code = action.payload.code
     },
     deleteImage: (state, action) => {
       state.ocrText = state.ocrText.filter((_, index) => index !== action.payload.index)
       state.uris = state.uris.filter((_, index) => index !== action.payload.index)
     },
-    clearProduct: (state) => {
+    clearImage: (state) => {
       state = initialStateValue
-    },
-    updateCode: (state, action) => {
-      state.code = action.payload
     },
   },
 })
 
-export const { addImage, updateCode, deleteImage, uploadImage, clearProduct } = imageSlice.actions
+export const { addImage, deleteImage, clearImage } = imageSlice.actions
 export default imageSlice.reducer
