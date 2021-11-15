@@ -23,17 +23,6 @@ const fetchUser = async (token) => {
   }
 }
 
-const updateUser = async (token, data) => {
-  try {
-    const res = await axios.patch(`${SERVER_ROOT_URI}/api/users/${data.user_id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return res
-  } catch (e) {
-    console.error(e)
-  }
-}
-
 const fetchUsersByGroup = async (token, code) => {
   try {
     const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${code}`, {
@@ -45,4 +34,15 @@ const fetchUsersByGroup = async (token, code) => {
   }
 }
 
-export { signInWithGoogle, fetchUser, updateUser, fetchUsersByGroup }
+const updateUser = async (token, params) => {
+  try {
+    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${params.user_id}`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export { signInWithGoogle, fetchUser, fetchUsersByGroup, updateUser }

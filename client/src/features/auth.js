@@ -18,8 +18,13 @@ export const logout = createAsyncThunk('users/logout', async () => {
 })
 
 export const updateGroup = createAsyncThunk('users/updateGroup', async ({ token, params }) => {
-  const user = await updateUser(token, params)
-  return user.data.groups
+  const { groups } = await updateUser(token, params)
+  return groups
+})
+
+export const updateIsNotificationOn = createAsyncThunk('users/updateNotification', async ({ token, params }) => {
+  const { isNotificationOn } = await updateUser(token, params)
+  return isNotificationOn
 })
 
 const initialUserState = {
@@ -44,11 +49,8 @@ const authSlice = createSlice({
     signingOut: false,
   },
   reducers: {
-    setAppReady: (state) => {
+    setAppReady: (state, action) => {
       state.isReady = true
-    },
-    updateIsNotificationOn: (state, action) => {
-      state.user.isNotificationOn = action.payload
     },
   },
   extraReducers: {
@@ -57,11 +59,11 @@ const authSlice = createSlice({
       state.token = action.payload.token
       state.isReady = true
     },
-    [setUser.rejected]: (state) => {
+    [setUser.rejected]: (state, action) => {
       state.error = true
       state.isReady = true
     },
-    [login.pending]: (state) => {
+    [login.pending]: (state, action) => {
       state.signingIn = true
     },
     [login.fulfilled]: (state, action) => {
@@ -70,32 +72,42 @@ const authSlice = createSlice({
       state.isReady = true
       state.signingIn = false
     },
-    [login.rejected]: (state) => {
+    [login.rejected]: (state, action) => {
       state.signingIn = false
     },
-    [logout.pending]: (state) => {
+    [logout.pending]: (state, action) => {
       state.signingOut = true
     },
-    [logout.fulfilled]: (state) => {
+    [logout.fulfilled]: (state, action) => {
       state.user = initialUserState
       state.token = null
       state.signingOut = false
     },
-    [logout.rejected]: (state) => {
+    [logout.rejected]: (state, action) => {
       state.signingOut = false
     },
-    [updateGroup.pending]: (state) => {
+    [updateGroup.pending]: (state, action) => {
       state.loading = true
     },
     [updateGroup.fulfilled]: (state, action) => {
       state.user = { ...state.user, groups: action.payload }
       state.loading = false
     },
-    [updateGroup.rejected]: (state) => {
+    [updateGroup.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [updateIsNotificationOn.pending]: (state, action) => {
+      state.loading = true
+    },
+    [updateIsNotificationOn.fulfilled]: (state, action) => {
+      state.user.isNotificationOn = action.payload
+      state.loading = false
+    },
+    [updateIsNotificationOn.rejected]: (state, action) => {
       state.loading = false
     },
   },
 })
 
-export const { setAppReady, updateIsNotificationOn } = authSlice.actions
+export const { setAppReady } = authSlice.actions
 export default authSlice.reducer
