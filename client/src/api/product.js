@@ -90,7 +90,7 @@ const sendImgToCloudVision = async (image) => {
       'Content-Type': 'application/json',
     },
   })
-  if (!data.responses.textAnnotations) throw new Error()
+  // if (!data.responses.textAnnotations) throw new Error()
 
   const locale = data.responses[0].textAnnotations[0].locale
   const descriptions = data.responses[0].textAnnotations
