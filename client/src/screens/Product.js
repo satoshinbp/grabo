@@ -337,7 +337,7 @@ export default () => {
 
       <SlideModal
         isOpen={isModalOpen}
-        onClose={() => closeModal()}
+        onClose={closeModal}
         title={modalTitle}
         content={modalContent}
         action={modalAction}
