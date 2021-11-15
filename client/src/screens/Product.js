@@ -72,6 +72,7 @@ export default () => {
     try {
       await addAnswer(token, params)
       setAnswer({})
+      setQuestion('')
     } catch (e) {
       console.error(e)
     }
@@ -103,6 +104,34 @@ export default () => {
     } catch (e) {
       console.error(e)
     }
+  }
+
+  // Set up modal forms
+  // setQuestionForm to be created
+  const setAnswerForm = (index, type, questionDescription) => {
+    setIsModalOpen(true)
+    setModalContentType('answer')
+
+    setQuestionIndex(index)
+    setQuestionType(type)
+    setQuestion(questionDescription)
+  }
+
+  const setQuestionForm = () => {
+    setIsModalOpen(true)
+    setModalContentType('question')
+  }
+
+  const setReportForm = (questionIndex, answerIndex, type) => {
+    setIsModalOpen(true)
+    setModalContentType('report')
+
+    setReportItem({ QandAsId: product._id, questionIndex, answerIndex, type })
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setQuestion('')
   }
 
   // Sub components to be rendered on the screen
@@ -177,7 +206,7 @@ export default () => {
                 <>
                   <View p={4} flexDirection="row" justifyContent="space-between">
                     <Text>{answer.description}</Text>
-                    <Pressable onPress={() => setReportForm(qa, qaIndex, answerIndex)}>
+                    <Pressable onPress={() => setReportForm(qaIndex, answerIndex, type)}>
                       <Image
                         source={require('../assets/exclamation.jpeg')}
                         alt="exclamation"
@@ -196,24 +225,6 @@ export default () => {
         <Divider w="100%" my={4} />
       </>
     ))
-
-  // Set up modal forms
-  // setQuestionForm to be created
-  const setAnswerForm = (index, type, questionDescription) => {
-    setIsModalOpen(true)
-    setModalContentType('answer')
-
-    setQuestionIndex(index)
-    setQuestionType(type)
-    setQuestion(questionDescription)
-  }
-
-  const setReportForm = (item, fixedquestionIndex, answerIndex) => {
-    setIsModalOpen(true)
-    setModalContentType('report')
-
-    setReportItem({ fixedQandAsId: item._id, fixedquestionIndex, answerIndex })
-  }
 
   // set up modal props
   const modalTitle =
@@ -320,11 +331,13 @@ export default () => {
         <View h="60px" />
       </ScrollView>
 
-      <Button variant="fab">Ask a Question</Button>
+      <Button variant="fab" onPress={() => setQuestionForm()}>
+        Ask a Question
+      </Button>
 
       <SlideModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
         title={modalTitle}
         content={modalContent}
         action={modalAction}

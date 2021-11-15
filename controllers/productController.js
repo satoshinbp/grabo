@@ -154,10 +154,13 @@ const updateFavorite = (req, res) => {
 }
 
 const updateReport = async (req, res) => {
-  let targetProduct = await Product.findOne({ 'fixedQandAs._id': req.body.target.fixedQandAsId })
-  let targetreport = await targetProduct.fixedQandAs[req.body.target.fixedquestionIndex].answers[
-    req.body.target.answerIndex
-  ].report
+  let targetProduct = await Product.findOne({
+    _id: req.body.target.QandAsId,
+  })
+
+  let targetreport = await targetProduct[req.body.target.type === 'uniq' ? 'uniqQandAs' : 'fixedQandAs'][
+    req.body.target.questionIndex
+  ].answers[req.body.target.answerIndex].report
 
   req.body.reportKeys.forEach((reportKey) => {
     targetreport[reportKey] += 1
