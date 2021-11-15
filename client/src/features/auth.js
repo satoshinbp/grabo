@@ -49,7 +49,7 @@ const authSlice = createSlice({
     signingOut: false,
   },
   reducers: {
-    setAppReady: (state, action) => {
+    setAppReady: (state) => {
       state.isReady = true
     },
   },
@@ -59,11 +59,11 @@ const authSlice = createSlice({
       state.token = action.payload.token
       state.isReady = true
     },
-    [setUser.rejected]: (state, action) => {
+    [setUser.rejected]: (state) => {
       state.error = true
       state.isReady = true
     },
-    [login.pending]: (state, action) => {
+    [login.pending]: (state) => {
       state.signingIn = true
     },
     [login.fulfilled]: (state, action) => {
@@ -72,38 +72,38 @@ const authSlice = createSlice({
       state.isReady = true
       state.signingIn = false
     },
-    [login.rejected]: (state, action) => {
+    [login.rejected]: (state) => {
       state.signingIn = false
     },
-    [logout.pending]: (state, action) => {
+    [logout.pending]: (state) => {
       state.signingOut = true
     },
-    [logout.fulfilled]: (state, action) => {
+    [logout.fulfilled]: (state) => {
       state.user = initialUserState
       state.token = null
       state.signingOut = false
     },
-    [logout.rejected]: (state, action) => {
+    [logout.rejected]: (state) => {
       state.signingOut = false
     },
-    [updateGroup.pending]: (state, action) => {
+    [updateGroup.pending]: (state) => {
       state.loading = true
     },
     [updateGroup.fulfilled]: (state, action) => {
       state.user = { ...state.user, groups: action.payload }
       state.loading = false
     },
-    [updateGroup.rejected]: (state, action) => {
+    [updateGroup.rejected]: (state) => {
       state.loading = false
     },
-    [updateIsNotificationOn.pending]: (state, action) => {
+    [updateIsNotificationOn.pending]: (state) => {
       state.loading = true
     },
     [updateIsNotificationOn.fulfilled]: (state, action) => {
       state.user.isNotificationOn = action.payload
       state.loading = false
     },
-    [updateIsNotificationOn.rejected]: (state, action) => {
+    [updateIsNotificationOn.rejected]: (state) => {
       state.loading = false
     },
   },

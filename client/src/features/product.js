@@ -46,44 +46,44 @@ const productSlice = createSlice({
   name: 'product',
   initialState: { product: {}, products: [], loading: false },
   extraReducers: {
-    [setProduct.pending]: (state, action) => {
+    [setProduct.pending]: (state) => {
       state.loading = true
     },
     [setProduct.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [setProduct.rejected]: (state, action) => {
+    [setProduct.rejected]: (state) => {
       state.loading = false
     },
-    [setProductsByGroup.pending]: (state, action) => {
+    [setProductsByGroup.pending]: (state) => {
       state.loading = true
     },
     [setProductsByGroup.fulfilled]: (state, action) => {
       state.products = action.payload
       state.loading = false
     },
-    [setProductsByGroup.rejected]: (state, action) => {
+    [setProductsByGroup.rejected]: (state) => {
       state.loading = false
     },
-    [setProductsByUserId.pending]: (state, action) => {
+    [setProductsByUserId.pending]: (state) => {
       state.loading = true
     },
     [setProductsByUserId.fulfilled]: (state, action) => {
       state.products = action.payload
       state.loading = false
     },
-    [setProductsByUserId.rejected]: (state, action) => {
+    [setProductsByUserId.rejected]: (state) => {
       state.loading = false
     },
-    [setProductsByFavoredUserId.pending]: (state, action) => {
+    [setProductsByFavoredUserId.pending]: (state) => {
       state.loading = true
     },
     [setProductsByFavoredUserId.fulfilled]: (state, action) => {
       state.products = action.payload
       state.loading = false
     },
-    [setProductsByFavoredUserId.rejected]: (state, action) => {
+    [setProductsByFavoredUserId.rejected]: (state) => {
       state.loading = false
     },
   },
