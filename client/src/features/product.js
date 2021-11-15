@@ -46,7 +46,7 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   }
 })
 
-export const setProductWithNewAnswer = createAsyncThunk('products/setAnswer', async ({ token, params }) => {
+export const addNewAnswer = createAsyncThunk('products/addAnswer', async ({ token, params }) => {
   try {
     const data = await addAnswer(token, params)
     return data
@@ -55,7 +55,7 @@ export const setProductWithNewAnswer = createAsyncThunk('products/setAnswer', as
   }
 })
 
-export const setProductWithNewQuestion = createAsyncThunk('products/setQuestion', async ({ token, params }) => {
+export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ token, params }) => {
   try {
     const data = await addUniqQuestion(token, params)
     return data
@@ -64,7 +64,7 @@ export const setProductWithNewQuestion = createAsyncThunk('products/setQuestion'
   }
 })
 
-export const setProductWithUpdatedHighlight = createAsyncThunk('products/setHighlight', async ({ token, params }) => {
+export const updateQuestionHighlight = createAsyncThunk('products/updateHighlight', async ({ token, params }) => {
   try {
     const data = await updateHighlight(token, params)
     return data
@@ -73,7 +73,7 @@ export const setProductWithUpdatedHighlight = createAsyncThunk('products/setHigh
   }
 })
 
-export const setProductWithUpdatedFavorite = createAsyncThunk('products/setFavorite', async ({ token, params }) => {
+export const updateProductFavorite = createAsyncThunk('products/updateFavorite', async ({ token, params }) => {
   try {
     const data = await updateFavorite(token, params)
     return data
@@ -126,44 +126,44 @@ const productSlice = createSlice({
     [setProductsByFavoredUserId.rejected]: (state, action) => {
       state.loading = false
     },
-    [setProductWithNewAnswer.pending]: (state, action) => {
+    [addNewAnswer.pending]: (state, action) => {
       state.loading = true
     },
-    [setProductWithNewAnswer.fulfilled]: (state, action) => {
+    [addNewAnswer.fulfilled]: (state, action) => {
       state.product = action.payload.data
       state.loading = false
     },
-    [setProductWithNewAnswer.rejected]: (state, action) => {
+    [addNewAnswer.rejected]: (state, action) => {
       state.loading = false
     },
-    [setProductWithNewQuestion.pending]: (state, action) => {
+    [addNewQuestion.pending]: (state, action) => {
       state.loading = true
     },
-    [setProductWithNewQuestion.fulfilled]: (state, action) => {
+    [addNewQuestion.fulfilled]: (state, action) => {
       state.product = action.payload.data
       state.loading = false
     },
-    [setProductWithNewQuestion.rejected]: (state, action) => {
+    [addNewQuestion.rejected]: (state, action) => {
       state.loading = false
     },
-    [setProductWithUpdatedHighlight.pending]: (state, action) => {
+    [updateQuestionHighlight.pending]: (state, action) => {
       state.loading = true
     },
-    [setProductWithUpdatedHighlight.fulfilled]: (state, action) => {
+    [updateQuestionHighlight.fulfilled]: (state, action) => {
       state.product = action.payload.data
       state.loading = false
     },
-    [setProductWithUpdatedHighlight.rejected]: (state, action) => {
+    [updateQuestionHighlight.rejected]: (state, action) => {
       state.loading = false
     },
-    [setProductWithUpdatedFavorite.pending]: (state, action) => {
+    [updateProductFavorite.pending]: (state, action) => {
       state.loading = true
     },
-    [setProductWithUpdatedFavorite.fulfilled]: (state, action) => {
+    [updateProductFavorite.fulfilled]: (state, action) => {
       state.product = action.payload.data
       state.loading = false
     },
-    [setProductWithUpdatedFavorite.rejected]: (state, action) => {
+    [updateProductFavorite.rejected]: (state, action) => {
       state.loading = false
     },
   },

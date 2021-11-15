@@ -22,12 +22,12 @@ import {
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
   setProduct,
-  setProductWithNewAnswer,
-  setProductWithNewQuestion,
-  setProductWithUpdatedHighlight,
-  setProductWithUpdatedFavorite,
+  addNewAnswer,
+  addNewQuestion,
+  updateQuestionHighlight,
+  updateProductFavorite,
 } from '../features/product'
-import { updateFavorite, updateReport } from '../api/product'
+import { updateReport } from '../api/product'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
@@ -65,7 +65,7 @@ export default () => {
     setIsModalOpen(false)
     const params = { id: product._id, question }
     try {
-      await dispatch(setProductWithNewQuestion({ token, params }))
+      await dispatch(addNewQuestion({ token, params }))
       setQuestion({})
     } catch (e) {
       console.error(e)
@@ -76,7 +76,7 @@ export default () => {
     setIsModalOpen(false)
     const params = { id: product._id, answer }
     try {
-      await dispatch(setProductWithNewAnswer({ token, params }))
+      await dispatch(addNewAnswer({ token, params }))
       setAnswer({})
     } catch (e) {
       console.error(e)
@@ -98,7 +98,7 @@ export default () => {
   const highlightQuestion = async (params) => {
     console.log(params)
     try {
-      await dispatch(setProductWithUpdatedHighlight({ token, params }))
+      await dispatch(updateQuestionHighlight({ token, params }))
     } catch (e) {
       console.error(e)
     }
@@ -106,7 +106,7 @@ export default () => {
 
   const addToFavorite = async (params) => {
     try {
-      await dispatch(setProductWithUpdatedFavorite({ token, params }))
+      await dispatch(updateProductFavorite({ token, params }))
     } catch (e) {
       console.error(e)
     }
