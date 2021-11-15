@@ -7,6 +7,7 @@ import {
   addAnswer,
   addUniqQuestion,
   updateHighlight,
+  updateFavorite,
 } from '../api/product'
 
 export const setProduct = createAsyncThunk('product/set', async ({ token, id }) => {
@@ -66,6 +67,15 @@ export const setProductWithNewQuestion = createAsyncThunk('products/setQuestion'
 export const setProductWithUpdatedHighlight = createAsyncThunk('products/setHighlight', async ({ token, params }) => {
   try {
     const data = await updateHighlight(token, params)
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+export const setProductWithUpdatedFavorite = createAsyncThunk('products/setFavorite', async ({ token, params }) => {
+  try {
+    const data = await updateFavorite(token, params)
     return data
   } catch (e) {
     console.error(e)
@@ -144,6 +154,16 @@ const productSlice = createSlice({
       state.loading = false
     },
     [setProductWithUpdatedHighlight.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [setProductWithUpdatedFavorite.pending]: (state, action) => {
+      state.loading = true
+    },
+    [setProductWithUpdatedFavorite.fulfilled]: (state, action) => {
+      state.product = action.payload.data
+      state.loading = false
+    },
+    [setProductWithUpdatedFavorite.rejected]: (state, action) => {
       state.loading = false
     },
   },
