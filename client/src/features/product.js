@@ -46,36 +46,36 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   }
 })
 
-export const addNewAnswer = createAsyncThunk('products/addAnswer', async ({ token, params }) => {
+export const addNewAnswer = createAsyncThunk('products/addAnswer', async ({ token, id, params }) => {
   try {
-    const data = await addAnswer(token, params)
+    const data = await addAnswer(token, id, params)
     return data
   } catch (e) {
     console.error(e)
   }
 })
 
-export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ token, params }) => {
+export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ token, id, params }) => {
   try {
-    const data = await addUniqQuestion(token, params)
+    const data = await addUniqQuestion(token, id, params)
     return data
   } catch (e) {
     console.error(e)
   }
 })
 
-export const updateQuestionHighlight = createAsyncThunk('products/updateHighlight', async ({ token, params }) => {
+export const updateQuestionHighlight = createAsyncThunk('products/updateHighlight', async ({ token, id, params }) => {
   try {
-    const data = await updateHighlight(token, params)
+    const data = await updateHighlight(token, id, params)
     return data
   } catch (e) {
     console.error(e)
   }
 })
 
-export const updateProductFavorite = createAsyncThunk('products/updateFavorite', async ({ token, params }) => {
+export const updateProductFavorite = createAsyncThunk('products/updateFavorite', async ({ token, id, params }) => {
   try {
-    const data = await updateFavorite(token, params)
+    const data = await updateFavorite(token, id, params)
     return data
   } catch (e) {
     console.error(e)

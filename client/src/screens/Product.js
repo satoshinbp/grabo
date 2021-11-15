@@ -63,10 +63,8 @@ export default () => {
   // Handle submission from modal
   const submitQuestion = async () => {
     setIsModalOpen(false)
-    const updateData = question
-    const params = { id: product._id, updateData }
     try {
-      await dispatch(addNewQuestion({ token, params }))
+      await dispatch(addNewQuestion({ token, id: product._id, params: question }))
       setQuestion({})
     } catch (e) {
       console.error(e)
@@ -75,10 +73,8 @@ export default () => {
 
   const submitAnswer = async () => {
     setIsModalOpen(false)
-    const updateData = answer
-    const params = { id: product._id, updateData }
     try {
-      await dispatch(addNewAnswer({ token, params }))
+      await dispatch(addNewAnswer({ token, id: product._id, params: answer }))
       setAnswer({})
       setQuestion('')
     } catch (e) {
@@ -99,8 +95,10 @@ export default () => {
 
   // Handle icon on press actions
   const highlightQuestion = async (params) => {
+    console.log('params', params)
+    console.log('product', product)
     try {
-      await dispatch(updateQuestionHighlight({ token, params }))
+      await dispatch(updateQuestionHighlight({ token, id: product._id, params }))
     } catch (e) {
       console.error(e)
     }
@@ -108,7 +106,7 @@ export default () => {
 
   const addToFavorite = async (params) => {
     try {
-      await dispatch(updateProductFavorite({ token, params }))
+      await dispatch(updateProductFavorite({ token, id: product._id, params }))
     } catch (e) {
       console.error(e)
     }
@@ -191,13 +189,10 @@ export default () => {
                   onPress={() => {
                     const highlightStatus = qa.highlightedBy.includes(user._id)
                     const params = {
-                      id: product._id,
-                      updateData: {
-                        userId: user._id,
-                        isUniqQuestion: type === 'uniq',
-                        questionIndex: qaIndex,
-                        isHighlighted: highlightStatus,
-                      },
+                      userId: user._id,
+                      isUniqQuestion: type === 'uniq',
+                      questionIndex: qaIndex,
+                      isHighlighted: highlightStatus,
                     }
                     highlightQuestion(params)
                   }}
@@ -323,11 +318,8 @@ export default () => {
         onPress={() => {
           const favoriteStatus = product.favoredUserIds.includes(user._id)
           const params = {
-            id: product._id,
-            updateData: {
-              userId: user._id,
-              isFavored: favoriteStatus,
-            },
+            userId: user._id,
+            isFavored: favoriteStatus,
           }
           addToFavorite(params)
         }}

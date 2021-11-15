@@ -107,9 +107,9 @@ const sendImgToCloudVision = async (image) => {
 
 // const searchProducts = async (keywords) => console.log('keywords', keywords) // WIP
 
-const addAnswer = async (token, params) => {
+const addAnswer = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/answer`, params.updateData, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -118,9 +118,9 @@ const addAnswer = async (token, params) => {
   }
 }
 
-const addUniqQuestion = async (token, params) => {
+const addUniqQuestion = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/question`, params.updateData, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -129,9 +129,9 @@ const addUniqQuestion = async (token, params) => {
   }
 }
 
-const updateHighlight = async (token, params) => {
+const updateHighlight = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/highlight`, params.updateData, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -140,9 +140,9 @@ const updateHighlight = async (token, params) => {
   }
 }
 
-const updateFavorite = async (token, params) => {
+const updateFavorite = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/favorite`, params.updateData, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/favorite`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
