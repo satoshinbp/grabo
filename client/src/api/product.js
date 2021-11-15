@@ -75,34 +75,29 @@ const postProduct = async (token, params) => {
 
 const sendImgToCloudVision = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
-  const languageHints = groups.map((group) => group.code)
   const params = {
     requests: [
       {
         features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
         image: { content: image },
-        imageContext: { languageHints },
+        imageContext: { languageHints: groups.map((group) => group.code) },
       },
     ],
   }
+  const { data } = await axios.post(url, params, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+  if (!data.responses.textAnnotations) throw new Error()
 
-  try {
-    const { data } = await axios.post(url, params, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
+  const locale = data.responses[0].textAnnotations[0].locale
+  const descriptions = data.responses[0].textAnnotations
+    .filter((_, index) => index !== 0)
+    .map((annotation) => annotation.description)
 
-    const locale = data.responses[0].textAnnotations[0].locale
-    const descriptions = data.responses[0].textAnnotations
-      .filter((_, index) => index !== 0)
-      .map((annotation) => annotation.description)
-
-    return { locale, descriptions }
-  } catch (e) {
-    console.error(e)
-  }
+  return { locale, descriptions }
 }
 
 // const searchProducts = async (keywords) => console.log('keywords', keywords) // WIP

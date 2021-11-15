@@ -11,7 +11,7 @@ import Loading from '../components/Loading'
 import Header from '../components/Header'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
-import { updateUser } from '../api/auth'
+import { patchUser } from '../api/auth'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -105,17 +105,12 @@ export default () => {
         const params = {
           notificationToken: expotoken,
           isNotificationOn: true,
-          user_id: user?._id,
         }
-        updateUser(token, params)
+        patchUser(token, user._id, params)
 
         return () => {
           Notifications.removeNotificationSubscription(notificationListener.current)
-          Notifications.removeNotificationSubscription(responseListener.current)(
-            <>
-              <Tabs />
-            </>
-          )
+          Notifications.removeNotificationSubscription(responseListener.current)(<Tabs />)
         }
       })
     }

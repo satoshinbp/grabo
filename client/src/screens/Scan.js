@@ -28,12 +28,13 @@ export default () => {
 
   const takePicture = async () => {
     if (!cameraRef) return
+
     try {
       const { base64, uri } = await cameraRef.current.takePictureAsync({ base64: true })
       dispatch(addImage({ base64, uri }))
       navigation.navigate('SelectLanguage')
     } catch (e) {
-      alert('Failed. Please take it again.')
+      alert('Failed. Please try another photo.')
     }
   }
 
@@ -47,11 +48,10 @@ export default () => {
 
       const { cancelled, base64, uri } = await ImagePicker.launchImageLibraryAsync({ base64: true })
       if (cancelled) return
-
       dispatch(addImage({ base64, uri }))
       navigation.navigate('SelectLanguage')
     } catch (e) {
-      alert('Fialed. Please try another photo.')
+      alert('Failed. Please try another photo.')
     }
   }
 
