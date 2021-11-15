@@ -88,10 +88,10 @@ const addAnswer = (req, res) => {
 
 const addUniqQuestion = (req, res) => {
   Product.findOne({
-    _id: req.body.id,
+    _id: req.params.id,
   }).then((product) => {
     product.markModified('uniqQandAs')
-    product.uniqQandAs.push(req.body.question)
+    product.uniqQandAs.push(req.body)
 
     product
       .save()

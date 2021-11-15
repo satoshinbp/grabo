@@ -120,7 +120,7 @@ const addAnswer = async (token, params) => {
 
 const addUniqQuestion = async (token, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/question`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/question`, params.question, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
