@@ -102,45 +102,45 @@ const sendImgToCloudVision = async (image) => {
 
 // const searchProducts = async (keywords) => console.log('keywords', keywords) // WIP
 
-const addAnswer = async (token, params) => {
+const addAnswer = async (token, id, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }
 }
 
-const addUniqQuestion = async (token, params) => {
+const addUniqQuestion = async (token, id, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/question`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }
 }
 
-const updateHighlight = async (token, params) => {
+const updateHighlight = async (token, id, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/highlight`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }
 }
 
-const updateFavorite = async (token, params) => {
+const updateFavorite = async (token, id, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/favorite`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/favorite`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }

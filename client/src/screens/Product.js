@@ -20,8 +20,14 @@ import {
   Checkbox,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
-import { setProduct } from '../features/product'
-import { addAnswer, addUniqQuestion, updateHighlight, updateFavorite, updateReport } from '../api/product'
+import {
+  setProduct,
+  addNewAnswer,
+  addNewQuestion,
+  updateQuestionHighlight,
+  updateProductFavorite,
+} from '../features/product'
+import { updateReport } from '../api/product'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
@@ -57,9 +63,8 @@ export default () => {
   // Handle submission from modal
   const submitQuestion = async () => {
     setIsModalOpen(false)
-    const params = { id: product._id, question }
     try {
-      await addUniqQuestion(token, params)
+      await dispatch(addNewQuestion({ token, id: product._id, params: question }))
       setQuestion({})
     } catch (e) {
       console.error(e)
@@ -68,9 +73,8 @@ export default () => {
 
   const submitAnswer = async () => {
     setIsModalOpen(false)
-    const params = { id: product._id, answer }
     try {
-      await addAnswer(token, params)
+      await dispatch(addNewAnswer({ token, id: product._id, params: answer }))
       setAnswer({})
       setQuestion('')
     } catch (e) {
@@ -91,8 +95,10 @@ export default () => {
 
   // Handle icon on press actions
   const highlightQuestion = async (params) => {
+    console.log('params', params)
+    console.log('product', product)
     try {
-      await updateHighlight(token, params)
+      await dispatch(updateQuestionHighlight({ token, id: product._id, params }))
     } catch (e) {
       console.error(e)
     }
@@ -100,7 +106,7 @@ export default () => {
 
   const addToFavorite = async (params) => {
     try {
-      await updateFavorite(token, params)
+      await dispatch(updateProductFavorite({ token, id: product._id, params }))
     } catch (e) {
       console.error(e)
     }
@@ -183,10 +189,9 @@ export default () => {
                   onPress={() => {
                     const highlightStatus = qa.highlightedBy.includes(user._id)
                     const params = {
-                      id: product._id,
                       userId: user._id,
-                      isUniqQuestion: questionType === 'uniq',
-                      questionIndex,
+                      isUniqQuestion: type === 'uniq',
+                      questionIndex: qaIndex,
                       isHighlighted: highlightStatus,
                     }
                     highlightQuestion(params)
@@ -314,7 +319,6 @@ export default () => {
         onPress={() => {
           const favoriteStatus = product.favoredUserIds.includes(user._id)
           const params = {
-            id: product._id,
             userId: user._id,
             isFavored: favoriteStatus,
           }

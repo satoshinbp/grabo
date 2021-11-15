@@ -68,15 +68,15 @@ const createProduct = (req, res) => {
 
 const addAnswer = (req, res) => {
   Product.findOne({
-    _id: req.body.id,
+    _id: req.params.id,
   }).then((product) => {
-    if (req.body.answer.isUniqQuestion) {
-      product.uniqQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
-      product.uniqQandAs[req.body.answer.questionIndex].highlightedBy = []
+    if (req.body.isUniqQuestion) {
+      product.uniqQandAs[req.body.questionIndex].answers.push(req.body.answer)
+      product.uniqQandAs[req.body.questionIndex].highlightedBy = []
       product.markModified('uniqQandAs')
     } else {
-      product.fixedQandAs[req.body.answer.questionIndex].answers.push(req.body.answer.answer)
-      product.fixedQandAs[req.body.answer.questionIndex].highlightedBy = []
+      product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
+      product.fixedQandAs[req.body.questionIndex].highlightedBy = []
       product.markModified('fixedQandAs')
     }
     product
@@ -88,10 +88,10 @@ const addAnswer = (req, res) => {
 
 const addUniqQuestion = (req, res) => {
   Product.findOne({
-    _id: req.body.id,
+    _id: req.params.id,
   }).then((product) => {
     product.markModified('uniqQandAs')
-    product.uniqQandAs.push(req.body.question)
+    product.uniqQandAs.push(req.body)
 
     product
       .save()
@@ -102,7 +102,7 @@ const addUniqQuestion = (req, res) => {
 
 const updateHighlight = (req, res) => {
   Product.findOne({
-    _id: req.body.id,
+    _id: req.params.id,
   }).then((product) => {
     if (req.body.isHighlighted) {
       if (req.body.isUniqQuestion) {
@@ -136,7 +136,7 @@ const updateHighlight = (req, res) => {
 
 const updateFavorite = (req, res) => {
   Product.findOne({
-    _id: req.body.id,
+    _id: req.params.id,
   }).then((product) => {
     if (req.body.isFavored) {
       const newFavoredArray = product.favoredUserIds.filter((userId) => {
