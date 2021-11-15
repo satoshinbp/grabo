@@ -72,6 +72,7 @@ export default () => {
     try {
       await addAnswer(token, params)
       setAnswer({})
+      setQuestion('')
     } catch (e) {
       console.error(e)
     }
@@ -220,6 +221,11 @@ export default () => {
     setReportItem({ fixedQandAsId: item._id, fixedquestionIndex, answerIndex })
   }
 
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setQuestion('')
+  }
+
   // set up modal props
   const modalTitle =
     modalContentType === 'question'
@@ -331,7 +337,7 @@ export default () => {
 
       <SlideModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => closeModal()}
         title={modalTitle}
         content={modalContent}
         action={modalAction}
