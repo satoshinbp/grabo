@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
-import { fetchUser, updateUser, signInWithGoogle } from '../api/auth'
+import { signInWithGoogle, fetchUser, patchUser } from '../api/auth'
 
 export const setUser = createAsyncThunk('users/fetch', async (token) => {
   const user = await fetchUser(token)
@@ -17,14 +17,9 @@ export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
 })
 
-export const updateGroup = createAsyncThunk('users/updateGroup', async ({ token, params }) => {
-  const { groups } = await updateUser(token, params)
-  return groups
-})
-
-export const updateIsNotificationOn = createAsyncThunk('users/updateNotification', async ({ token, params }) => {
-  const { isNotificationOn } = await updateUser(token, params)
-  return isNotificationOn
+export const updateUser = createAsyncThunk('users/update', async ({ token, id, params }) => {
+  const user = await patchUser(token, id, params)
+  return user
 })
 
 const initialUserState = {
@@ -86,24 +81,14 @@ const authSlice = createSlice({
     [logout.rejected]: (state) => {
       state.signingOut = false
     },
-    [updateGroup.pending]: (state) => {
+    [updateUser.pending]: (state) => {
       state.loading = true
     },
-    [updateGroup.fulfilled]: (state, action) => {
-      state.user = { ...state.user, groups: action.payload }
+    [updateUser.fulfilled]: (state, action) => {
+      state.user = action.payload
       state.loading = false
     },
-    [updateGroup.rejected]: (state) => {
-      state.loading = false
-    },
-    [updateIsNotificationOn.pending]: (state) => {
-      state.loading = true
-    },
-    [updateIsNotificationOn.fulfilled]: (state, action) => {
-      state.user.isNotificationOn = action.payload
-      state.loading = false
-    },
-    [updateIsNotificationOn.rejected]: (state) => {
+    [updateUser.rejected]: (state) => {
       state.loading = false
     },
   },

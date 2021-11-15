@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
-import { logout, updateIsNotificationOn } from '../features/auth'
+import { logout, updateUser } from '../features/auth'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
 import FadeModal from '../elements/FadeModal'
 
@@ -17,12 +17,13 @@ export default () => {
     { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
   ]
 
-  const setNotificationHandler = (bool) => {
-    const params = {
-      isNotificationOn: bool,
-      user_id: user._id,
-    }
-    dispatch(updateIsNotificationOn({ token, params }))
+  const turnOnNotification = () => {
+    const params = { isNotificationOn: true }
+    dispatch(updateUser({ token, id: user._id, params }))
+  }
+  const turnOffNotification = () => {
+    const params = { isNotificationOn: false }
+    dispatch(updateUser({ token, id: user._id, params }))
   }
 
   return (
@@ -68,9 +69,9 @@ export default () => {
         onClose={() => setNotificationModalOpen(false)}
         title="Notification"
         content="Mute Notification?"
-        primaryAction={() => setNotificationHandler(false)}
+        primaryAction={turnOffNotification}
         primaryActionLabel="Mute"
-        secondaryAction={() => setNotificationHandler(true)}
+        secondaryAction={turnOnNotification}
         secondaryActionLabel="On"
       />
     </View>
