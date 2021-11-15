@@ -17,12 +17,8 @@ export default () => {
     { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
   ]
 
-  const turnOnNotification = () => {
-    const params = { isNotificationOn: true }
-    dispatch(updateUser({ token, id: user._id, params }))
-  }
-  const turnOffNotification = () => {
-    const params = { isNotificationOn: false }
+  const toggleNotification = (status) => {
+    const params = { isNotificationOn: status }
     dispatch(updateUser({ token, id: user._id, params }))
   }
 
@@ -69,9 +65,9 @@ export default () => {
         onClose={() => setNotificationModalOpen(false)}
         title="Notification"
         content="Mute Notification?"
-        primaryAction={turnOffNotification}
+        primaryAction={() => toggleNotification(false)}
         primaryActionLabel="Mute"
-        secondaryAction={turnOnNotification}
+        secondaryAction={() => toggleNotification(true)}
         secondaryActionLabel="On"
       />
     </View>
