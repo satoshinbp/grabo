@@ -8,6 +8,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { setAppReady, setUser } from '../features/auth'
 import Login from '../screens/Login'
 import Loading from '../components/Loading'
+import Header from '../components/Header'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
 import { updateUser } from '../api/auth'
@@ -134,6 +135,7 @@ export default () => {
 
   return (
     <>
+      <Header />
       <Tabs />
     </>
   )

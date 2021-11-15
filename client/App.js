@@ -58,18 +58,16 @@ export default () => {
       },
       Box: {
         variants: {
-          listItemPlain: ({ index }) => ({
-            mt: index === 0 ? 1.5 : 0,
-            mb: 3,
+          listItemBarPlain: () => ({
+            my: 1.5,
             px: 3.5,
             py: 2.5,
             borderRadius: 'md',
             backgroundColor: 'white',
             shadow: 2,
           }),
-          listItemColored: ({ index }) => ({
-            mt: index === 0 ? 1.5 : 0,
-            mb: 3,
+          listItemBarColored: () => ({
+            my: 1.5,
             px: 3.5,
             py: 2.5,
             borderLeftWidth: '10px',
@@ -115,12 +113,19 @@ export default () => {
             height: '80px',
             borderRadius: 'full',
             backgroundColor: 'primary.500',
-            shadow: 5,
+            shadow: 2,
             _text: {
               color: 'black',
               textAlign: 'center',
             },
           }),
+        },
+      },
+      TextArea: {
+        baseStyle: {
+          bg: 'muted.100',
+          color: 'muted.500',
+          fontSize: 'sm',
         },
       },
     },

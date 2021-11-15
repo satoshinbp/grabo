@@ -1,50 +1,59 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { View, Box, Center, HStack, Pressable, Text, Avatar, SunIcon, ChevronRightIcon } from 'native-base'
+import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout } from '../features/auth'
-import Header from '../components/Header'
+import ListItemBarPlain from '../elements/ListItemBarPlain'
+import FadeModal from '../elements/FadeModal'
 
 export default () => {
   const { user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const menu = [
+    { text: 'Account Info', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
+    { text: 'Settings', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
+    { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setModalOpen(true) },
+  ]
+
   return (
-    <>
-      <Header />
-      <View variant="wrapper">
-        <Center>
-          <Box position="absolute" top={0} h={32} w="100%" my={2} borderRadius="md" bg="primary.400" />
-        </Center>
-        <View my={2} px={3}>
-          <Text fontSize="lg" bold>
-            {user?.name}
-          </Text>
-          <Text my={1} fontSize="sm" color="darkText">
-            {user?.email}
-          </Text>
-        </View>
+    <View variant="wrapper">
+      <VStack alignItems="center" space={1} mb={3}>
+        <Box position="absolute" top={0} h="128px" w="100%" my={2} borderRadius="md" bg="primary.500" />
+        <View h="64px" />
         <Avatar
-          alignSelf="center"
-          source={{ uri: user?.image }}
+          source={{ uri: user.image }}
           size="2xl"
           alt="user portrait"
-          borderRadius="full"
           position="relative"
+          alignSelf="center"
+          borderRadius="full"
         />
-        <Pressable onPress={() => dispatch(logout())}>
-          <Box index={0} variant="listItemPlain">
-            <HStack space={3} alignItems="center">
-              <Center size={12} bg="primary.500" borderRadius="full">
-                <SunIcon size={8} />
-              </Center>
-              <Text fontSize="md" bold flex={1}>
-                Logout
-              </Text>
-              <ChevronRightIcon size="5" mt="0.5" color="black" />
-            </HStack>
-          </Box>
-        </Pressable>
+        <Text fontSize="lg" bold>
+          {user.name}
+        </Text>
+        <Text fontSize="sm" color="darkText">
+          {user.email}
+        </Text>
+      </VStack>
+
+      <View>
+        {menu.map(({ text, icon, onPress }) => (
+          <ListItemBarPlain text={text} icon={icon} onPress={onPress} />
+        ))}
       </View>
-    </>
+
+      <FadeModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Logout"
+        content="Are you sure to logout from Grabo?"
+        primaryAction={() => dispatch(logout())}
+        primaryActionLabel="Logout"
+        secondaryAction={() => setModalOpen(false)}
+        secondaryActionLabel="Cancel"
+      />
+    </View>
   )
 }
