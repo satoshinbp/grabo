@@ -11,7 +11,7 @@ export default () => {
   const navigation = useNavigation()
   const isFocused = useIsFocused()
 
-  const { loading } = useSelector((state) => state.image)
+  const { loading, status } = useSelector((state) => state.image)
   const dispatch = useDispatch()
 
   const cameraRef = useRef(null)
@@ -26,13 +26,20 @@ export default () => {
     getPermission()
   }, [])
 
+  useEffect(() => {
+    if (status === 'fail') {
+      alert('Failed. Please try another photo.')
+    }
+    if (status === 'success') {
+      navigation.navigate('SelectLanguage')
+    }
+  }, [status])
+
   const takePicture = async () => {
     if (!cameraRef) return
-
     try {
       const { base64, uri } = await cameraRef.current.takePictureAsync({ base64: true })
       dispatch(addImage({ base64, uri }))
-      navigation.navigate('SelectLanguage')
     } catch (e) {
       alert('Failed. Please try another photo.')
     }
@@ -45,11 +52,9 @@ export default () => {
         alert('Permission to access camera roll is required.')
         return
       }
-
       const { cancelled, base64, uri } = await ImagePicker.launchImageLibraryAsync({ base64: true })
       if (cancelled) return
       dispatch(addImage({ base64, uri }))
-      navigation.navigate('SelectLanguage')
     } catch (e) {
       alert('Failed. Please try another photo.')
     }

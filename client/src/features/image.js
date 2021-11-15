@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { sendImgToCloudVision, searchProducts } from '../api/product'
+import { getOcrText, searchProducts } from '../api/product'
 
 export const addImage = createAsyncThunk('image/add', async ({ base64, uri }) => {
-  const { descriptions, locale } = await sendImgToCloudVision(base64)
+  const { locale, descriptions } = await getOcrText(base64)
   const keywords = [...new Set(descriptions)] // to remove keyword duplication
   // await searchProducts(keywords) // WIP
   return { keywords, uri, locale }
@@ -16,7 +16,7 @@ const initialStateValue = {
 
 const imageSlice = createSlice({
   name: 'image',
-  initialState: { value: initialStateValue, loading: false },
+  initialState: { value: initialStateValue, loading: false, status: 'idle' },
   reducers: {
     updateCode: (state, action) => {
       state.value.code = action.payload
@@ -27,6 +27,7 @@ const imageSlice = createSlice({
     },
     clearImage: (state) => {
       state.value = initialStateValue
+      state.status = 'idle'
     },
   },
   extraReducers: {
@@ -42,9 +43,11 @@ const imageSlice = createSlice({
       state.value.uris.push(action.payload.uri)
       state.value.code = action.payload.locale
       state.loading = false
+      state.status = 'success'
     },
     [addImage.rejected]: (state) => {
       state.loading = false
+      state.status = 'fail'
     },
   },
 })

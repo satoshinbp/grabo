@@ -73,7 +73,7 @@ const postProduct = async (token, params) => {
   }
 }
 
-const sendImgToCloudVision = async (image) => {
+const getOcrText = async (image) => {
   const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
   const params = {
     requests: [
@@ -84,13 +84,15 @@ const sendImgToCloudVision = async (image) => {
       },
     ],
   }
+
   const { data } = await axios.post(url, params, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
   })
-  // if (!data.responses.textAnnotations) throw new Error()
+
+  if (!data.responses[0].textAnnotations) throw new Error()
 
   const locale = data.responses[0].textAnnotations[0].locale
   const descriptions = data.responses[0].textAnnotations
@@ -162,7 +164,7 @@ export {
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
-  sendImgToCloudVision,
+  getOcrText,
   // searchProducts,
   postImage,
   postProduct,
