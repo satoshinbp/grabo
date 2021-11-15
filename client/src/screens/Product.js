@@ -253,6 +253,7 @@ export default () => {
               },
             })
           }
+          textAlignVertical="top"
         />
       </FormControl>
     ) : modalContentType === 'answer' ? (
@@ -331,7 +332,7 @@ export default () => {
         <View h="60px" />
       </ScrollView>
 
-      <Button variant="fab" onPress={() => setQuestionForm()}>
+      <Button variant="fab" onPress={setQuestionForm}>
         Ask a Question
       </Button>
 
