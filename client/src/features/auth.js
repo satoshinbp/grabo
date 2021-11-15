@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
-import { fetchUser, updateUser, signInWithGoogle } from '../api/auth'
+import { signInWithGoogle, fetchUser, patchUser } from '../api/auth'
 
-export const setUser = createAsyncThunk('users/fetch', async (token, thunkAPI) => {
+export const setUser = createAsyncThunk('users/fetch', async (token) => {
   const user = await fetchUser(token)
   return { user, token }
 })
 
-export const login = createAsyncThunk('users/login', async (idToken, thunkAPI) => {
+export const login = createAsyncThunk('users/login', async (idToken) => {
   const { user, token } = await signInWithGoogle(idToken)
   await SecureStore.setItemAsync('token', token)
   return { user, token }
@@ -17,9 +17,9 @@ export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
 })
 
-export const updateGroup = createAsyncThunk('users/updateGroup', async ({ token, params }, thunkAPI) => {
-  const user = await updateUser(token, params)
-  return user.data.groups
+export const updateUser = createAsyncThunk('users/update', async ({ token, id, params }) => {
+  const user = await patchUser(token, id, params)
+  return user
 })
 
 const initialUserState = {
@@ -30,6 +30,7 @@ const initialUserState = {
   groups: [],
   favProducts: [],
   notifications: [],
+  isNotificationOn: true,
 }
 
 const authSlice = createSlice({
@@ -43,7 +44,7 @@ const authSlice = createSlice({
     signingOut: false,
   },
   reducers: {
-    setAppReady: (state, action) => {
+    setAppReady: (state) => {
       state.isReady = true
     },
   },
@@ -53,11 +54,11 @@ const authSlice = createSlice({
       state.token = action.payload.token
       state.isReady = true
     },
-    [setUser.rejected]: (state, action) => {
+    [setUser.rejected]: (state) => {
       state.error = true
       state.isReady = true
     },
-    [login.pending]: (state, action) => {
+    [login.pending]: (state) => {
       state.signingIn = true
     },
     [login.fulfilled]: (state, action) => {
@@ -66,28 +67,28 @@ const authSlice = createSlice({
       state.isReady = true
       state.signingIn = false
     },
-    [login.rejected]: (state, action) => {
+    [login.rejected]: (state) => {
       state.signingIn = false
     },
-    [logout.pending]: (state, action) => {
+    [logout.pending]: (state) => {
       state.signingOut = true
     },
-    [logout.fulfilled]: (state, action) => {
+    [logout.fulfilled]: (state) => {
       state.user = initialUserState
       state.token = null
       state.signingOut = false
     },
-    [logout.rejected]: (state, action) => {
+    [logout.rejected]: (state) => {
       state.signingOut = false
     },
-    [updateGroup.pending]: (state, action) => {
+    [updateUser.pending]: (state) => {
       state.loading = true
     },
-    [updateGroup.fulfilled]: (state, action) => {
-      state.user = { ...state.user, groups: action.payload }
+    [updateUser.fulfilled]: (state, action) => {
+      state.user = action.payload
       state.loading = false
     },
-    [updateGroup.rejected]: (state, action) => {
+    [updateUser.rejected]: (state) => {
       state.loading = false
     },
   },

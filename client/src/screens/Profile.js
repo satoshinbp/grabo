@@ -1,21 +1,30 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
-import { logout } from '../features/auth'
+import { logout, updateUser } from '../features/auth'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
 import FadeModal from '../elements/FadeModal'
 
 export default () => {
-  const { user } = useSelector((state) => state.auth)
+  const { user, token } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
-
-  const [modalOpen, setModalOpen] = useState(false)
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false)
+  const [notificationModalOpen, setNotificationModalOpen] = useState(false)
 
   const menu = [
     { text: 'Account Info', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
-    { text: 'Settings', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
-    { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setModalOpen(true) },
+    { text: 'Settings', icon: <SunIcon size={8} />, onPress: () => setNotificationModalOpen(true) },
+    { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
   ]
+
+  const turnOnNotification = () => {
+    const params = { isNotificationOn: true }
+    dispatch(updateUser({ token, id: user._id, params }))
+  }
+  const turnOffNotification = () => {
+    const params = { isNotificationOn: false }
+    dispatch(updateUser({ token, id: user._id, params }))
+  }
 
   return (
     <View variant="wrapper">
@@ -23,7 +32,7 @@ export default () => {
         <Box position="absolute" top={0} h="128px" w="100%" my={2} borderRadius="md" bg="primary.500" />
         <View h="64px" />
         <Avatar
-          source={{ uri: user.image }}
+          source={{ uri: user?.image }}
           size="2xl"
           alt="user portrait"
           position="relative"
@@ -31,10 +40,10 @@ export default () => {
           borderRadius="full"
         />
         <Text fontSize="lg" bold>
-          {user.name}
+          {user?.name}
         </Text>
         <Text fontSize="sm" color="darkText">
-          {user.email}
+          {user?.email}
         </Text>
       </VStack>
 
@@ -45,14 +54,25 @@ export default () => {
       </View>
 
       <FadeModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={logoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
         title="Logout"
         content="Are you sure to logout from Grabo?"
         primaryAction={() => dispatch(logout())}
         primaryActionLabel="Logout"
-        secondaryAction={() => setModalOpen(false)}
+        secondaryAction={() => setLogoutModalOpen(false)}
         secondaryActionLabel="Cancel"
+      />
+
+      <FadeModal
+        isOpen={notificationModalOpen}
+        onClose={() => setNotificationModalOpen(false)}
+        title="Notification"
+        content="Mute Notification?"
+        primaryAction={turnOffNotification}
+        primaryActionLabel="Mute"
+        secondaryAction={turnOnNotification}
+        secondaryActionLabel="On"
       />
     </View>
   )

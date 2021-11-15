@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const ObjectId = Schema.Types.ObjectId
 
 const userSchema = new Schema(
   {
@@ -19,7 +18,8 @@ const userSchema = new Schema(
       default: [],
     },
     tokens: { type: [String], required: true },
-    notificationToken: { type: String },
+    notificationToken: String,
+    isNotificationOn: { type: Boolean, default: false },
   },
   { timestamps: true }
 )
