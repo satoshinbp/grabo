@@ -109,7 +109,7 @@ const sendImgToCloudVision = async (image) => {
 
 const addAnswer = async (token, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/answer`, params.answer, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/answer`, params.updateData, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -120,7 +120,7 @@ const addAnswer = async (token, params) => {
 
 const addUniqQuestion = async (token, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/question`, params.question, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/question`, params.updateData, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -131,7 +131,7 @@ const addUniqQuestion = async (token, params) => {
 
 const updateHighlight = async (token, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/highlight`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/highlight`, params.updateData, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -142,7 +142,7 @@ const updateHighlight = async (token, params) => {
 
 const updateFavorite = async (token, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/favorite`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/favorite`, params.updateData, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data

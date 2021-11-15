@@ -10,8 +10,8 @@ router.get('/fav/user/:id', productController.getProductsByFavoredUserId)
 router.post('/', productController.createProduct)
 router.put('/:id/answer', productController.addAnswer)
 router.put('/:id/question', productController.addUniqQuestion)
-router.put('/highlight', productController.updateHighlight)
-router.put('/favorite', productController.updateFavorite)
+router.put('/:id/highlight', productController.updateHighlight)
+router.put('/:id/favorite', productController.updateFavorite)
 router.put('/report', productController.updateReport)
 
 module.exports = router

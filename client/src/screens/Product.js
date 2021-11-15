@@ -63,7 +63,8 @@ export default () => {
   // Handle submission from modal
   const submitQuestion = async () => {
     setIsModalOpen(false)
-    const params = { id: product._id, question }
+    const updateData = question
+    const params = { id: product._id, updateData }
     try {
       await dispatch(addNewQuestion({ token, params }))
       setQuestion({})
@@ -74,7 +75,8 @@ export default () => {
 
   const submitAnswer = async () => {
     setIsModalOpen(false)
-    const params = { id: product._id, answer }
+    const updateData = answer
+    const params = { id: product._id, updateData }
     try {
       await dispatch(addNewAnswer({ token, params }))
       setAnswer({})
@@ -97,7 +99,6 @@ export default () => {
 
   // Handle icon on press actions
   const highlightQuestion = async (params) => {
-    console.log(params)
     try {
       await dispatch(updateQuestionHighlight({ token, params }))
     } catch (e) {
@@ -191,10 +192,12 @@ export default () => {
                     const highlightStatus = qa.highlightedBy.includes(user._id)
                     const params = {
                       id: product._id,
-                      userId: user._id,
-                      isUniqQuestion: type === 'uniq',
-                      questionIndex: qaIndex,
-                      isHighlighted: highlightStatus,
+                      updateData: {
+                        userId: user._id,
+                        isUniqQuestion: type === 'uniq',
+                        questionIndex: qaIndex,
+                        isHighlighted: highlightStatus,
+                      },
                     }
                     highlightQuestion(params)
                   }}
@@ -321,8 +324,10 @@ export default () => {
           const favoriteStatus = product.favoredUserIds.includes(user._id)
           const params = {
             id: product._id,
-            userId: user._id,
-            isFavored: favoriteStatus,
+            updateData: {
+              userId: user._id,
+              isFavored: favoriteStatus,
+            },
           }
           addToFavorite(params)
         }}

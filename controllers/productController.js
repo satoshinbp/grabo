@@ -102,7 +102,7 @@ const addUniqQuestion = (req, res) => {
 
 const updateHighlight = (req, res) => {
   Product.findOne({
-    _id: req.body.id,
+    _id: req.params.id,
   }).then((product) => {
     if (req.body.isHighlighted) {
       if (req.body.isUniqQuestion) {
@@ -136,7 +136,7 @@ const updateHighlight = (req, res) => {
 
 const updateFavorite = (req, res) => {
   Product.findOne({
-    _id: req.body.id,
+    _id: req.params.id,
   }).then((product) => {
     if (req.body.isFavored) {
       const newFavoredArray = product.favoredUserIds.filter((userId) => {
