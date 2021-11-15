@@ -130,7 +130,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [addNewAnswer.fulfilled]: (state, action) => {
-      state.product = action.payload.data
+      state.product = action.payload
       state.loading = false
     },
     [addNewAnswer.rejected]: (state, action) => {
@@ -140,7 +140,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [addNewQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload.data
+      state.product = action.payload
       state.loading = false
     },
     [addNewQuestion.rejected]: (state, action) => {
@@ -150,7 +150,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [updateQuestionHighlight.fulfilled]: (state, action) => {
-      state.product = action.payload.data
+      state.product = action.payload
       state.loading = false
     },
     [updateQuestionHighlight.rejected]: (state, action) => {
@@ -160,7 +160,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [updateProductFavorite.fulfilled]: (state, action) => {
-      state.product = action.payload.data
+      state.product = action.payload
       state.loading = false
     },
     [updateProductFavorite.rejected]: (state, action) => {

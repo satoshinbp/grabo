@@ -109,10 +109,10 @@ const sendImgToCloudVision = async (image) => {
 
 const addAnswer = async (token, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/answer`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${params.id}/answer`, params.answer, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }
@@ -120,10 +120,10 @@ const addAnswer = async (token, params) => {
 
 const addUniqQuestion = async (token, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/question`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/question`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }
@@ -131,10 +131,10 @@ const addUniqQuestion = async (token, params) => {
 
 const updateHighlight = async (token, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/highlight`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }
@@ -142,10 +142,10 @@ const updateHighlight = async (token, params) => {
 
 const updateFavorite = async (token, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/favorite`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/favorite`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return res
+    return data
   } catch (e) {
     console.error(e)
   }
