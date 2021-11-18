@@ -13,6 +13,7 @@ const userSchema = new Schema(
         {
           read: { type: Boolean, required: true },
           message: { type: String, required: true },
+          //productid
         },
       ],
       default: [],
