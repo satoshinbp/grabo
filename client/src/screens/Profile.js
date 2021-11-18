@@ -21,8 +21,8 @@ export default () => {
     { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
   ]
 
-  const toggleNotification = (status) => {
-    const params = { isNotificationOn: status }
+  const toggleNotification = () => {
+    const params = { isNotificationOn: !user.isNotificationOn }
     dispatch(updateUser({ token, id: user._id, params }))
   }
 
@@ -57,11 +57,11 @@ export default () => {
         isOpen={notificationModalOpen}
         onClose={() => setNotificationModalOpen(false)}
         title="Notification"
-        content="Mute Notification?"
-        primaryAction={() => toggleNotification(false)}
-        primaryActionLabel="Mute"
-        secondaryAction={() => toggleNotification(true)}
-        secondaryActionLabel="On"
+        content={user.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
+        primaryAction={toggleNotification}
+        primaryActionLabel={user.isNotificationOn ? 'Mute' : 'Unmute'}
+        secondaryAction={() => setNotificationModalOpen(false)}
+        secondaryActionLabel="Cancel"
       />
 
       <FadeModal
