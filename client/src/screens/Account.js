@@ -28,7 +28,14 @@ export default () => {
       })
       return false
     }
-    // email validation to be added here
+    const emailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    if (!email.match(emailformat)) {
+      setErrors({
+        ...errors,
+        email: 'Email address is not valid',
+      })
+      return false
+    }
     return true
   }
 
