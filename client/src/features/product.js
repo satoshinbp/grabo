@@ -4,10 +4,14 @@ import {
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
-  addAnswer,
   addUniqQuestion,
-  updateHighlight,
   updateFavorite,
+  addAnswerForFixedQuestion,
+  addAnswerForUniqQuestion,
+  addUserToUniqQnHighlight,
+  addUserToFixedQnHighlight,
+  removeUserFromFixedQnHighlight,
+  removeUserFromUniqQnHighlight,
 } from '../api/product'
 
 export const setProduct = createAsyncThunk('product/set', async ({ token, id }) => {
@@ -46,6 +50,7 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   }
 })
 
+/*
 export const addNewAnswer = createAsyncThunk('products/addAnswer', async ({ token, id, params }) => {
   try {
     const data = await addAnswer(token, id, params)
@@ -53,7 +58,31 @@ export const addNewAnswer = createAsyncThunk('products/addAnswer', async ({ toke
   } catch (e) {
     console.error(e)
   }
-})
+})*/
+
+export const addNewAnswerForFixedQuestion = createAsyncThunk(
+  'products/addFixedQuestionAnswer',
+  async ({ token, id, params }) => {
+    try {
+      const data = await addAnswerForFixedQuestion(token, id, params)
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
+
+export const addNewAnswerForUniqQuestion = createAsyncThunk(
+  'products/addUniqQuestionAnswer',
+  async ({ token, id, params }) => {
+    try {
+      const data = await addAnswerForUniqQuestion(token, id, params)
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
 
 export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ token, id, params }) => {
   try {
@@ -63,7 +92,7 @@ export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ 
     console.error(e)
   }
 })
-
+/*
 export const updateQuestionHighlight = createAsyncThunk('products/updateHighlight', async ({ token, id, params }) => {
   try {
     const data = await updateHighlight(token, id, params)
@@ -71,7 +100,57 @@ export const updateQuestionHighlight = createAsyncThunk('products/updateHighligh
   } catch (e) {
     console.error(e)
   }
-})
+})*/
+
+export const addUserToFixedQuestionHighlight = createAsyncThunk(
+  'products/addUserToFixedQnHighlight',
+  async ({ token, id, params }) => {
+    try {
+      const data = await addUserToFixedQnHighlight(token, id, params)
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
+
+export const addUserToUniqQuestionHighlight = createAsyncThunk(
+  'products/addUserToUniqQnHighlight',
+  async ({ token, id, params }) => {
+    try {
+      const data = await addUserToUniqQnHighlight(token, id, params)
+      console.log(data)
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
+
+export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
+  'products/removeUserFromFixedQnHighlight',
+  async ({ token, id, params }) => {
+    try {
+      const data = await removeUserFromFixedQnHighlight(token, id, params)
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
+
+export const removeUserFromUniqQuestionHighlight = createAsyncThunk(
+  'products/removeUserFromUniqQnHighlight',
+  async ({ token, id, params }) => {
+    try {
+      const data = await removeUserFromUniqQnHighlight(token, id, params)
+      console.log(data)
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
 
 export const updateProductFavorite = createAsyncThunk('products/updateFavorite', async ({ token, id, params }) => {
   try {
@@ -126,6 +205,7 @@ const productSlice = createSlice({
     [setProductsByFavoredUserId.rejected]: (state) => {
       state.loading = false
     },
+    /*
     [addNewAnswer.pending]: (state, action) => {
       state.loading = true
     },
@@ -134,6 +214,26 @@ const productSlice = createSlice({
       state.loading = false
     },
     [addNewAnswer.rejected]: (state, action) => {
+      state.loading = false
+    },*/
+    [addNewAnswerForFixedQuestion.pending]: (state, action) => {
+      state.loading = true
+    },
+    [addNewAnswerForFixedQuestion.fulfilled]: (state, action) => {
+      state.product = action.payload
+      state.loading = false
+    },
+    [addNewAnswerForFixedQuestion.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [addNewAnswerForUniqQuestion.pending]: (state, action) => {
+      state.loading = true
+    },
+    [addNewAnswerForUniqQuestion.fulfilled]: (state, action) => {
+      state.product = action.payload
+      state.loading = false
+    },
+    [addNewAnswerForUniqQuestion.rejected]: (state, action) => {
       state.loading = false
     },
     [addNewQuestion.pending]: (state, action) => {
@@ -146,6 +246,7 @@ const productSlice = createSlice({
     [addNewQuestion.rejected]: (state, action) => {
       state.loading = false
     },
+    /*
     [updateQuestionHighlight.pending]: (state, action) => {
       state.loading = true
     },
@@ -154,6 +255,47 @@ const productSlice = createSlice({
       state.loading = false
     },
     [updateQuestionHighlight.rejected]: (state, action) => {
+      state.loading = false
+    },
+    */
+    [addUserToFixedQuestionHighlight.pending]: (state, action) => {
+      state.loading = true
+    },
+    [addUserToFixedQuestionHighlight.fulfilled]: (state, action) => {
+      state.product = action.payload
+      state.loading = false
+    },
+    [addUserToFixedQuestionHighlight.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [addUserToUniqQuestionHighlight.pending]: (state, action) => {
+      state.loading = true
+    },
+    [addUserToUniqQuestionHighlight.fulfilled]: (state, action) => {
+      state.product = action.payload
+      state.loading = false
+    },
+    [addUserToUniqQuestionHighlight.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [removeUserFromFixedQuestionHighlight.pending]: (state, action) => {
+      state.loading = true
+    },
+    [removeUserFromFixedQuestionHighlight.fulfilled]: (state, action) => {
+      state.product = action.payload
+      state.loading = false
+    },
+    [removeUserFromFixedQuestionHighlight.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [removeUserFromUniqQuestionHighlight.pending]: (state, action) => {
+      state.loading = true
+    },
+    [removeUserFromUniqQuestionHighlight.fulfilled]: (state, action) => {
+      state.product = action.payload
+      state.loading = false
+    },
+    [removeUserFromUniqQuestionHighlight.rejected]: (state, action) => {
       state.loading = false
     },
     [updateProductFavorite.pending]: (state, action) => {

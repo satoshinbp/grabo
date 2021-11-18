@@ -6,7 +6,7 @@ import groups from '../utils/groups'
 
 const fetchProductById = async (token, id) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -17,7 +17,7 @@ const fetchProductById = async (token, id) => {
 
 const fetchProductsByGroup = async (token, code) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${code}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/group/${code}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -28,7 +28,7 @@ const fetchProductsByGroup = async (token, code) => {
 
 const fetchProductsByUserId = async (token, userId) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -39,7 +39,7 @@ const fetchProductsByUserId = async (token, userId) => {
 
 const fetchProductsByFavoredUserId = async (token, userId) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/fav/user/${userId}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/fav/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -50,7 +50,7 @@ const fetchProductsByFavoredUserId = async (token, userId) => {
 
 const postImage = async (token, params) => {
   try {
-    const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
+    const res = await axios.post(`http://192.168.1.65:8000/api/images`, params, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ const postImage = async (token, params) => {
 
 const postProduct = async (token, params) => {
   try {
-    const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params, {
+    const res = await axios.post(`http://192.168.1.65:8000/api/products`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
@@ -102,11 +102,20 @@ const getOcrText = async (image) => {
   return { locale, descriptions }
 }
 
-// const searchProducts = async (keywords) => console.log('keywords', keywords) // WIP
-
-const addAnswer = async (token, id, params) => {
+const addAnswerForFixedQuestion = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/answer`, params, {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/fixedquestion/answer`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const addAnswerForUniqQuestion = async (token, id, params) => {
+  try {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/uniqquestion/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -117,7 +126,7 @@ const addAnswer = async (token, id, params) => {
 
 const addUniqQuestion = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question`, params, {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -126,9 +135,44 @@ const addUniqQuestion = async (token, id, params) => {
   }
 }
 
-const updateHighlight = async (token, id, params) => {
+const addUserToFixedQnHighlight = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/highlight`, params, {
+    console.log(params)
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/fixed/highlight`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const addUserToUniqQnHighlight = async (token, id, params) => {
+  try {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/uniq/highlight`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromFixedQnHighlight = async (token, id, params) => {
+  try {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/fixed/unhighlight`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    console.log(data)
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromUniqQnHighlight = async (token, id, params) => {
+  try {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/uniq/unhighlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -139,7 +183,7 @@ const updateHighlight = async (token, id, params) => {
 
 const updateFavorite = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/favorite`, params, {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/favorite`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -150,7 +194,7 @@ const updateFavorite = async (token, id, params) => {
 
 const updateReport = async (token, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/report`, params, {
+    const res = await axios.put(`http://192.168.1.65:8000/api/products/report`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
@@ -168,9 +212,13 @@ export {
   // searchProducts,
   postImage,
   postProduct,
-  addAnswer,
+  addAnswerForFixedQuestion,
+  addAnswerForUniqQuestion,
   addUniqQuestion,
-  updateHighlight,
+  addUserToFixedQnHighlight,
+  addUserToUniqQnHighlight,
+  removeUserFromFixedQnHighlight,
+  removeUserFromUniqQnHighlight,
   updateFavorite,
   updateReport,
 }

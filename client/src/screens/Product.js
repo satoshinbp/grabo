@@ -22,10 +22,14 @@ import {
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
   setProduct,
-  addNewAnswer,
   addNewQuestion,
-  updateQuestionHighlight,
   updateProductFavorite,
+  addNewAnswerForUniqQuestion,
+  addNewAnswerForFixedQuestion,
+  addUserToFixedQuestionHighlight,
+  addUserToUniqQuestionHighlight,
+  removeUserFromFixedQuestionHighlight,
+  removeUserFromUniqQuestionHighlight,
 } from '../features/product'
 import { updateReport } from '../api/product'
 import reportOptions from '../utils/reports'
@@ -74,7 +78,11 @@ export default () => {
   const submitAnswer = async () => {
     setIsModalOpen(false)
     try {
-      await dispatch(addNewAnswer({ token, id: product._id, params: answer }))
+      if (answer.isUniqQuestion) {
+        await dispatch(addNewAnswerForUniqQuestion({ token, id: product._id, params: answer }))
+      } else {
+        await dispatch(addNewAnswerForFixedQuestion({ token, id: product._id, params: answer }))
+      }
       setAnswer({})
       setQuestion('')
     } catch (e) {
@@ -94,11 +102,28 @@ export default () => {
   }
 
   // Handle icon on press actions
-  const highlightQuestion = async (params) => {
-    console.log('params', params)
-    console.log('product', product)
+  const addUserToHighlight = async (params) => {
+    console.log('add params', params)
     try {
-      await dispatch(updateQuestionHighlight({ token, id: product._id, params }))
+      if (params.isUniqQuestion) {
+        await dispatch(addUserToUniqQuestionHighlight({ token, id: product._id, params }))
+      } else {
+        await dispatch(addUserToFixedQuestionHighlight({ token, id: product._id, params }))
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  // Handle icon on press actions
+  const removeUserFromHighlight = async (params) => {
+    console.log('remove params', params)
+    try {
+      if (params.isUniqQuestion) {
+        await dispatch(removeUserFromUniqQuestionHighlight({ token, id: product._id, params }))
+      } else {
+        await dispatch(removeUserFromFixedQuestionHighlight({ token, id: product._id, params }))
+      }
     } catch (e) {
       console.error(e)
     }
@@ -187,14 +212,13 @@ export default () => {
                 </VStack>
                 <Pressable
                   onPress={() => {
-                    const highlightStatus = qa.highlightedBy.includes(user._id)
+                    const isHighlighted = qa.highlightedBy.includes(user._id)
                     const params = {
                       userId: user._id,
                       isUniqQuestion: type === 'uniq',
                       questionIndex: qaIndex,
-                      isHighlighted: highlightStatus,
                     }
-                    highlightQuestion(params)
+                    isHighlighted ? removeUserFromHighlight(params) : addUserToHighlight(params)
                   }}
                 >
                   <Box>{`★ ${qa.highlightedBy.length}`}</Box>
