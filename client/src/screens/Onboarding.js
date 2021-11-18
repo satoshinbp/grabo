@@ -92,8 +92,8 @@ export default ({ setIsFirstLaunch }) => {
 
   return (
     <View flex={1} bg="lightText">
-      {/* <Backdrop scrollX={scrollX} /> */}
-      {/* <Square scrollX={scrollX} /> */}
+      <Backdrop scrollX={scrollX} />
+      <Square scrollX={scrollX} />
       <Animated.FlatList
         data={onboardingSlides}
         renderItem={({ item }) => <OnboardingItem item={item} />}

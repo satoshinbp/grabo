@@ -24,7 +24,8 @@ export const updateUser = createAsyncThunk('users/update', async ({ token, id, p
 
 const initialUserState = {
   googleId: '',
-  name: '',
+  firstName: '',
+  lastName: '',
   email: '',
   image: '',
   groups: [],

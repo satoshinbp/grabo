@@ -1,19 +1,23 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout, updateUser } from '../features/auth'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
 import FadeModal from '../elements/FadeModal'
 
 export default () => {
+  const navigation = useNavigation()
+
   const { user, token } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
+
   const [logoutModalOpen, setLogoutModalOpen] = useState(false)
   const [notificationModalOpen, setNotificationModalOpen] = useState(false)
 
   const menu = [
-    { text: 'Account Info', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
-    { text: 'Settings', icon: <SunIcon size={8} />, onPress: () => setNotificationModalOpen(true) },
+    { text: 'Account', icon: <SunIcon size={8} />, onPress: () => navigation.navigate('Account') },
+    { text: 'Notification', icon: <SunIcon size={8} />, onPress: () => setNotificationModalOpen(true) },
     { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
   ]
 
@@ -36,7 +40,7 @@ export default () => {
           borderRadius="full"
         />
         <Text fontSize="lg" bold>
-          {user?.name}
+          {user?.firstName} {user?.lastName}
         </Text>
         <Text fontSize="sm" color="darkText">
           {user?.email}
@@ -50,17 +54,6 @@ export default () => {
       </View>
 
       <FadeModal
-        isOpen={logoutModalOpen}
-        onClose={() => setLogoutModalOpen(false)}
-        title="Logout"
-        content="Are you sure to logout from Grabo?"
-        primaryAction={() => dispatch(logout())}
-        primaryActionLabel="Logout"
-        secondaryAction={() => setLogoutModalOpen(false)}
-        secondaryActionLabel="Cancel"
-      />
-
-      <FadeModal
         isOpen={notificationModalOpen}
         onClose={() => setNotificationModalOpen(false)}
         title="Notification"
@@ -69,6 +62,17 @@ export default () => {
         primaryActionLabel="Mute"
         secondaryAction={() => toggleNotification(true)}
         secondaryActionLabel="On"
+      />
+
+      <FadeModal
+        isOpen={logoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        title="Logout"
+        content="Are you sure to logout from Grabo?"
+        primaryAction={() => dispatch(logout())}
+        primaryActionLabel="Logout"
+        secondaryAction={() => setLogoutModalOpen(false)}
+        secondaryActionLabel="Cancel"
       />
     </View>
   )
