@@ -61,14 +61,14 @@ export default () => {
   }
 
   const actionButtons = (
-    <HStack my={2} space={2}>
-      <Button flex={1} isDisabled={!hasPermission} onPress={takePicture}>
-        Snap
-      </Button>
-      <Button flex={1} onPress={openImagePickerAsync}>
+    <>
+      <Button variant="gallery" flex={1} onPress={openImagePickerAsync}>
         Gallery
       </Button>
-    </HStack>
+      <Button variant="scan" flex={1} isDisabled={!hasPermission} onPress={takePicture}>
+        Snap
+      </Button>
+    </>
   )
 
   if (!isFocused) return <View />
