@@ -62,10 +62,32 @@ export default () => {
 
   const actionButtons = (
     <>
-      <Button variant="gallery" flex={1} onPress={openImagePickerAsync}>
+      <Button
+        position="absolute"
+        top="4"
+        right="4"
+        width="84px"
+        height="42px"
+        backgroundColor="primary.500"
+        shadow="2"
+        flex={1}
+        onPress={openImagePickerAsync}
+      >
         Gallery
       </Button>
-      <Button variant="scan" flex={1} isDisabled={!hasPermission} onPress={takePicture}>
+      <Button
+        position="absolute"
+        bottom="4"
+        alignSelf="center"
+        width="84px"
+        height="84px"
+        borderRadius="full"
+        backgroundColor="primary.500"
+        shadow="2"
+        flex={1}
+        isDisabled={!hasPermission}
+        onPress={takePicture}
+      >
         Snap
       </Button>
     </>

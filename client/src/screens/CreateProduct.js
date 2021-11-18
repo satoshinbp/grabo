@@ -171,10 +171,11 @@ export default () => {
           </View>
 
           <View>
-            <Text fontSize="lg" bold>
+            <Text fontSize="md" bold>
               Language
             </Text>
             <Select
+              marginLeft="2"
               selectedValue={code}
               minWidth="200px"
               placeholder="Choose Language"
@@ -192,10 +193,10 @@ export default () => {
           </View>
 
           <View>
-            <Text fontSize="lg" bold>
+            <Text fontSize="md" bold>
               Choose which default questions to highlight
             </Text>
-            <Checkbox.Group onChange={setHighlitedQuestions} value={highlitedQuestions}>
+            <Checkbox.Group marginLeft="2" onChange={setHighlitedQuestions} value={highlitedQuestions}>
               {fixedQuestions.map((question, index) => (
                 <Checkbox value={index}>{question}</Checkbox>
               ))}
@@ -203,10 +204,10 @@ export default () => {
           </View>
 
           <View>
-            <Text fontSize="lg" bold>
+            <Text fontSize="md" bold>
               Ask your own question
             </Text>
-            <VStack space={2} alignItems="center">
+            <VStack marginLeft="2" space={2} alignItems="center">
               {uniqQuestions.map((uniqQuestion, index) => (
                 <HStack key={index} alignItems="center" space={2}>
                   <Input
@@ -222,18 +223,17 @@ export default () => {
                   <MaterialIcons name="delete" size={18} color="black" onPress={() => removeQuestion(index)} />
                 </HStack>
               ))}
-              <Center w="36px" h="36px" borderRadius="full" bg="primary.500">
+              <Center w="36px" h="36px" borderRadius="full" bg="primary.500" my="2">
                 <AddIcon size="4" onPress={addQuestion} />
               </Center>
             </VStack>
           </View>
 
-          <Button variant="primary" onPress={cancelProduct}>
-            Cancel
-          </Button>
-
           <Button variant="primary" isDisabled={uris.length === 0} onPress={submitProduct}>
             Create a Product
+          </Button>
+          <Button variant="primary" bg="white" onPress={cancelProduct}>
+            Cancel
           </Button>
         </VStack>
       </TouchableWithoutFeedback>

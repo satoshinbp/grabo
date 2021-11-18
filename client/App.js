@@ -119,33 +119,6 @@ export default () => {
               textAlign: 'center',
             },
           }),
-          scan: () => ({
-            position: 'absolute',
-            bottom: 4,
-            alignSelf: 'center',
-            width: '84px',
-            height: '84px',
-            borderRadius: 'full',
-            backgroundColor: 'primary.500',
-            shadow: 2,
-            _text: {
-              color: 'black',
-              textAlign: 'center',
-            },
-          }),
-          gallery: () => ({
-            position: 'absolute',
-            top: 4,
-            right: 4,
-            width: '84px',
-            height: '42px',
-            backgroundColor: 'primary.500',
-            shadow: 2,
-            _text: {
-              color: 'black',
-              textAlign: 'center',
-            },
-          }),
         },
       },
       TextArea: {
