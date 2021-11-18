@@ -20,19 +20,20 @@ const verifyGoogleIdToken = async (idToken) => {
   })
   const payload = ticket.getPayload()
   const googleId = payload['sub']
-  const name = payload['name']
+  const firstName = payload['given_name']
+  const lastName = payload['family_name']
   const email = payload['email']
   const image = payload['picture']
-  return { googleId, name, email, image }
+  return { googleId, firstName, lastName, email, image }
 }
 
 const signInWithGoogle = async (req, res) => {
   try {
-    const { googleId, name, email, image } = await verifyGoogleIdToken(req.body.idToken)
+    const { googleId, firstName, lastName, email, image } = await verifyGoogleIdToken(req.body.idToken)
     let user = await User.findOne({ googleId })
 
     if (!user) {
-      user = new User({ googleId, name, email, image })
+      user = new User({ googleId, firstName, lastName, email, image })
     }
 
     const token = await generateAuthToken(user)
