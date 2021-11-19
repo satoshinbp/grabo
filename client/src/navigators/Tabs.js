@@ -18,9 +18,9 @@ export default () => {
 
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />}>
-      <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups' }} />
+      <Tab.Screen name="GroupsTab" component={GroupsStacks} options={{ tabBarLabel: 'Groups' }} />
       <Tab.Screen
-        name="My Products Tab"
+        name="MyProductsTab"
         component={ProductsStacks}
         options={{ tabBarLabel: 'My Products' }}
         listeners={{
@@ -29,14 +29,14 @@ export default () => {
       />
       <Tab.Screen name="Scan Tab" component={ScanStacks} options={{ tabBarLabel: 'Scan' }} />
       <Tab.Screen
-        name="Favorites Tab"
+        name="FavoritesTab"
         component={FavsStacks}
         options={{ tabBarLabel: 'Favorites' }}
         listeners={{
           tabPress: () => dispatch(setProductsByFavoredUserId({ token, userId: user._id })),
         }}
       />
-      <Tab.Screen name="Profile Tab" component={ProfileStacks} options={{ tabBarLabel: 'Profile' }} />
+      <Tab.Screen name="ProfileTab" component={ProfileStacks} options={{ tabBarLabel: 'Profile' }} />
     </Tab.Navigator>
   )
 }

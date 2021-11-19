@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import { TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import {
   View,
@@ -18,7 +19,6 @@ import {
   Button,
   AddIcon,
 } from 'native-base'
-import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { updateCode, deleteImage, clearImage } from '../features/image'
 import { fetchUsersByGroup } from '../api/auth'
@@ -29,11 +29,11 @@ import Loading from '../components/Loading'
 
 // ========== Please leave comments as a reference ========== //
 export default () => {
+  const navigation = useNavigation()
+
   const { token, user } = useSelector((state) => state.auth)
   const { texts, uris, code } = useSelector((state) => state.image.value)
   const dispatch = useDispatch()
-
-  const navigation = useNavigation()
 
   // const [, setImage] = useState(props.route.params.uris)
   const [highlitedQuestions, setHighlitedQuestions] = useState([])
@@ -96,8 +96,7 @@ export default () => {
       setLoading(false)
 
       clearProduct()
-
-      navigation.navigate('Product', { id: res.data._id })
+      navigation.navigate('MyProduct', { id: res.data._id })
     } catch (e) {
       cosole.error(e)
       setLoading(false)
