@@ -321,7 +321,7 @@ export default () => {
             <HStack position="absolute" bottom={13} right={13} space={3}>
               <Pressable>
                 <Image
-                  source={require('../assets/exclamation.jpeg')}
+                  source={require('../assets/icons/exclamation.jpeg')}
                   alt="exclamation"
                   width="28px"
                   height="28px"
@@ -338,7 +338,13 @@ export default () => {
                   addToFavorite(params)
                 }}
               >
-                <Image source={require('../assets/like-icon.png')} alt="image" width="28px" height="28px" padding={2} />
+                <Image
+                  source={require('../assets/icons/like.png')}
+                  alt="image"
+                  width="28px"
+                  height="28px"
+                  padding={2}
+                />
               </Pressable>
             </HStack>
           </View>
