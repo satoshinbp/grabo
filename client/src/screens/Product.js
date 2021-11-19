@@ -306,42 +306,45 @@ export default () => {
   return (
     <>
       <View flex={0.5}>
-        <Carousel
-          data={product.images}
-          renderItem={CarouselImages}
-          itemWidth={windowWidth}
-          sliderWidth={windowWidth}
-          onSnapToItem={(index) => setActiveSlide(index)}
-        />
-        <Text>
-          {product.images?.length > 0 ? PaginationComponent(product.images) : null}
-          <Pressable
-            onPress={() => {
-              const favoriteStatus = product.favoredUserIds.includes(user._id)
-              const params = {
-                userId: user._id,
-                isFavored: favoriteStatus,
-              }
-              addToFavorite(params)
-            }}
-          >
-            <Image source={require('../assets/like-icon.png')} alt="image" width="18px" height="18px" padding={2} />
-          </Pressable>
-        </Text>
-        <Pressable
-          onPress={() => {
-            const favoriteStatus = product.favoredUserIds.includes(user._id)
-            const params = {
-              userId: user._id,
-              isFavored: favoriteStatus,
-            }
-            addToFavorite(params)
-          }}
-        >
-          <Image source={require('../assets/like-icon.png')} alt="image" width="18px" height="18px" padding={2} />
-        </Pressable>
+        <View position="relative">
+          <Carousel
+            data={product.images}
+            renderItem={CarouselImages}
+            itemWidth={windowWidth}
+            sliderWidth={windowWidth}
+            onSnapToItem={(index) => setActiveSlide(index)}
+          />
+          <Text position="absolute" bottom={0}>
+            {product.images?.length > 0 ? PaginationComponent(product.images) : null}
+          </Text>
+          <View backgroundColor="black" width={windowWidth}>
+            <HStack position="absolute" bottom={13} right={13} space={3}>
+              <Pressable>
+                <Image
+                  source={require('../assets/exclamation.jpeg')}
+                  alt="exclamation"
+                  width="28px"
+                  height="28px"
+                  padding={2}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  const favoriteStatus = product.favoredUserIds.includes(user._id)
+                  const params = {
+                    userId: user._id,
+                    isFavored: favoriteStatus,
+                  }
+                  addToFavorite(params)
+                }}
+              >
+                <Image source={require('../assets/like-icon.png')} alt="image" width="28px" height="28px" padding={2} />
+              </Pressable>
+            </HStack>
+          </View>
+        </View>
       </View>
-      <ScrollView variant="wrapper" flex={0.5} mb={2}>
+      <ScrollView variant="wrapper" flex={0.5} pt={4} mb={2}>
         {product.fixedQandAs && QaAccordions(product.fixedQandAs, 'fixed')}
         {product.uniqQandAs && QaAccordions(product.uniqQandAs, 'uniq')}
 
