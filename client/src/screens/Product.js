@@ -213,7 +213,7 @@ export default () => {
                     <Text>{answer.description}</Text>
                     <Pressable onPress={() => setReportForm(qaIndex, answerIndex, type)}>
                       <Image
-                        source={require('../assets/exclamation.jpeg')}
+                        source={require('../assets/icons/exclamation.jpeg')}
                         alt="exclamation"
                         width="18px"
                         height="18px"

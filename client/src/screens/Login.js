@@ -43,7 +43,7 @@ export default () => {
       <Heading mb={4}>Welcome to Grabo!</Heading>
       <TouchableOpacity activeOpacity={0.8} onPress={handleGoogleSignin}>
         <Image
-          source={require('../assets/btn_google_signin_light_normal.png')}
+          source={require('../assets/images/btn_google_signin_light_normal.png')}
           w="232px"
           resizeMode="contain"
           alt="sign in with google"
