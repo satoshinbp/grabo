@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { View, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
+import { ScrollView, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
 import { updateUser } from '../features/auth'
 import Loading from '../components/Loading'
 
@@ -28,7 +28,14 @@ export default () => {
       })
       return false
     }
-    // email validation to be added here
+    const emailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    if (!email.match(emailformat)) {
+      setErrors({
+        ...errors,
+        email: 'Email address is not valid',
+      })
+      return false
+    }
     return true
   }
 
@@ -45,7 +52,7 @@ export default () => {
 
   if (loading) return <Loading />
   return (
-    <View variant="wrapper">
+    <ScrollView variant="wrapper">
       <VStack variant="container">
         <Avatar
           source={{ uri: user.image }}
@@ -90,6 +97,6 @@ export default () => {
           Save
         </Button>
       </VStack>
-    </View>
+    </ScrollView>
   )
 }
