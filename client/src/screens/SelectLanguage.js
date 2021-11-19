@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/core'
 import { View, VStack, Text, Radio, Button } from 'native-base'
 import { updateCode } from '../features/image'
 import groups from '../utils/groups'
-import Loading from '../components/Loading'
 
-export default (props) => {
-  const { value, loading } = useSelector((state) => state.image)
-  const { code } = value
+export default () => {
+  const navigation = useNavigation()
+
+  const { code } = useSelector((state) => state.image.value)
   const dispatch = useDispatch()
 
   const [isTextDetected, setIsTextDetected] = useState(false)
@@ -20,7 +21,6 @@ export default (props) => {
     })
   }, [])
 
-  if (loading) return <Loading />
   return (
     <View variant="wrapper">
       <VStack variant="container">
@@ -49,7 +49,7 @@ export default (props) => {
           </Radio.Group>
         </View>
         <View>
-          <Button variant="primary" onPress={() => props.navigation.navigate('CreateProduct')}>
+          <Button variant="primary" onPress={() => navigation.navigate('CreateProduct')}>
             Next
           </Button>
         </View>

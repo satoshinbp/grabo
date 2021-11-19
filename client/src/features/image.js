@@ -6,6 +6,7 @@ export const addImage = createAsyncThunk('image/add', async ({ base64, uri }) =>
   const { locale, descriptions } = await getOcrText(base64)
   const keywords = [...new Set(descriptions)] // to remove keyword duplication
   // await searchProducts(keywords) // WIP
+  RootNavigation.navigate('SelectLanguage')
   return { keywords, uri, locale }
 })
 
@@ -44,7 +45,6 @@ const imageSlice = createSlice({
       state.value.code = action.payload.locale
       state.error = ''
       state.loading = false
-      RootNavigation.navigate('SelectLanguage')
     },
     [addImage.rejected]: (state) => {
       state.error = 'Failed. Please try another photo.'
