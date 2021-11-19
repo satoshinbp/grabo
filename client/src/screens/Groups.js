@@ -16,7 +16,7 @@ export default () => {
         List of language groups that you speak
       </Heading>
       <GroupList />
-      <Button variant="fab" onPress={() => navigation.navigate('Groups Setting')}>
+      <Button variant="fab" onPress={() => navigation.navigate('GroupsSetting')}>
         Join / Leave Group
       </Button>
     </View>
