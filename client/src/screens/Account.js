@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import { ScrollView, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
 import { updateUser } from '../features/auth'
 import Loading from '../components/Loading'
 
 export default () => {
-  const { token, user, loading } = useSelector((state) => state.auth)
+  const navigation = useNavigation()
+
+  const { token, user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
   const [firstName, setFirstName] = useState(user.firstName)
@@ -47,10 +50,10 @@ export default () => {
         email,
       }
       dispatch(updateUser({ token, id: user._id, params }))
+      navigation.navigate('Profile')
     }
   }
 
-  if (loading) return <Loading />
   return (
     <ScrollView variant="wrapper">
       <VStack variant="container">

@@ -14,9 +14,8 @@ const Tab = createBottomTabNavigator()
 
 export default () => {
   const dispatch = useDispatch()
-  const { token, user, loading } = useSelector((state) => state.auth)
+  const { token, user } = useSelector((state) => state.auth)
 
-  if (loading) return <Loading />
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />}>
       <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups' }} />

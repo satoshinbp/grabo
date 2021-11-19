@@ -3,13 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout, updateUser } from '../features/auth'
+import Loading from '../components/Loading'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
 import FadeModal from '../elements/FadeModal'
 
 export default () => {
   const navigation = useNavigation()
 
-  const { user, token } = useSelector((state) => state.auth)
+  const { user, token, loading } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
   const [logoutModalOpen, setLogoutModalOpen] = useState(false)
@@ -26,6 +27,7 @@ export default () => {
     dispatch(updateUser({ token, id: user._id, params }))
   }
 
+  if (loading) return <Loading />
   return (
     <View variant="wrapper">
       <VStack alignItems="center" space={1} mb={3}>
