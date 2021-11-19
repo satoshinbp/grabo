@@ -18,11 +18,7 @@ export default () => {
 
   if (loading) return <Loading />
   return (
-    <Tab.Navigator
-      initialRouteName="Profile Tab"
-      screenOptions={{ headerShown: false }}
-      tabBar={(props) => <TabBar {...props} />}
-    >
+    <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />}>
       <Tab.Screen name="Groups Tab" component={GroupsStacks} options={{ tabBarLabel: 'Groups' }} />
       <Tab.Screen
         name="My Products Tab"

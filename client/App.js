@@ -8,6 +8,7 @@ import authReducer from './src/features/auth'
 import imageReducer from './src/features/image'
 import productReducer from './src/features/product'
 import AppContainer from './src/components/AppContainer'
+import { navigationRef } from './src/navigators/RootNavigation'
 
 const store = createStore(
   combineReducers({
@@ -180,7 +181,7 @@ export default () => {
   return (
     <Provider store={store}>
       <NativeBaseProvider theme={theme}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <AppContainer />
         </NavigationContainer>
       </NativeBaseProvider>
