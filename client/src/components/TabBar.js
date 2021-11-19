@@ -12,6 +12,7 @@ export default ({ state, descriptors, navigation }) => {
     >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
+        console.log(options)
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
@@ -33,11 +34,13 @@ export default ({ state, descriptors, navigation }) => {
           }
         }
 
+        const Icon = options.tabBarIcon !== undefined ? options.tabBarIcon : () => null
+
         return (
           <Pressable flex={1} onPress={onPress}>
             <Center height="100%">
-              <Center borderRadius="full" size="8" bgColor={isFocused ? 'primary.500' : 'white'}>
-                <SunIcon size="5" mt="0.5" color="black" />
+              <Center borderRadius="md" size="8" bgColor={isFocused ? 'primary.500' : 'white'}>
+                <Icon width="20px" />
               </Center>
               <Text textAlign="center" fontSize="2xs" fontWeight={isFocused ? 'bold' : 'normal'}>
                 {label}
