@@ -3,13 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout, updateUser } from '../features/auth'
+import Loading from '../components/Loading'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
 import FadeModal from '../elements/FadeModal'
 
 export default () => {
   const navigation = useNavigation()
 
-  const { user, token } = useSelector((state) => state.auth)
+  const { user, token, loading } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
   const [logoutModalOpen, setLogoutModalOpen] = useState(false)
@@ -21,11 +22,12 @@ export default () => {
     { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
   ]
 
-  const toggleNotification = (status) => {
-    const params = { isNotificationOn: status }
+  const toggleNotification = () => {
+    const params = { isNotificationOn: !user.isNotificationOn }
     dispatch(updateUser({ token, id: user._id, params }))
   }
 
+  if (loading) return <Loading />
   return (
     <View variant="wrapper">
       <VStack alignItems="center" space={1} mb={3}>
@@ -57,11 +59,11 @@ export default () => {
         isOpen={notificationModalOpen}
         onClose={() => setNotificationModalOpen(false)}
         title="Notification"
-        content="Mute Notification?"
-        primaryAction={() => toggleNotification(false)}
-        primaryActionLabel="Mute"
-        secondaryAction={() => toggleNotification(true)}
-        secondaryActionLabel="On"
+        content={user.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
+        primaryAction={toggleNotification}
+        primaryActionLabel={user.isNotificationOn ? 'Mute' : 'Unmute'}
+        secondaryAction={() => setNotificationModalOpen(false)}
+        secondaryActionLabel="Cancel"
       />
 
       <FadeModal
