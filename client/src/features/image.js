@@ -1,10 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getOcrText, searchProducts } from '../api/product'
 import * as RootNavigation from '../navigators/RootNavigation'
+import lodash from 'lodash'
 
-export const addImage = createAsyncThunk('image/add', async ({ base64, uri }) => {
+export const addImage = createAsyncThunk('image/add', async ({ base64, uri }, { getState }) => {
   const { locale, descriptions } = await getOcrText(base64)
-  const keywords = [...new Set(descriptions)] // to remove keyword duplication
+  const { image } = getState()
+  const texts = [...image.value.texts, ...descriptions]
+  const keywords = lodash.sortedUniq(texts.sort()) // to sort and remove keywords duplication
   // await searchProducts(keywords) // WIP
   RootNavigation.navigate('SelectLanguage')
   return { keywords, uri, locale }
@@ -36,11 +39,7 @@ const imageSlice = createSlice({
       state.loading = true
     },
     [addImage.fulfilled]: (state, action) => {
-      action.payload.keywords.forEach((keyword) => {
-        if (!state.value.texts.includes(keyword)) {
-          state.value.texts.push(keyword)
-        }
-      })
+      state.value.texts = action.payload.keywords
       state.value.uris.push(action.payload.uri)
       state.value.code = action.payload.locale
       state.error = ''
