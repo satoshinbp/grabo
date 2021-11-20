@@ -84,7 +84,7 @@ export const updateProductFavorite = createAsyncThunk('products/updateFavorite',
 
 const productSlice = createSlice({
   name: 'product',
-  initialState: { product: {}, products: [], loading: false },
+  initialState: { product: {}, groupedProducts: [], postedProducts: [], savedProducts: [], loading: false },
   extraReducers: {
     [setProduct.pending]: (state) => {
       state.loading = true
@@ -100,7 +100,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [setProductsByGroup.fulfilled]: (state, action) => {
-      state.products = action.payload
+      state.groupedProducts = action.payload
       state.loading = false
     },
     [setProductsByGroup.rejected]: (state) => {
@@ -110,7 +110,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [setProductsByUserId.fulfilled]: (state, action) => {
-      state.products = action.payload
+      state.postedProducts = action.payload
       state.loading = false
     },
     [setProductsByUserId.rejected]: (state) => {
@@ -120,7 +120,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [setProductsByFavoredUserId.fulfilled]: (state, action) => {
-      state.products = action.payload
+      state.savedProducts = action.payload
       state.loading = false
     },
     [setProductsByFavoredUserId.rejected]: (state) => {
