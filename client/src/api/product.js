@@ -102,11 +102,20 @@ const getOcrText = async (image) => {
   return { locale, descriptions }
 }
 
-// const searchProducts = async (keywords) => console.log('keywords', keywords) // WIP
-
-const addAnswer = async (token, id, params) => {
+const addAnswerToFixedQn = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/answer`, params, {
+    const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/answer`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const addAnswerToUniqQn = async (token, id, params) => {
+  try {
+    const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -117,7 +126,7 @@ const addAnswer = async (token, id, params) => {
 
 const addUniqQuestion = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question`, params, {
+    const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -126,9 +135,9 @@ const addUniqQuestion = async (token, id, params) => {
   }
 }
 
-const updateHighlight = async (token, id, params) => {
+const addUserToFixedQnHighlight = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/highlight`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -137,9 +146,60 @@ const updateHighlight = async (token, id, params) => {
   }
 }
 
-const updateFavorite = async (token, id, params) => {
+const addUserToUniqQnHighlight = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/favorite`, params, {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/highlight`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) => {
+  try {
+    const { data } = await axios.delete(
+      `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/highlight/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) => {
+  try {
+    const { data } = await axios.delete(
+      `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/highlight/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const addUserToFav = async (token, id, params) => {
+  try {
+    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/favor`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromFav = async (token, id, userId) => {
+  console.log(token, id, userId)
+  try {
+    const { data } = await axios.delete(`${SERVER_ROOT_URI}/api/products/${id}/favor/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -168,9 +228,14 @@ export {
   // searchProducts,
   postImage,
   postProduct,
-  addAnswer,
+  addAnswerToFixedQn,
+  addAnswerToUniqQn,
   addUniqQuestion,
-  updateHighlight,
-  updateFavorite,
+  addUserToFixedQnHighlight,
+  addUserToUniqQnHighlight,
+  removeUserFromFixedQnHighlight,
+  removeUserFromUniqQnHighlight,
+  addUserToFav,
+  removeUserFromFav,
   updateReport,
 }
