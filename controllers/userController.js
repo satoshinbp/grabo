@@ -11,7 +11,14 @@ const getUsersByGroup = (req, res) => {
 const updateUser = async (req, res) => {
   let user = await User.findOne({ _id: req.params.id })
   const updates = Object.keys(req.body)
-  updates.forEach((update) => (user[update] = req.body[update]))
+
+  updates.forEach((update) => {
+    if (update !== 'notifications') {
+      user[update] = req.body[update]
+    } else {
+      user.notifications.push(req.body.notifications)
+    }
+  })
 
   await user
     .save()

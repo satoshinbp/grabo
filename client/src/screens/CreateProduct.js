@@ -21,7 +21,7 @@ import {
 } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 import { updateCode, deleteImage, clearImage } from '../features/image'
-import { fetchUsersByGroup } from '../api/auth'
+import { fetchUsersByGroup, patchUser } from '../api/auth'
 import { postImage, postProduct } from '../api/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
@@ -87,6 +87,17 @@ export default () => {
       const res = await postProduct(token, params)
 
       const fetchedUsers = await fetchUsersByGroup(token, code)
+
+      const notificationParams = {
+        notifications: {
+          read: false,
+          message: `Help ${user.firstName} to find this product`,
+          productId: res.data._id,
+        },
+      }
+
+      fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+
       // console.log('this is a', fetchedUsers)
       const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn === true)
       // console.log('notified users', notifiedUsers)
@@ -98,7 +109,7 @@ export default () => {
       clearProduct()
       navigation.navigate('MyProduct', { id: res.data._id })
     } catch (e) {
-      cosole.error(e)
+      console.error(e)
       setLoading(false)
     }
   }

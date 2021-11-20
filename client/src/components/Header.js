@@ -1,9 +1,11 @@
 import React from 'react'
-import { Box, Center, HStack, Image, StatusBar, useTheme } from 'native-base'
+import { Box, Center, HStack, Image, StatusBar, useTheme, Pressable } from 'native-base'
+import { useNavigation } from '@react-navigation/native'
 import NotificationIcon from '../assets/icons/Notification'
 
 export default () => {
   const { colors } = useTheme()
+  const navigation = useNavigation()
 
   return (
     <>
@@ -13,7 +15,9 @@ export default () => {
           <Image source={require('../assets/icons/logo-lg.png')} alt="logo" h="48px" w="112px" resizeMode="contain" />
 
           <Center size="8">
-            <NotificationIcon width="20px" />
+            <Pressable onPress={() => navigation.navigate('NotificationTab', { screen: 'NotificationStacks' })}>
+              <NotificationIcon width="20px" />
+            </Pressable>
           </Center>
         </HStack>
       </Box>
