@@ -12,7 +12,6 @@ export default ({ state, descriptors, navigation }) => {
     >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
-        console.log(options)
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
