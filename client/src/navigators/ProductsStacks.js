@@ -3,13 +3,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MyProducts from '../screens/MyProducts'
 import Product from '../screens/Product'
 
-const HomeStack = createNativeStackNavigator()
+const MyProductsStack = createNativeStackNavigator()
 
 export default () => {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="MyProducts" component={MyProducts} />
-      <HomeStack.Screen name="MyProduct" component={Product} />
-    </HomeStack.Navigator>
+    <MyProductsStack.Navigator screenOptions={{ headerShown: false }}>
+      <MyProductsStack.Screen name="MyProducts" component={MyProducts} />
+      <MyProductsStack.Screen name="MyProduct" component={Product} />
+    </MyProductsStack.Navigator>
   )
 }
