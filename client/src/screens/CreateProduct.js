@@ -96,7 +96,7 @@ export default () => {
       setLoading(false)
 
       clearProduct()
-      navigation.navigate('MyProduct', { id: res.data._id })
+      navigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: res.data._id } })
     } catch (e) {
       cosole.error(e)
       setLoading(false)
