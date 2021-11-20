@@ -19,7 +19,7 @@ export default () => {
         setIsTextDetected(true)
       }
     })
-  }, [])
+  }, [code])
 
   return (
     <ScrollView variant="wrapper">
@@ -57,7 +57,12 @@ export default () => {
             </Box>
           ))}
         </Radio.Group>
-        <Button variant="primary" onPress={() => navigation.navigate('CreateProduct')}>
+        <Button
+          variant="primary"
+          isDisabled={!isTextDetected}
+          onPress={() => navigation.navigate('CreateProduct')}
+          my={2}
+        >
           Next
         </Button>
       </View>
