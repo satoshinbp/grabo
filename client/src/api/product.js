@@ -156,36 +156,7 @@ const addUserToUniqQnHighlight = async (token, id, params) => {
     console.error(e)
   }
 }
-/*
-//動く
-const removeUserFromFixedQnHighlight = async (token, id, params) => {
-  try {
-    const { data } = await axios.put(
-      `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/unhighlight`,
-      params,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}
 
-const removeUserFromUniqQnHighlight = async (token, id, params) => {
-  try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/unhighlight`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}
-*/
-
-//テスト
 const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) => {
   try {
     const { data } = await axios.delete(
@@ -213,37 +184,6 @@ const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) =
     console.error(e)
   }
 }
-// 動かない
-/*
-const removeUserFromFixedQnHighlight = async (token, productId, userId, index) => {
-  console.log('api', productId, userId, index)
-  try {
-    const { data } = await axios.put(
-      `${SERVER_ROOT_URI}/api/products/${productId}/question/fixed/${index}highlight/${userId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-const removeUserFromUniqQnHighlight = async (token, productId, userId, index) => {
-  console.log(productId, userId, index)
-  try {
-    const { data } = await axios.put(
-      `${SERVER_ROOT_URI}/api/products/${productId}/question/uniq/${index}highlight/${userId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}*/
 
 const addUserToFav = async (token, id, params) => {
   try {
