@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
-  fetchProductById,
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
@@ -14,15 +13,6 @@ import {
   addUserToFav,
   removeUserFromFav,
 } from '../api/product'
-
-export const setProduct = createAsyncThunk('product/set', async ({ token, id }) => {
-  try {
-    const data = await fetchProductById(token, id)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-})
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   try {
@@ -155,23 +145,13 @@ export const removeUserFromFavorite = createAsyncThunk(
 
 const productSlice = createSlice({
   name: 'product',
-  initialState: { product: {}, products: [], loading: false },
+  initialState: { groupedProducts: [], postedProducts: [], savedProducts: [], loading: false },
   extraReducers: {
-    [setProduct.pending]: (state) => {
-      state.loading = true
-    },
-    [setProduct.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [setProduct.rejected]: (state) => {
-      state.loading = false
-    },
     [setProductsByGroup.pending]: (state) => {
       state.loading = true
     },
     [setProductsByGroup.fulfilled]: (state, action) => {
-      state.products = action.payload
+      state.groupedProducts = action.payload
       state.loading = false
     },
     [setProductsByGroup.rejected]: (state) => {
@@ -181,7 +161,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [setProductsByUserId.fulfilled]: (state, action) => {
-      state.products = action.payload
+      state.postedProducts = action.payload
       state.loading = false
     },
     [setProductsByUserId.rejected]: (state) => {
@@ -191,7 +171,7 @@ const productSlice = createSlice({
       state.loading = true
     },
     [setProductsByFavoredUserId.fulfilled]: (state, action) => {
-      state.products = action.payload
+      state.savedProducts = action.payload
       state.loading = false
     },
     [setProductsByFavoredUserId.rejected]: (state) => {

@@ -21,7 +21,6 @@ import {
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
-  setProduct,
   addNewQuestion,
   addAnswerToUniqQuestion,
   addAnswerToFixedQuestion,
@@ -34,7 +33,6 @@ import {
 } from '../features/product'
 import { updateReport } from '../api/product'
 import reportOptions from '../utils/reports'
-import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
 
 const windowWidth = Dimensions.get('window').width
@@ -44,9 +42,10 @@ export default () => {
   const navigation = useNavigation()
 
   const { token, user } = useSelector((state) => state.auth)
-  const { product, loading } = useSelector((state) => state.product)
+  const { groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
+  const [product, setProduct] = useState({})
   const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalContentType, setModalContentType] = useState('') // "question", "answer", or "report"
@@ -59,7 +58,19 @@ export default () => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(setProduct({ token, id: route.params.id }))
+      switch (route.name) {
+        case 'GroupProduct':
+          setProduct(groupedProducts.filter((product) => product._id === route.params.id)[0])
+          break
+        case 'MyProduct':
+          setProduct(postedProducts.filter((product) => product._id === route.params.id)[0])
+          break
+        case 'Favorite':
+          setProduct(savedProducts.filter((product) => product._id === route.params.id)[0])
+          break
+        default:
+          break
+      }
     })
 
     return unsubscribe
@@ -69,7 +80,7 @@ export default () => {
   const submitQuestion = async () => {
     setIsModalOpen(false)
     try {
-      await dispatch(addNewQuestion({ token, id: product._id, params: question }))
+      dispatch(addNewQuestion({ token, id: product._id, params: question }))
       setQuestion({})
     } catch (e) {
       console.error(e)
@@ -80,9 +91,9 @@ export default () => {
     setIsModalOpen(false)
     try {
       if (answer.isUniqQuestion) {
-        await dispatch(addAnswerToUniqQuestion({ token, id: product._id, params: answer }))
+        dispatch(addAnswerToUniqQuestion({ token, id: product._id, params: answer }))
       } else {
-        await dispatch(addAnswerToFixedQuestion({ token, id: product._id, params: answer }))
+        dispatch(addAnswerToFixedQuestion({ token, id: product._id, params: answer }))
       }
       setAnswer({})
       setQuestion('')
@@ -95,7 +106,7 @@ export default () => {
     setIsModalOpen(false)
     const params = { reportKeys: reports, target: reportItem }
     try {
-      await updateReport(token, params)
+      updateReport(token, params)
       setReports([])
     } catch (e) {
       console.error(e)
@@ -107,9 +118,9 @@ export default () => {
     const params = { userId: user._id, questionIndex: data.questionIndex }
     try {
       if (data.isUniqQuestion) {
-        await dispatch(addUserToUniqQuestionHighlight({ token, id: product._id, params }))
+        dispatch(addUserToUniqQuestionHighlight({ token, id: product._id, params }))
       } else {
-        await dispatch(addUserToFixedQuestionHighlight({ token, id: product._id, params }))
+        dispatch(addUserToFixedQuestionHighlight({ token, id: product._id, params }))
       }
     } catch (e) {
       console.error(e)
@@ -120,7 +131,7 @@ export default () => {
   const removeUserFromHighlight = async (params) => {
     try {
       if (params.isUniqQuestion) {
-        await dispatch(
+        dispatch(
           removeUserFromUniqQuestionHighlight({
             token,
             id: product._id,
@@ -129,7 +140,7 @@ export default () => {
           })
         )
       } else {
-        await dispatch(
+        dispatch(
           removeUserFromFixedQuestionHighlight({
             token,
             id: product._id,
@@ -154,7 +165,7 @@ export default () => {
 
   const removeUserFromFavArray = async () => {
     try {
-      await dispatch(removeUserFromFavorite({ token, id: product._id, userId: user._id }))
+      dispatch(removeUserFromFavorite({ token, id: product._id, userId: user._id }))
     } catch (e) {
       console.error(e)
     }
@@ -349,7 +360,6 @@ export default () => {
       ? submitReport
       : null
 
-  if (loading) return <Loading />
   return (
     <>
       <View flex={0.5}>

@@ -5,13 +5,14 @@ import * as Notifications from 'expo-notifications'
 import * as SecureStore from 'expo-secure-store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
+import { patchUser } from '../api/auth'
 import { setAppReady, setUser } from '../features/auth'
+import { setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
+import Tabs from '../navigators/Tabs'
+import Onboarding from '../screens/Onboarding'
 import Login from '../screens/Login'
 import Loading from '../components/Loading'
 import Header from '../components/Header'
-import Tabs from '../navigators/Tabs'
-import Onboarding from '../screens/Onboarding'
-import { patchUser } from '../api/auth'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -29,8 +30,9 @@ export default () => {
   const notificationListener = useRef()
   const responseListener = useRef()
 
-  async function registerForPushNotificationsAsync() {
+  const registerForPushNotifications = async () => {
     let token
+
     if (Constants.isDevice) {
       const { status: existingStatus } = await Notifications.getPermissionsAsync()
       let finalStatus = existingStatus
@@ -43,7 +45,7 @@ export default () => {
         return
       }
       token = (await Notifications.getExpoPushTokenAsync()).data
-      console.log('notificationtoken', token)
+      // console.log('notificationtoken', token)
     } else {
       alert('Must use physical device for Push Notifications')
     }
@@ -91,8 +93,11 @@ export default () => {
     getCurrentUser()
 
     if (token) {
-      //notificationの確認
-      registerForPushNotificationsAsync().then((expotoken) => {
+      dispatch(setProductsByUserId({ token, userId: user._id }))
+      dispatch(setProductsByFavoredUserId({ token, userId: user._id }))
+
+      // notificationの確認
+      registerForPushNotifications().then((expotoken) => {
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
           setNotification(notification)

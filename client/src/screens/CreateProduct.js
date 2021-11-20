@@ -27,7 +27,6 @@ import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
 import Loading from '../components/Loading'
 
-// ========== Please leave comments as a reference ========== //
 export default () => {
   const navigation = useNavigation()
 
@@ -35,7 +34,6 @@ export default () => {
   const { texts, uris, code } = useSelector((state) => state.image.value)
   const dispatch = useDispatch()
 
-  // const [, setImage] = useState(props.route.params.uris)
   const [highlitedQuestions, setHighlitedQuestions] = useState([])
   const [uniqQuestions, setUniqQuestions] = useState([])
   const [loading, setLoading] = useState(false)
