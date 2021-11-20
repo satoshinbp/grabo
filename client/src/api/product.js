@@ -102,9 +102,9 @@ const getOcrText = async (image) => {
   return { locale, descriptions }
 }
 
-const addAnswerForFixedQuestion = async (token, id, params) => {
+const addAnswerToFixedQn = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/fixedquestion/answer`, params, {
+    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question/fixed/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -113,9 +113,9 @@ const addAnswerForFixedQuestion = async (token, id, params) => {
   }
 }
 
-const addAnswerForUniqQuestion = async (token, id, params) => {
+const addAnswerToUniqQn = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/uniqquestion/answer`, params, {
+    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question/uniq/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -126,7 +126,7 @@ const addAnswerForUniqQuestion = async (token, id, params) => {
 
 const addUniqQuestion = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question`, params, {
+    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -137,7 +137,6 @@ const addUniqQuestion = async (token, id, params) => {
 
 const addUserToFixedQnHighlight = async (token, id, params) => {
   try {
-    console.log(params)
     const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/fixed/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -157,13 +156,17 @@ const addUserToUniqQnHighlight = async (token, id, params) => {
     console.error(e)
   }
 }
-
+/*
+//動く
 const removeUserFromFixedQnHighlight = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/fixed/unhighlight`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    console.log(data)
+    const { data } = await axios.put(
+      `http://192.168.1.65:8000/api/products/${id}/question/fixed/unhighlight`,
+      params,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     return data
   } catch (e) {
     console.error(e)
@@ -180,10 +183,83 @@ const removeUserFromUniqQnHighlight = async (token, id, params) => {
     console.error(e)
   }
 }
+*/
 
-const updateFavorite = async (token, id, params) => {
+//テスト
+const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) => {
   try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/favorite`, params, {
+    const { data } = await axios.delete(
+      `http://192.168.1.65:8000/api/products/${id}/question/fixed/${questionIndex}/highlight/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) => {
+  try {
+    const { data } = await axios.delete(
+      `http://192.168.1.65:8000/api/products/${id}/question/uniq/${questionIndex}/highlight/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+// 動かない
+/*
+const removeUserFromFixedQnHighlight = async (token, productId, userId, index) => {
+  console.log('api', productId, userId, index)
+  try {
+    const { data } = await axios.put(
+      `http://192.168.1.65:8000/api/products/${productId}/question/fixed/${index}highlight/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromUniqQnHighlight = async (token, productId, userId, index) => {
+  console.log(productId, userId, index)
+  try {
+    const { data } = await axios.put(
+      `http://192.168.1.65:8000/api/products/${productId}/question/uniq/${index}highlight/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}*/
+
+const addUserToFav = async (token, id, params) => {
+  try {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/favor`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const removeUserFromFav = async (token, id, userId) => {
+  console.log(token, id, userId)
+  try {
+    const { data } = await axios.delete(`http://192.168.1.65:8000/api/products/${id}/favor/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -212,13 +288,14 @@ export {
   // searchProducts,
   postImage,
   postProduct,
-  addAnswerForFixedQuestion,
-  addAnswerForUniqQuestion,
+  addAnswerToFixedQn,
+  addAnswerToUniqQn,
   addUniqQuestion,
   addUserToFixedQnHighlight,
   addUserToUniqQnHighlight,
   removeUserFromFixedQnHighlight,
   removeUserFromUniqQnHighlight,
-  updateFavorite,
+  addUserToFav,
+  removeUserFromFav,
   updateReport,
 }

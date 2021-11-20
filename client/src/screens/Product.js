@@ -23,13 +23,14 @@ import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
   setProduct,
   addNewQuestion,
-  updateProductFavorite,
-  addNewAnswerForUniqQuestion,
-  addNewAnswerForFixedQuestion,
+  addAnswerToUniqQuestion,
+  addAnswerToFixedQuestion,
   addUserToFixedQuestionHighlight,
   addUserToUniqQuestionHighlight,
   removeUserFromFixedQuestionHighlight,
   removeUserFromUniqQuestionHighlight,
+  addUserToFavorite,
+  removeUserFromFavorite,
 } from '../features/product'
 import { updateReport } from '../api/product'
 import reportOptions from '../utils/reports'
@@ -79,9 +80,9 @@ export default () => {
     setIsModalOpen(false)
     try {
       if (answer.isUniqQuestion) {
-        await dispatch(addNewAnswerForUniqQuestion({ token, id: product._id, params: answer }))
+        await dispatch(addAnswerToUniqQuestion({ token, id: product._id, params: answer }))
       } else {
-        await dispatch(addNewAnswerForFixedQuestion({ token, id: product._id, params: answer }))
+        await dispatch(addAnswerToFixedQuestion({ token, id: product._id, params: answer }))
       }
       setAnswer({})
       setQuestion('')
@@ -102,10 +103,10 @@ export default () => {
   }
 
   // Handle icon on press actions
-  const addUserToHighlight = async (params) => {
-    console.log('add params', params)
+  const addUserToHighlight = async (data) => {
+    const params = { userId: user._id, questionIndex: data.questionIndex }
     try {
-      if (params.isUniqQuestion) {
+      if (data.isUniqQuestion) {
         await dispatch(addUserToUniqQuestionHighlight({ token, id: product._id, params }))
       } else {
         await dispatch(addUserToFixedQuestionHighlight({ token, id: product._id, params }))
@@ -117,21 +118,43 @@ export default () => {
 
   // Handle icon on press actions
   const removeUserFromHighlight = async (params) => {
-    console.log('remove params', params)
     try {
       if (params.isUniqQuestion) {
-        await dispatch(removeUserFromUniqQuestionHighlight({ token, id: product._id, params }))
+        await dispatch(
+          removeUserFromUniqQuestionHighlight({
+            token,
+            id: product._id,
+            userId: user._id,
+            questionIndex: params.questionIndex,
+          })
+        )
       } else {
-        await dispatch(removeUserFromFixedQuestionHighlight({ token, id: product._id, params }))
+        await dispatch(
+          removeUserFromFixedQuestionHighlight({
+            token,
+            id: product._id,
+            userId: user._id,
+            questionIndex: params.questionIndex,
+          })
+        )
       }
     } catch (e) {
       console.error(e)
     }
   }
 
-  const addToFavorite = async (params) => {
+  const addUserToFavArray = async () => {
+    const params = { userId: user._id }
     try {
-      await dispatch(updateProductFavorite({ token, id: product._id, params }))
+      await dispatch(addUserToFavorite({ token, id: product._id, params }))
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const removeUserFromFavArray = async () => {
+    try {
+      await dispatch(removeUserFromFavorite({ token, id: product._id, userId: user._id }))
     } catch (e) {
       console.error(e)
     }
@@ -213,12 +236,11 @@ export default () => {
                 <Pressable
                   onPress={() => {
                     const isHighlighted = qa.highlightedBy.includes(user._id)
-                    const params = {
-                      userId: user._id,
+                    const data = {
                       isUniqQuestion: type === 'uniq',
                       questionIndex: qaIndex,
                     }
-                    isHighlighted ? removeUserFromHighlight(params) : addUserToHighlight(params)
+                    isHighlighted ? removeUserFromHighlight(data) : addUserToHighlight(data)
                   }}
                 >
                   <Box>{`★ ${qa.highlightedBy.length}`}</Box>
@@ -280,6 +302,7 @@ export default () => {
                 userId: user._id,
                 description: text,
               },
+              highlightedBy: [user._id],
             })
           }
           textAlignVertical="top"
@@ -341,12 +364,8 @@ export default () => {
       </View>
       <Button
         onPress={() => {
-          const favoriteStatus = product.favoredUserIds.includes(user._id)
-          const params = {
-            userId: user._id,
-            isFavored: favoriteStatus,
-          }
-          addToFavorite(params)
+          const isFavored = product.favoredUserIds.includes(user._id)
+          isFavored ? removeUserFromFavArray() : addUserToFavArray()
         }}
       >
         ❤︎

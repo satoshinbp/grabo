@@ -5,13 +5,14 @@ import {
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
   addUniqQuestion,
-  updateFavorite,
-  addAnswerForFixedQuestion,
-  addAnswerForUniqQuestion,
+  addAnswerToFixedQn,
+  addAnswerToUniqQn,
   addUserToUniqQnHighlight,
   addUserToFixedQnHighlight,
   removeUserFromFixedQnHighlight,
   removeUserFromUniqQnHighlight,
+  addUserToFav,
+  removeUserFromFav,
 } from '../api/product'
 
 export const setProduct = createAsyncThunk('product/set', async ({ token, id }) => {
@@ -50,21 +51,11 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   }
 })
 
-/*
-export const addNewAnswer = createAsyncThunk('products/addAnswer', async ({ token, id, params }) => {
-  try {
-    const data = await addAnswer(token, id, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-})*/
-
-export const addNewAnswerForFixedQuestion = createAsyncThunk(
+export const addAnswerToFixedQuestion = createAsyncThunk(
   'products/addFixedQuestionAnswer',
   async ({ token, id, params }) => {
     try {
-      const data = await addAnswerForFixedQuestion(token, id, params)
+      const data = await addAnswerToFixedQn(token, id, params)
       return data
     } catch (e) {
       console.error(e)
@@ -72,11 +63,11 @@ export const addNewAnswerForFixedQuestion = createAsyncThunk(
   }
 )
 
-export const addNewAnswerForUniqQuestion = createAsyncThunk(
+export const addAnswerToUniqQuestion = createAsyncThunk(
   'products/addUniqQuestionAnswer',
   async ({ token, id, params }) => {
     try {
-      const data = await addAnswerForUniqQuestion(token, id, params)
+      const data = await addAnswerToUniqQn(token, id, params)
       return data
     } catch (e) {
       console.error(e)
@@ -92,15 +83,6 @@ export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ 
     console.error(e)
   }
 })
-/*
-export const updateQuestionHighlight = createAsyncThunk('products/updateHighlight', async ({ token, id, params }) => {
-  try {
-    const data = await updateHighlight(token, id, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-})*/
 
 export const addUserToFixedQuestionHighlight = createAsyncThunk(
   'products/addUserToFixedQnHighlight',
@@ -119,7 +101,6 @@ export const addUserToUniqQuestionHighlight = createAsyncThunk(
   async ({ token, id, params }) => {
     try {
       const data = await addUserToUniqQnHighlight(token, id, params)
-      console.log(data)
       return data
     } catch (e) {
       console.error(e)
@@ -129,9 +110,9 @@ export const addUserToUniqQuestionHighlight = createAsyncThunk(
 
 export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
   'products/removeUserFromFixedQnHighlight',
-  async ({ token, id, params }) => {
+  async ({ token, id, userId, questionIndex }) => {
     try {
-      const data = await removeUserFromFixedQnHighlight(token, id, params)
+      const data = await removeUserFromFixedQnHighlight(token, id, userId, questionIndex)
       return data
     } catch (e) {
       console.error(e)
@@ -141,10 +122,9 @@ export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
 
 export const removeUserFromUniqQuestionHighlight = createAsyncThunk(
   'products/removeUserFromUniqQnHighlight',
-  async ({ token, id, params }) => {
+  async ({ token, id, userId, questionIndex }) => {
     try {
-      const data = await removeUserFromUniqQnHighlight(token, id, params)
-      console.log(data)
+      const data = await removeUserFromUniqQnHighlight(token, id, userId, questionIndex)
       return data
     } catch (e) {
       console.error(e)
@@ -152,14 +132,26 @@ export const removeUserFromUniqQuestionHighlight = createAsyncThunk(
   }
 )
 
-export const updateProductFavorite = createAsyncThunk('products/updateFavorite', async ({ token, id, params }) => {
+export const addUserToFavorite = createAsyncThunk('products/addUserToFavorite', async ({ token, id, params }) => {
   try {
-    const data = await updateFavorite(token, id, params)
+    const data = await addUserToFav(token, id, params)
     return data
   } catch (e) {
     console.error(e)
   }
 })
+
+export const removeUserFromFavorite = createAsyncThunk(
+  'products/removeUserFromFavorite',
+  async ({ token, id, userId }) => {
+    try {
+      const data = await removeUserFromFav(token, id, userId)
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
 
 const productSlice = createSlice({
   name: 'product',
@@ -205,35 +197,24 @@ const productSlice = createSlice({
     [setProductsByFavoredUserId.rejected]: (state) => {
       state.loading = false
     },
-    /*
-    [addNewAnswer.pending]: (state, action) => {
+    [addAnswerToFixedQuestion.pending]: (state, action) => {
       state.loading = true
     },
-    [addNewAnswer.fulfilled]: (state, action) => {
+    [addAnswerToFixedQuestion.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [addNewAnswer.rejected]: (state, action) => {
+    [addAnswerToFixedQuestion.rejected]: (state, action) => {
       state.loading = false
-    },*/
-    [addNewAnswerForFixedQuestion.pending]: (state, action) => {
+    },
+    [addAnswerToUniqQuestion.pending]: (state, action) => {
       state.loading = true
     },
-    [addNewAnswerForFixedQuestion.fulfilled]: (state, action) => {
+    [addAnswerToUniqQuestion.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [addNewAnswerForFixedQuestion.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [addNewAnswerForUniqQuestion.pending]: (state, action) => {
-      state.loading = true
-    },
-    [addNewAnswerForUniqQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [addNewAnswerForUniqQuestion.rejected]: (state, action) => {
+    [addAnswerToUniqQuestion.rejected]: (state, action) => {
       state.loading = false
     },
     [addNewQuestion.pending]: (state, action) => {
@@ -246,18 +227,6 @@ const productSlice = createSlice({
     [addNewQuestion.rejected]: (state, action) => {
       state.loading = false
     },
-    /*
-    [updateQuestionHighlight.pending]: (state, action) => {
-      state.loading = true
-    },
-    [updateQuestionHighlight.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [updateQuestionHighlight.rejected]: (state, action) => {
-      state.loading = false
-    },
-    */
     [addUserToFixedQuestionHighlight.pending]: (state, action) => {
       state.loading = true
     },
@@ -298,14 +267,24 @@ const productSlice = createSlice({
     [removeUserFromUniqQuestionHighlight.rejected]: (state, action) => {
       state.loading = false
     },
-    [updateProductFavorite.pending]: (state, action) => {
+    [addUserToFavorite.pending]: (state, action) => {
       state.loading = true
     },
-    [updateProductFavorite.fulfilled]: (state, action) => {
+    [addUserToFavorite.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [updateProductFavorite.rejected]: (state, action) => {
+    [addUserToFavorite.rejected]: (state, action) => {
+      state.loading = false
+    },
+    [removeUserFromFavorite.pending]: (state, action) => {
+      state.loading = true
+    },
+    [removeUserFromFavorite.fulfilled]: (state, action) => {
+      state.product = action.payload
+      state.loading = false
+    },
+    [removeUserFromFavorite.rejected]: (state, action) => {
       state.loading = false
     },
   },
