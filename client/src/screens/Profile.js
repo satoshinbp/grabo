@@ -1,27 +1,33 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
 import { logout, updateUser } from '../features/auth'
+import Loading from '../components/Loading'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
 import FadeModal from '../elements/FadeModal'
 
 export default () => {
-  const { user, token } = useSelector((state) => state.auth)
+  const navigation = useNavigation()
+
+  const { user, token, loading } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
+
   const [logoutModalOpen, setLogoutModalOpen] = useState(false)
   const [notificationModalOpen, setNotificationModalOpen] = useState(false)
 
   const menu = [
-    { text: 'Account Info', icon: <SunIcon size={8} />, onPress: () => console.log('btn pressed') },
-    { text: 'Settings', icon: <SunIcon size={8} />, onPress: () => setNotificationModalOpen(true) },
+    { text: 'Account', icon: <SunIcon size={8} />, onPress: () => navigation.navigate('Account') },
+    { text: 'Notification', icon: <SunIcon size={8} />, onPress: () => setNotificationModalOpen(true) },
     { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
   ]
 
-  const toggleNotification = (status) => {
-    const params = { isNotificationOn: status }
+  const toggleNotification = () => {
+    const params = { isNotificationOn: !user.isNotificationOn }
     dispatch(updateUser({ token, id: user._id, params }))
   }
 
+  if (loading) return <Loading />
   return (
     <View variant="wrapper">
       <VStack alignItems="center" space={1} mb={3}>
@@ -36,7 +42,7 @@ export default () => {
           borderRadius="full"
         />
         <Text fontSize="lg" bold>
-          {user?.name}
+          {user?.firstName} {user?.lastName}
         </Text>
         <Text fontSize="sm" color="darkText">
           {user?.email}
@@ -50,6 +56,17 @@ export default () => {
       </View>
 
       <FadeModal
+        isOpen={notificationModalOpen}
+        onClose={() => setNotificationModalOpen(false)}
+        title="Notification"
+        content={user.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
+        primaryAction={toggleNotification}
+        primaryActionLabel={user.isNotificationOn ? 'Mute' : 'Unmute'}
+        secondaryAction={() => setNotificationModalOpen(false)}
+        secondaryActionLabel="Cancel"
+      />
+
+      <FadeModal
         isOpen={logoutModalOpen}
         onClose={() => setLogoutModalOpen(false)}
         title="Logout"
@@ -58,17 +75,6 @@ export default () => {
         primaryActionLabel="Logout"
         secondaryAction={() => setLogoutModalOpen(false)}
         secondaryActionLabel="Cancel"
-      />
-
-      <FadeModal
-        isOpen={notificationModalOpen}
-        onClose={() => setNotificationModalOpen(false)}
-        title="Notification"
-        content="Mute Notification?"
-        primaryAction={() => toggleNotification(false)}
-        primaryActionLabel="Mute"
-        secondaryAction={() => toggleNotification(true)}
-        secondaryActionLabel="On"
       />
     </View>
   )

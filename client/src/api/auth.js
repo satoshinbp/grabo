@@ -34,9 +34,9 @@ const fetchUsersByGroup = async (token, code) => {
   }
 }
 
-const updateUser = async (token, params) => {
+const patchUser = async (token, id, params) => {
   try {
-    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${params.user_id}`, params, {
+    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${id}`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -45,4 +45,4 @@ const updateUser = async (token, params) => {
   }
 }
 
-export { signInWithGoogle, fetchUser, fetchUsersByGroup, updateUser }
+export { signInWithGoogle, fetchUser, fetchUsersByGroup, patchUser }

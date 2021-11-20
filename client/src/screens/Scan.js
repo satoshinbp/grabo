@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { View, Button, HStack, VStack, Text } from 'native-base'
-import { useNavigation, useIsFocused } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { addImage } from '../features/image'
 import Loading from '../components/Loading'
 
 export default () => {
-  const navigation = useNavigation()
   const isFocused = useIsFocused()
 
-  const { loading, status } = useSelector((state) => state.image)
+  const { loading, error } = useSelector((state) => state.image)
   const dispatch = useDispatch()
 
   const cameraRef = useRef(null)
@@ -27,13 +26,10 @@ export default () => {
   }, [])
 
   useEffect(() => {
-    if (status === 'fail') {
-      alert('Failed. Please try another photo.')
+    if (error) {
+      alert(error)
     }
-    if (status === 'success') {
-      navigation.navigate('SelectLanguage')
-    }
-  }, [status])
+  }, [error])
 
   const takePicture = async () => {
     if (!cameraRef) return
@@ -61,14 +57,36 @@ export default () => {
   }
 
   const actionButtons = (
-    <HStack my={2} space={2}>
-      <Button flex={1} isDisabled={!hasPermission} onPress={takePicture}>
-        Snap
-      </Button>
-      <Button flex={1} onPress={openImagePickerAsync}>
+    <>
+      <Button
+        position="absolute"
+        top="4"
+        right="4"
+        width="84px"
+        height="42px"
+        backgroundColor="primary.500"
+        shadow="2"
+        flex={1}
+        onPress={openImagePickerAsync}
+      >
         Gallery
       </Button>
-    </HStack>
+      <Button
+        position="absolute"
+        bottom="4"
+        alignSelf="center"
+        width="84px"
+        height="84px"
+        borderRadius="full"
+        backgroundColor="primary.500"
+        shadow="2"
+        flex={1}
+        isDisabled={!hasPermission}
+        onPress={takePicture}
+      >
+        Snap
+      </Button>
+    </>
   )
 
   if (!isFocused) return <View />

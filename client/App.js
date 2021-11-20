@@ -8,6 +8,7 @@ import authReducer from './src/features/auth'
 import imageReducer from './src/features/image'
 import productReducer from './src/features/product'
 import AppContainer from './src/components/AppContainer'
+import { navigationRef } from './src/navigators/RootNavigation'
 
 const store = createStore(
   combineReducers({
@@ -100,25 +101,71 @@ export default () => {
           },
         },
         variants: {
-          primary: () => ({
-            width: '232px',
-            alignSelf: 'center',
-            backgroundColor: 'primary.500',
-          }),
-          fab: () => ({
-            position: 'absolute',
-            bottom: 4,
-            right: 4,
-            width: '84px',
-            height: '84px',
-            borderRadius: 'full',
-            backgroundColor: 'primary.500',
-            shadow: 2,
-            _text: {
-              color: 'black',
-              textAlign: 'center',
-            },
-          }),
+          primary: (props) => {
+            // Copied from variant "solid". It is better if there is a way to extend instead of copy
+            const { colorScheme: c } = props
+            let bg = `${c}.500`
+            return {
+              _web: {
+                outlineWidth: '0',
+              },
+              bg,
+              _hover: {
+                bg: `${c}.600`,
+              },
+              _pressed: {
+                bg: `${c}.700`,
+              },
+              _focus: {
+                bg: `${c}.600`,
+              },
+              _loading: {
+                bg: 'warmGray.50',
+                opacity: '50',
+              },
+              _disabled: { bg: 'trueGray.300' },
+              ////////////////////
+              width: '232px',
+              alignSelf: 'center',
+            }
+          },
+          fab: (props) => {
+            // Copied from variant "solid". It is better if there is a way to extend instead of copy
+            const { colorScheme: c } = props
+            let bg = `${c}.500`
+            return {
+              _web: {
+                outlineWidth: '0',
+              },
+              bg,
+              _hover: {
+                bg: `${c}.600`,
+              },
+              _pressed: {
+                bg: `${c}.700`,
+              },
+              _focus: {
+                bg: `${c}.600`,
+              },
+              _loading: {
+                bg: 'warmGray.50',
+                opacity: '50',
+              },
+              _disabled: { bg: 'trueGray.300' },
+              ////////////////////
+              position: 'absolute',
+              bottom: 4,
+              right: 4,
+              width: '84px',
+              height: '84px',
+              borderRadius: 'full',
+              shadow: 2,
+              _text: {
+                color: 'black',
+                textAlign: 'center',
+              },
+            }
+          },
         },
       },
       TextArea: {
@@ -134,7 +181,7 @@ export default () => {
   return (
     <Provider store={store}>
       <NativeBaseProvider theme={theme}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <AppContainer />
         </NavigationContainer>
       </NativeBaseProvider>

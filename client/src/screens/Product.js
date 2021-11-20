@@ -256,10 +256,10 @@ export default () => {
               {qa.answers.map((answer, answerIndex) => (
                 <>
                   <View p={4} flexDirection="row" justifyContent="space-between">
-                    <Text>{answer.description}</Text>
+                    <Text>{answer?.description}</Text>
                     <Pressable onPress={() => setReportForm(qaIndex, answerIndex, type)}>
                       <Image
-                        source={require('../assets/exclamation.jpeg')}
+                        source={require('../assets/icons/exclamation.jpeg')}
                         alt="exclamation"
                         width="18px"
                         height="18px"
@@ -353,36 +353,56 @@ export default () => {
   return (
     <>
       <View flex={0.5}>
-        <Carousel
-          data={product.images}
-          renderItem={CarouselImages}
-          itemWidth={windowWidth}
-          sliderWidth={windowWidth}
-          onSnapToItem={(index) => setActiveSlide(index)}
-        />
-        <Text>{product.images?.length > 0 ? PaginationComponent(product.images) : null}</Text>
+        <View position="relative">
+          <Carousel
+            data={product.images}
+            renderItem={CarouselImages}
+            itemWidth={windowWidth}
+            sliderWidth={windowWidth}
+            onSnapToItem={(index) => setActiveSlide(index)}
+          />
+          <Text position="absolute" bottom={0}>
+            {product.images?.length > 0 ? PaginationComponent(product.images) : null}
+          </Text>
+          <View backgroundColor="black" width={windowWidth}>
+            <HStack position="absolute" bottom={13} right={13} space={3}>
+              <Pressable>
+                <Image
+                  source={require('../assets/icons/exclamation.jpeg')}
+                  alt="exclamation"
+                  width="28px"
+                  height="28px"
+                  padding={2}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  const isFavored = product.favoredUserIds.includes(user._id)
+                  isFavored ? removeUserFromFavArray() : addUserToFavArray()
+                }}
+              >
+                <Image
+                  source={require('../assets/icons/like.png')}
+                  alt="image"
+                  width="28px"
+                  height="28px"
+                  padding={2}
+                />
+              </Pressable>
+            </HStack>
+          </View>
+        </View>
       </View>
-      <Button
-        onPress={() => {
-          const isFavored = product.favoredUserIds.includes(user._id)
-          isFavored ? removeUserFromFavArray() : addUserToFavArray()
-        }}
-      >
-        ❤︎
-      </Button>
-
-      <ScrollView variant="wrapper" flex={0.5} mb={2}>
+      <ScrollView variant="wrapper" flex={0.5} pt={4} mb={2}>
         {product.fixedQandAs && QaAccordions(product.fixedQandAs, 'fixed')}
         {product.uniqQandAs && QaAccordions(product.uniqQandAs, 'uniq')}
 
         {/* add extra space to avoid contents to be hidden by FAB */}
         <View h="60px" />
       </ScrollView>
-
       <Button variant="fab" onPress={setQuestionForm}>
         Ask a Question
       </Button>
-
       <SlideModal
         isOpen={isModalOpen}
         onClose={closeModal}

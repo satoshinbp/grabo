@@ -1,18 +1,18 @@
 export default [
   {
-    description: 'When in a grocery store, grab a foreign product you like but know nothing about',
-    image: require('../assets/onboarding-shopping.png'),
+    description: 'Scan the product you like but know nothing about!',
+    image: require('../assets/images/onboarding1.png'),
   },
   {
-    description: 'Take a picture of it',
-    image: require('../assets/onboarding-scanning.png'),
+    description: 'Let Grabo detect the language of the product!',
+    image: require('../assets/images/onboarding2.png'),
   },
   {
     description: 'And post it to the Grabo community!',
-    image: require('../assets/onboarding-asking.png'),
+    image: require('../assets/images/onboarding3.png'),
   },
   {
-    description: 'Get advice within minutes!',
-    image: require('../assets/onboarding-notified.png'),
+    description: 'Get advice within minutes from a local!',
+    image: require('../assets/images/onboarding4.png'),
   },
 ]

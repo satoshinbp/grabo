@@ -9,7 +9,13 @@ const Report = (props) => {
   return (
     <>
       <Pressable onPress={() => onPressHandler()}>
-        <Image source={require('../assets/exclamation.jpeg')} alt="image" width="18px" height="18px" padding={2} />
+        <Image
+          source={require('../assets/icons/exclamation.jpeg')}
+          alt="image"
+          width="18px"
+          height="18px"
+          padding={2}
+        />
       </Pressable>
     </>
   )
