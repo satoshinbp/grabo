@@ -21,8 +21,6 @@ export default () => {
     })
   }, [code])
 
-  console.log(code)
-
   return (
     <ScrollView variant="wrapper">
       <Heading size="sm" my={2}>
