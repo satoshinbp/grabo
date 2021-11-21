@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { View, Box, VStack, Text, Avatar, SunIcon } from 'native-base'
+import { View, Box, VStack, Text, Avatar } from 'native-base'
 import { logout, updateUser } from '../features/auth'
 import Loading from '../components/Loading'
 import ListItemBarPlain from '../elements/ListItemBarPlain'
 import FadeModal from '../elements/FadeModal'
+import AccountIcon from '../assets/icons/Account'
+import SettingIcon from '../assets/icons/Setting'
+import LogoutIcon from '../assets/icons/Logout'
 
 export default () => {
   const navigation = useNavigation()
@@ -17,9 +20,9 @@ export default () => {
   const [notificationModalOpen, setNotificationModalOpen] = useState(false)
 
   const menu = [
-    { text: 'Account', icon: <SunIcon size={8} />, onPress: () => navigation.navigate('Account') },
-    { text: 'Notification', icon: <SunIcon size={8} />, onPress: () => setNotificationModalOpen(true) },
-    { text: 'Logout', icon: <SunIcon size={8} />, onPress: () => setLogoutModalOpen(true) },
+    { text: 'Account', icon: <AccountIcon width="26px" />, onPress: () => navigation.navigate('Account') },
+    { text: 'Notification', icon: <SettingIcon width="26px" />, onPress: () => setNotificationModalOpen(true) },
+    { text: 'Logout', icon: <LogoutIcon width="26px" />, onPress: () => setLogoutModalOpen(true) },
   ]
 
   const toggleNotification = () => {

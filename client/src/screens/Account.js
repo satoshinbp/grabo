@@ -78,7 +78,7 @@ export default () => {
 
           <FormControl>
             <FormControl.Label _text={{ bold: true }}>First name</FormControl.Label>
-            <Input value={firstName} onChangeText={(value) => setFirstName(value)} bg="warmGray.100" />
+            <Input value={firstName} onChangeText={(value) => setFirstName(value)} bg="warmGray.100" size="md" />
             {'firstName' in errors && (
               <Text fontSize="xs" color="error.500" fontWeight={500}>
                 {errors.firstName}
@@ -88,7 +88,7 @@ export default () => {
 
           <FormControl>
             <FormControl.Label _text={{ bold: true }}>Last name</FormControl.Label>
-            <Input value={lastName} onChangeText={(value) => setLastName(value)} bg="warmGray.100" />
+            <Input value={lastName} onChangeText={(value) => setLastName(value)} bg="warmGray.100" size="md" />
             {'lastName' in errors && (
               <Text fontSize="xs" color="error.500" fontWeight={500}>
                 {errors.lastName}
@@ -98,7 +98,7 @@ export default () => {
 
           <FormControl>
             <FormControl.Label _text={{ bold: true }}>Email</FormControl.Label>
-            <Input value={email} onChangeText={(value) => setEmail(value)} bg="warmGray.100" />
+            <Input value={email} onChangeText={(value) => setEmail(value)} bg="warmGray.100" size="md" />
             {'email' in errors && (
               <Text fontSize="xs" color="error.500" fontWeight={500}>
                 {errors.email}

@@ -12,7 +12,7 @@ export default () => {
         <HStack px={3} py={2} alignItems="center" justifyContent="space-between" bg="white">
           <Image source={require('../assets/icons/logo-lg.png')} alt="logo" h="48px" w="112px" resizeMode="contain" />
 
-          <Center size="8">
+          <Center size={8}>
             <NotificationIcon width="20px" />
           </Center>
         </HStack>
