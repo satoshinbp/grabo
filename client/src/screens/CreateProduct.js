@@ -21,24 +21,21 @@ import {
 } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 import { updateCode, deleteImage, clearImage } from '../features/image'
-import { fetchUsersByGroup, patchUser } from '../api/auth'
-import { postImage, postProduct } from '../api/product'
+import { createProduct } from '../features/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
 import Loading from '../components/Loading'
 
-// ========== Please leave comments as a reference ========== //
 export default () => {
   const navigation = useNavigation()
 
   const { token, user } = useSelector((state) => state.auth)
   const { texts, uris, code } = useSelector((state) => state.image.value)
+  const { loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
-  // const [, setImage] = useState(props.route.params.uris)
   const [highlitedQuestions, setHighlitedQuestions] = useState([])
   const [uniqQuestions, setUniqQuestions] = useState([])
-  const [loading, setLoading] = useState(false)
 
   const openCamera = () => {
     if (uris.length >= 3) {
@@ -48,90 +45,42 @@ export default () => {
     }
   }
 
-  const uploadImage = async () => {
-    const params = new FormData()
-    params.append('image', { uri: uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    await postImage(token, params)
-  }
-  const removeImage = (index) => dispatch(deleteImage({ index }))
-
   const addQuestion = () => setUniqQuestions([...uniqQuestions, ''])
   const changeQuestion = (index, text) => setUniqQuestions(uniqQuestions.map((q, i) => (i === index ? text : q)))
   const removeQuestion = (index) => setUniqQuestions(uniqQuestions.filter((_, i) => i !== index))
 
-  const clearProduct = () => {
-    dispatch(clearImage())
-    setHighlitedQuestions([])
-    setUniqQuestions([])
-    navigation.navigate('Scan')
-  }
   const cancelProduct = () =>
     Alert.alert('Alert', 'Are you sure to cancel posting this product?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'OK', onPress: clearProduct },
+      {
+        text: 'OK',
+        onPress: () => {
+          dispatch(clearImage())
+          setHighlitedQuestions([])
+          setUniqQuestions([])
+          navigation.navigate('Scan')
+        },
+      },
     ])
-  const submitProduct = async () => {
-    setLoading(true)
-    try {
-      await uploadImage()
 
+  const submitProduct = async () => {
+    try {
       const params = {
         userId: user._id,
         code,
         url: uris,
         text: texts,
-        highlitedQuestions: highlitedQuestions,
-        uniqQuestions: uniqQuestions,
+        highlitedQuestions,
+        uniqQuestions,
       }
 
-      const res = await postProduct(token, params)
+      dispatch(createProduct({ token, params }))
 
-      const fetchedUsers = await fetchUsersByGroup(token, code)
-
-      const notificationParams = {
-        notifications: {
-          read: false,
-          message: `Help ${user.firstName} to find this product`,
-          productId: res.data._id,
-        },
-      }
-
-      fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
-
-      // console.log('this is a', fetchedUsers)
-      const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn === true)
-      // console.log('notified users', notifiedUsers)
-      const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
-      notificationTokens.map((token) => sendPushNotification(token))
-
-      setLoading(false)
-
-      clearProduct()
-      navigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: res.data._id } })
+      setHighlitedQuestions([])
+      setUniqQuestions([])
     } catch (e) {
-      console.error(e)
-      setLoading(false)
+      cosole.error(e)
     }
-  }
-
-  const sendPushNotification = async (expoPushToken) => {
-    const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: 'Help',
-      body: 'Someone need your help!',
-      data: { someData: 'goes here' },
-    }
-
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    })
   }
 
   // FormContorl might be useful rather thatn Box, to be considered
@@ -161,7 +110,12 @@ export default () => {
                         borderRadius="full"
                         bg="primary.500"
                       >
-                        <MaterialIcons name="delete" size={18} color="black" onPress={() => removeImage(index)} />
+                        <MaterialIcons
+                          name="delete"
+                          size={18}
+                          color="black"
+                          onPress={() => dispatch(deleteImage({ index }))}
+                        />
                       </Center>
                     </Box>
                   ))}

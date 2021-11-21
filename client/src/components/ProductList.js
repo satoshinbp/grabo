@@ -8,11 +8,9 @@ export default () => {
   const route = useRoute()
   const navigation = useNavigation()
 
-  console.log(route.name)
+  const { groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
 
-  const { products } = useSelector((state) => state.product)
-
-  const format = (data, numColumns) => {
+  const gridLayoutFormat = (data, numColumns) => {
     const tempData = data.concat()
     const numberOfFullRows = Math.floor(tempData.length / numColumns)
 
@@ -25,15 +23,19 @@ export default () => {
     return tempData
   }
 
+  let products
   let productRoute
   switch (route.name) {
     case 'Group':
+      products = groupedProducts
       productRoute = 'GroupProduct'
       break
     case 'MyProducts':
+      products = postedProducts
       productRoute = 'MyProduct'
       break
     case 'Favorites':
+      products = savedProducts
       productRoute = 'Favorite'
       break
     default:
@@ -48,18 +50,18 @@ export default () => {
           resizeMode="cover"
           style={{ width: 144, height: 144, alignSelf: 'center', borderRadius: 32 }}
         >
-          <Box variant="productCard"></Box>
+          <Box variant="productCard" />
         </ImageBackground>
       </Pressable>
     ) : (
-      <View flex={1} bg="transparent" style={{ width: 144, height: 144, alignSelf: 'center' }} />
+      <View flex={1} bg="transparent" w="144px" h="144px" alignSelf="center" />
     )
 
   const numColumns = 2
 
   return (
     <FlatList
-      data={format(products, numColumns)}
+      data={gridLayoutFormat(products, numColumns)}
       renderItem={ProductCard}
       numColumns={numColumns}
       keyExtractor={(item) => item._id}

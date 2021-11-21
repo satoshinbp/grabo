@@ -35,7 +35,6 @@ export default () => {
           tabBarLabel: 'My Products',
           tabBarIcon: ({ width }) => <PostIcon width={width} />,
         }}
-        listeners={{ tabPress: () => dispatch(setProductsByUserId({ token, userId: user._id })) }}
       />
       <Tab.Screen
         name="ScanTab"
@@ -46,7 +45,6 @@ export default () => {
         name="FavoritesTab"
         component={FavsStacks}
         options={{ tabBarLabel: 'Favorites', tabBarIcon: ({ width }) => <FavIcon width={width} /> }}
-        listeners={{ tabPress: () => dispatch(setProductsByFavoredUserId({ token, userId: user._id })) }}
       />
       <Tab.Screen
         name="ProfileTab"
