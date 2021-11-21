@@ -8,7 +8,7 @@ export default () => {
   return (
     <>
       <StatusBar backgroundColor={colors.primary[500]} barStyle="dark-content" />
-      <Box safeAreaTop bg="white">
+      <Box safeAreaTop bg="white" shadow={2}>
         <HStack px={3} py={2} alignItems="center" justifyContent="space-between" bg="white">
           <Image source={require('../assets/icons/logo-lg.png')} alt="logo" h="48px" w="112px" resizeMode="contain" />
 

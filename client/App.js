@@ -88,7 +88,7 @@ export default () => {
       VStack: {
         variants: {
           container: {
-            my: 2,
+            my: 3,
             space: 3,
           },
         },

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Center, VStack, HStack, Pressable, Text, ChevronRightIcon } from 'native-base'
+import { Box, Center, VStack, HStack, Pressable, Text } from 'native-base'
 
 export default ({ text, subtext, icon, onPress }) => (
   <Pressable onPress={onPress}>

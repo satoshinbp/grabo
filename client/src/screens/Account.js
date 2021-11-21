@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { View, ScrollView, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
+import { ScrollView, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
 import { updateUser } from '../features/auth'
 
 export default () => {
@@ -14,10 +14,6 @@ export default () => {
   const [lastName, setLastName] = useState(user.lastName)
   const [email, setEmail] = useState(user.email)
   const [errors, setErrors] = useState({})
-
-  const firstNameRef = useRef(null)
-  const lastNameRef = useRef(null)
-  const emailRef = useRef(null)
 
   const validate = () => {
     if (firstName.length < 3) {
@@ -58,9 +54,19 @@ export default () => {
   }
 
   return (
-    <ScrollView variant="wrapper" contentContainerStyle={{ flexGrow: 1 }}>
-      <VStack flex={1} justifyContent="space-between" space={2} my={2} px={3} py={2} bg="white" borderRadius="md">
-        <View>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <VStack
+        flex={1}
+        justifyContent="space-between"
+        space={3}
+        m={3}
+        px={3}
+        py={6}
+        bg="white"
+        borderRadius="md"
+        shadow={2}
+      >
+        <VStack space={2}>
           <Avatar
             source={{ uri: user.image }}
             size="2xl"
@@ -72,7 +78,7 @@ export default () => {
 
           <FormControl>
             <FormControl.Label _text={{ bold: true }}>First name</FormControl.Label>
-            <Input value={firstName} onChangeText={(value) => setFirstName(value)} bg="warmGray.100" borderWidth={0} />
+            <Input value={firstName} onChangeText={(value) => setFirstName(value)} bg="warmGray.100" />
             {'firstName' in errors && (
               <Text fontSize="xs" color="error.500" fontWeight={500}>
                 {errors.firstName}
@@ -82,7 +88,7 @@ export default () => {
 
           <FormControl>
             <FormControl.Label _text={{ bold: true }}>Last name</FormControl.Label>
-            <Input value={lastName} onChangeText={(value) => setLastName(value)} bg="warmGray.100" borderWidth={0} />
+            <Input value={lastName} onChangeText={(value) => setLastName(value)} bg="warmGray.100" />
             {'lastName' in errors && (
               <Text fontSize="xs" color="error.500" fontWeight={500}>
                 {errors.lastName}
@@ -92,14 +98,14 @@ export default () => {
 
           <FormControl>
             <FormControl.Label _text={{ bold: true }}>Email</FormControl.Label>
-            <Input value={email} onChangeText={(value) => setEmail(value)} bg="warmGray.100" borderWidth={0} />
+            <Input value={email} onChangeText={(value) => setEmail(value)} bg="warmGray.100" />
             {'email' in errors && (
               <Text fontSize="xs" color="error.500" fontWeight={500}>
                 {errors.email}
               </Text>
             )}
           </FormControl>
-        </View>
+        </VStack>
 
         <Button variant="primary" onPress={onSave}>
           Save
