@@ -51,7 +51,7 @@ export default () => {
 
       <View>
         {menu.map(({ text, icon, onPress }) => (
-          <ListItemBarPlain text={text} icon={icon} onPress={onPress} />
+          <ListItemBarPlain key={text} text={text} icon={icon} onPress={onPress} />
         ))}
       </View>
 
