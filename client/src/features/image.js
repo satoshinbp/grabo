@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getOcrText, searchProducts } from '../api/product'
+import { searchProducts } from '../api/product'
+import { getOcrText } from '../api/image'
 import * as RootNavigation from '../navigators/RootNavigation'
 import lodash from 'lodash'
 

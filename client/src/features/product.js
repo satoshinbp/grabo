@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { fetchUsersByGroup } from '../api/auth'
 import {
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
+  postProduct,
   addUniqQuestion,
   addAnswerToFixedQn,
   addAnswerToUniqQn,
@@ -13,6 +15,9 @@ import {
   addUserToFav,
   removeUserFromFav,
 } from '../api/product'
+import { postImage } from '../api/image'
+import { clearImage } from './image'
+import * as RootNavigation from '../navigators/RootNavigation'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   try {
@@ -40,6 +45,52 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
     console.error(e)
   }
 })
+
+const sendPushNotification = async (expoPushToken) => {
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Help',
+    body: 'Someone need your help!',
+    data: { someData: 'goes here' },
+  }
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  })
+}
+
+export const createProduct = createAsyncThunk(
+  'products/create',
+  async ({ token, params: productParams }, { getState, dispatch }) => {
+    try {
+      const { image } = getState()
+      const imageParams = new FormData()
+      imageParams.append('image', { uri: image.value.uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+      await postImage(token, imageParams)
+      const data = await postProduct(token, productParams)
+
+      const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
+      const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
+      const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
+      notificationTokens.map((token) => sendPushNotification(token))
+
+      dispatch(clearImage())
+
+      RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: data._id } })
+
+      return data
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
 
 export const addAnswerToFixedQuestion = createAsyncThunk(
   'products/addFixedQuestionAnswer',
@@ -175,6 +226,16 @@ const productSlice = createSlice({
       state.loading = false
     },
     [setProductsByFavoredUserId.rejected]: (state) => {
+      state.loading = false
+    },
+    [createProduct.pending]: (state) => {
+      state.loading = true
+    },
+    [createProduct.fulfilled]: (state, action) => {
+      state.postedProducts.push(action.payload)
+      state.loading = false
+    },
+    [createProduct.rejected]: (state) => {
       state.loading = false
     },
     [addAnswerToFixedQuestion.pending]: (state, action) => {

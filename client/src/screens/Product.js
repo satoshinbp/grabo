@@ -33,6 +33,7 @@ import {
 } from '../features/product'
 import { updateReport } from '../api/product'
 import reportOptions from '../utils/reports'
+import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
 
 const windowWidth = Dimensions.get('window').width
@@ -42,7 +43,7 @@ export default () => {
   const navigation = useNavigation()
 
   const { token, user } = useSelector((state) => state.auth)
-  const { groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
+  const { loading, groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
   const [product, setProduct] = useState({})
@@ -53,28 +54,32 @@ export default () => {
   const [questionIndex, setQuestionIndex] = useState(0)
   const [question, setQuestion] = useState({})
   const [answer, setAnswer] = useState({})
-  const [reportItem, setReportItem] = useState(null)
+  const [reportItem, setReportItem] = useState({})
   const [reports, setReports] = useState([])
 
+  const setProductByRoute = () => {
+    switch (route.name) {
+      case 'GroupProduct':
+        setProduct(groupedProducts.filter((product) => product._id === route.params.id)[0])
+        break
+      case 'MyProduct':
+        setProduct(postedProducts.filter((product) => product._id === route.params.id)[0])
+        break
+      case 'Favorite':
+        setProduct(savedProducts.filter((product) => product._id === route.params.id)[0])
+        break
+      default:
+        break
+    }
+  }
+
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      switch (route.name) {
-        case 'GroupProduct':
-          setProduct(groupedProducts.filter((product) => product._id === route.params.id)[0])
-          break
-        case 'MyProduct':
-          setProduct(postedProducts.filter((product) => product._id === route.params.id)[0])
-          break
-        case 'Favorite':
-          setProduct(savedProducts.filter((product) => product._id === route.params.id)[0])
-          break
-        default:
-          break
-      }
-    })
+    const unsubscribe = navigation.addListener('focus', setProductByRoute)
 
     return unsubscribe
   }, [navigation])
+
+  useEffect(setProductByRoute, [loading])
 
   // Handle submission from modal
   const submitQuestion = async () => {
@@ -360,12 +365,13 @@ export default () => {
       ? submitReport
       : null
 
+  if (loading || !product) return <Loading />
   return (
     <>
       <View flex={0.5}>
         <View position="relative">
           <Carousel
-            data={product.images}
+            data={product?.images}
             renderItem={CarouselImages}
             itemWidth={windowWidth}
             sliderWidth={windowWidth}
