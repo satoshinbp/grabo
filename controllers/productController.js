@@ -66,35 +66,7 @@ const createProduct = (req, res) => {
     .catch((e) => console.error(e))
 }
 
-const addAnswerToFixedQuestion = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product.fixedQandAs[req.body.questionIndex].answers.push(req.body.answer)
-    product.fixedQandAs[req.body.questionIndex].highlightedBy = []
-    product.markModified('fixedQandAs')
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => console.error(e))
-  })
-}
-
-const addAnswerToUniqQuestion = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product.uniqQandAs[req.body.questionIndex].answers.push(req.body.answer)
-    product.uniqQandAs[req.body.questionIndex].highlightedBy = []
-    product.markModified('uniqQandAs')
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => console.error(e))
-  })
-}
-
-const addUniqQuestion = (req, res) => {
+const createUniqQuestion = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -108,7 +80,37 @@ const addUniqQuestion = (req, res) => {
   })
 }
 
-const addUserToFixedQuestionHighlight = (req, res) => {
+const createAnswerToFixedQuestion = (req, res) => {
+  Product.findOne({
+    _id: req.params.id,
+  }).then((product) => {
+    product.fixedQandAs[req.params.index].answers.push(req.body)
+    product.fixedQandAs[req.params.index].highlightedBy = []
+    product.markModified('fixedQandAs')
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
+}
+
+const createAnswerToUniqQuestion = (req, res) => {
+  console.log(req.params.id)
+  console.log(req.params.index)
+  Product.findOne({
+    _id: req.params.id,
+  }).then((product) => {
+    product.uniqQandAs[req.params.index].answers.push(req.body)
+    product.uniqQandAs[req.params.index].highlightedBy = []
+    product.markModified('uniqQandAs')
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
+}
+
+const createUserToFixedQuestionHighlight = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -121,7 +123,7 @@ const addUserToFixedQuestionHighlight = (req, res) => {
   })
 }
 
-const addUserToUniqQuestionHighlight = (req, res) => {
+const createUserToUniqQuestionHighlight = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -166,7 +168,7 @@ const removeUserFromUniqQuestionHighlight = (req, res) => {
   })
 }
 
-const addUserToFavorite = (req, res) => {
+const createUserToFavorite = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -219,14 +221,14 @@ module.exports = {
   getProductsByUserId,
   getProductsByFavoredUserId,
   createProduct,
-  addAnswerToFixedQuestion,
-  addAnswerToUniqQuestion,
-  addUniqQuestion,
-  addUserToFixedQuestionHighlight,
-  addUserToUniqQuestionHighlight,
+  createAnswerToFixedQuestion,
+  createAnswerToUniqQuestion,
+  createUniqQuestion,
+  createUserToFixedQuestionHighlight,
+  createUserToUniqQuestionHighlight,
   removeUserFromFixedQuestionHighlight,
   removeUserFromUniqQuestionHighlight,
-  addUserToFavorite,
+  createUserToFavorite,
   removeUserFromFavorite,
   updateReport,
 }

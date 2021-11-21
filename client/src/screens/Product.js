@@ -21,9 +21,9 @@ import {
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
-  addNewQuestion,
-  addAnswerToUniqQuestion,
-  addAnswerToFixedQuestion,
+  addQuestion,
+  addAnswerToUniqQn,
+  addAnswerToFixedQn,
   addUserToFixedQuestionHighlight,
   addUserToUniqQuestionHighlight,
   removeUserFromFixedQuestionHighlight,
@@ -47,18 +47,19 @@ export default () => {
   const { loading, groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
-  const [product, setProduct] = useState({})
+  const [product, setProduct] = useState(null)
   const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalContentType, setModalContentType] = useState('') // "question", "answer", or "report"
   const [questionType, setQuestionType] = useState('') // "fixed" or "uniq"
   const [questionIndex, setQuestionIndex] = useState(0)
-  const [question, setQuestion] = useState({})
-  const [answer, setAnswer] = useState({})
-  const [reportItem, setReportItem] = useState({})
+  const [question, setQuestion] = useState(null)
+  const [answer, setAnswer] = useState(null)
+  const [reportItem, setReportItem] = useState(null)
   const [reports, setReports] = useState([])
 
-  const setProductByRoute = () => {
+  // SET UP PRODUCT WHEN SCREEN OPENED
+  const getProduct = () => {
     switch (route.name) {
       case 'GroupProduct':
         setProduct(groupedProducts.filter((product) => product._id === route.params.id)[0])
@@ -75,110 +76,105 @@ export default () => {
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', setProductByRoute)
+    const unsubscribe = navigation.addListener('focus', getProduct)
 
     return unsubscribe
   }, [navigation])
 
-  useEffect(setProductByRoute, [loading])
+  useEffect(getProduct, [loading])
 
-  // Handle submission from modal
-  const submitQuestion = async () => {
+  // HANDLE SUBMISSION FROM MODAL
+  const submitQuestion = () => {
     setIsModalOpen(false)
-    try {
-      dispatch(addNewQuestion({ token, id: product._id, params: question }))
-      setQuestion({})
-    } catch (e) {
-      console.error(e)
-    }
+
+    const params = { id: product?._id, question }
+    dispatch(addQuestion({ token, params }))
+
+    setQuestion(null)
   }
 
-  const submitAnswer = async () => {
+  const submitAnswer = () => {
     setIsModalOpen(false)
-    try {
-      if (answer.isUniqQuestion) {
-        dispatch(addAnswerToUniqQuestion({ token, id: product._id, params: answer }))
-      } else {
-        dispatch(addAnswerToFixedQuestion({ token, id: product._id, params: answer }))
-      }
-      setAnswer({})
-      setQuestion('')
-    } catch (e) {
-      console.error(e)
+
+    const params = { id: product?._id, questionIndex, answer }
+    if (questionType === 'fixed') {
+      dispatch(addAnswerToFixedQn({ token, params }))
+    } else {
+      dispatch(addAnswerToUniqQn({ token, params }))
     }
+
+    setAnswer(null)
   }
 
-  const submitReport = async () => {
+  const submitReport = () => {
     setIsModalOpen(false)
     const params = { reportKeys: reports, target: reportItem }
-    try {
-      updateReport(token, params)
-      setReports([])
-    } catch (e) {
-      console.error(e)
-    }
+    updateReport(token, params)
+    setReports([])
   }
 
-  // Handle icon on press actions
-  const addUserToHighlight = async (data) => {
+  // TOGGLE HIGHLIGHT / FAVORITE
+  const addUserToHighlight = (data) => {
     const params = { userId: user._id, questionIndex: data.questionIndex }
-    try {
-      if (data.isUniqQuestion) {
-        dispatch(addUserToUniqQuestionHighlight({ token, id: product._id, params }))
-      } else {
-        dispatch(addUserToFixedQuestionHighlight({ token, id: product._id, params }))
-      }
-    } catch (e) {
-      console.error(e)
+    if (data.isUniqQuestion) {
+      dispatch(addUserToUniqQuestionHighlight({ token, id: product?._id, params }))
+    } else {
+      dispatch(addUserToFixedQuestionHighlight({ token, id: product?._id, params }))
     }
   }
 
-  // Handle icon on press actions
-  const removeUserFromHighlight = async (params) => {
-    try {
-      if (params.isUniqQuestion) {
-        dispatch(
-          removeUserFromUniqQuestionHighlight({
-            token,
-            id: product._id,
-            userId: user._id,
-            questionIndex: params.questionIndex,
-          })
-        )
-      } else {
-        dispatch(
-          removeUserFromFixedQuestionHighlight({
-            token,
-            id: product._id,
-            userId: user._id,
-            questionIndex: params.questionIndex,
-          })
-        )
-      }
-    } catch (e) {
-      console.error(e)
+  const removeUserFromHighlight = (params) => {
+    if (params.isUniqQuestion) {
+      dispatch(
+        removeUserFromUniqQuestionHighlight({
+          token,
+          id: product?._id,
+          userId: user._id,
+          questionIndex: params.questionIndex,
+        })
+      )
+    } else {
+      dispatch(
+        removeUserFromFixedQuestionHighlight({
+          token,
+          id: product?._id,
+          userId: user._id,
+          questionIndex: params.questionIndex,
+        })
+      )
     }
   }
 
-  const addUserToFavArray = async () => {
-    const params = { userId: user._id }
-    try {
-      await dispatch(addUserToFavorite({ token, id: product._id, params }))
-    } catch (e) {
-      console.error(e)
+  const toggleHighlight = (qa, questionIndex) => {
+    const isHighlighted = qa.highlightedBy.includes(user._id)
+    const data = {
+      isUniqQuestion: type === 'uniq',
+      questionIndex,
+    }
+
+    if (isHighlighted) {
+      removeUserFromHighlight(data)
+    } else {
+      addUserToHighlight(data)
     }
   }
 
-  const removeUserFromFavArray = async () => {
-    try {
-      dispatch(removeUserFromFavorite({ token, id: product._id, userId: user._id }))
-    } catch (e) {
-      console.error(e)
+  const toggleFavorite = () => {
+    const isFavored = product?.favoredUserIds.includes(user._id)
+    if (isFavored) {
+      dispatch(removeUserFromFavorite({ token, id: product?._id, userId: user._id }))
+    } else {
+      const params = { userId: user._id }
+      dispatch(addUserToFavorite({ token, id: product?._id, params }))
     }
   }
 
-  // Set up modal forms
-  // setQuestionForm to be created
+  // SET UP MODAL FORM
+  const setQuestionForm = () => {
+    setIsModalOpen(true)
+    setModalContentType('question')
+  }
+
   const setAnswerForm = (index, type, questionDescription) => {
     setIsModalOpen(true)
     setModalContentType('answer')
@@ -188,24 +184,20 @@ export default () => {
     setQuestion(questionDescription)
   }
 
-  const setQuestionForm = () => {
-    setIsModalOpen(true)
-    setModalContentType('question')
-  }
-
   const setReportForm = (questionIndex, answerIndex, type) => {
     setIsModalOpen(true)
     setModalContentType('report')
 
-    setReportItem({ QandAsId: product._id, questionIndex, answerIndex, type })
+    setReportItem({ QandAsId: product?._id, questionIndex, answerIndex, type })
   }
 
   const closeModal = () => {
     setIsModalOpen(false)
-    setQuestion('')
+    setQuestion(null)
+    setAnswer(null)
   }
 
-  // Sub components to be rendered on the screen
+  // SUB COMPONENTS
   const CarouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
 
   const PaginationComponent = (images) => (
@@ -229,7 +221,7 @@ export default () => {
   )
 
   const QaAccordions = (qas, type) =>
-    qas.map((qa, qaIndex) => (
+    qas.map((qa, questionIndex) => (
       <Accordion>
         <Accordion.Item>
           <Accordion.Summary>
@@ -242,21 +234,14 @@ export default () => {
                   {qa.answers.length > 1 ? ' answers' : ' answer'}
                 </Text>
                 <Text
-                  onPress={() => setAnswerForm(qaIndex, type, type === 'uniq' ? qa.question.description : qa.question)}
+                  onPress={() =>
+                    setAnswerForm(questionIndex, type, type === 'uniq' ? qa.question.description : qa.question)
+                  }
                 >
                   Answer
                 </Text>
               </VStack>
-              <Pressable
-                onPress={() => {
-                  const isHighlighted = qa.highlightedBy.includes(user._id)
-                  const data = {
-                    isUniqQuestion: type === 'uniq',
-                    questionIndex: qaIndex,
-                  }
-                  isHighlighted ? removeUserFromHighlight(data) : addUserToHighlight(data)
-                }}
-              >
+              <Pressable onPress={() => toggleHighlight(qa, questionIndex)}>
                 <Box>{`★ ${qa.highlightedBy.length}`}</Box>
               </Pressable>
               <Accordion.Icon />
@@ -271,7 +256,7 @@ export default () => {
               <>
                 <View p={4} flexDirection="row" justifyContent="space-between">
                   <Text>{answer?.description}</Text>
-                  <Pressable onPress={() => setReportForm(qaIndex, answerIndex, type)}>
+                  <Pressable onPress={() => setReportForm(questionIndex, answerIndex, type)}>
                     <Image
                       source={require('../assets/icons/exclamation.jpeg')}
                       alt="exclamation"
@@ -289,7 +274,7 @@ export default () => {
       </Accordion>
     ))
 
-  // set up modal props
+  // SET UP MODAL PROPS
   const modalTitle =
     modalContentType === 'question'
       ? 'Ask a Question'
@@ -307,7 +292,7 @@ export default () => {
           blurOnSubmit
           returnKeyType="done"
           onSubmitEditing={() => Keyboard.dismiss()}
-          value={question}
+          value={question?.question.description}
           onChangeText={(text) =>
             setQuestion({
               question: {
@@ -328,15 +313,11 @@ export default () => {
           blurOnSubmit
           returnKeyType="done"
           onSubmitEditing={() => Keyboard.dismiss()}
-          value={answer}
+          value={answer?.description}
           onChangeText={(text) =>
             setAnswer({
-              answer: {
-                userId: user._id,
-                description: text,
-              },
-              isUniqQuestion: questionType === 'uniq',
-              questionIndex,
+              userId: user._id,
+              description: text,
             })
           }
           textAlignVertical="top"
@@ -374,7 +355,7 @@ export default () => {
             onSnapToItem={(index) => setActiveSlide(index)}
           />
           <Text position="absolute" bottom={0}>
-            {product.images?.length > 0 ? PaginationComponent(product.images) : null}
+            {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
           </Text>
           <View backgroundColor="black" width={windowWidth}>
             <HStack position="absolute" bottom={13} right={13} space={3}>
@@ -387,12 +368,7 @@ export default () => {
                   padding={2}
                 />
               </Pressable>
-              <Pressable
-                onPress={() => {
-                  const isFavored = product.favoredUserIds.includes(user._id)
-                  isFavored ? removeUserFromFavArray() : addUserToFavArray()
-                }}
-              >
+              <Pressable onPress={toggleFavorite}>
                 <Center size={8}>
                   <FavIcon width="24px" />
                 </Center>
@@ -403,8 +379,8 @@ export default () => {
       </View>
 
       <ScrollView variant="wrapper" flex={0.5} pt={4} mb={2}>
-        {product.fixedQandAs && QaAccordions(product.fixedQandAs, 'fixed')}
-        {product.uniqQandAs && QaAccordions(product.uniqQandAs, 'uniq')}
+        {product?.fixedQandAs && QaAccordions(product?.fixedQandAs, 'fixed')}
+        {product?.uniqQandAs && QaAccordions(product?.uniqQandAs, 'uniq')}
 
         {/* add extra space to avoid contents to be hidden by FAB */}
         <View h="60px" />

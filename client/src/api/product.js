@@ -43,36 +43,44 @@ const postProduct = async (token, params) => {
   return data
 }
 
-const addAnswerToFixedQn = async (token, id, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/answer`, params, {
+const postUniqQuestion = async (token, { id, question }) => {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq`, question, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
-const addAnswerToUniqQn = async (token, id, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/answer`, params, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
+const postAnswerToFixedQn = async (token, { id, questionIndex, answer }) => {
+  const { data } = await axios.post(
+    `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/answer`,
+    answer,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  )
   return data
 }
 
-const addUniqQuestion = async (token, id, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question`, params, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
+const postAnswerToUniqQn = async (token, { id, questionIndex, answer }) => {
+  const { data } = await axios.post(
+    `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/answer`,
+    answer,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  )
   return data
 }
 
 const addUserToFixedQnHighlight = async (token, id, params) => {
-  const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/highlight`, params, {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/highlight`, params, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const addUserToUniqQnHighlight = async (token, id, params) => {
-  const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/highlight`, params, {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/highlight`, params, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -99,7 +107,7 @@ const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) =
 }
 
 const addUserToFav = async (token, id, params) => {
-  const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/favor`, params, {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/favor`, params, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -126,9 +134,9 @@ export {
   fetchProductsByFavoredUserId,
   // searchProducts,
   postProduct,
-  addAnswerToFixedQn,
-  addAnswerToUniqQn,
-  addUniqQuestion,
+  postAnswerToFixedQn,
+  postAnswerToUniqQn,
+  postUniqQuestion,
   addUserToFixedQnHighlight,
   addUserToUniqQnHighlight,
   removeUserFromFixedQnHighlight,

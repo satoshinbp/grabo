@@ -5,9 +5,9 @@ import {
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
   postProduct,
-  addUniqQuestion,
-  addAnswerToFixedQn,
-  addAnswerToUniqQn,
+  postUniqQuestion,
+  postAnswerToFixedQn,
+  postAnswerToUniqQn,
   addUserToUniqQnHighlight,
   addUserToFixedQnHighlight,
   removeUserFromFixedQnHighlight,
@@ -18,6 +18,7 @@ import {
 import { postImage } from '../api/image'
 import { clearImage } from './image'
 import * as RootNavigation from '../navigators/RootNavigation'
+import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   try {
@@ -92,33 +93,27 @@ export const createProduct = createAsyncThunk(
   }
 )
 
-export const addAnswerToFixedQuestion = createAsyncThunk(
-  'products/addFixedQuestionAnswer',
-  async ({ token, id, params }) => {
-    try {
-      const data = await addAnswerToFixedQn(token, id, params)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
-  }
-)
-
-export const addAnswerToUniqQuestion = createAsyncThunk(
-  'products/addUniqQuestionAnswer',
-  async ({ token, id, params }) => {
-    try {
-      const data = await addAnswerToUniqQn(token, id, params)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
-  }
-)
-
-export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ token, id, params }) => {
+export const addQuestion = createAsyncThunk('products/addQuestion', async ({ token, params }) => {
   try {
-    const data = await addUniqQuestion(token, id, params)
+    const data = await postUniqQuestion(token, params)
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+export const addAnswerToFixedQn = createAsyncThunk('products/addFixedQuestionAnswer', async ({ token, params }) => {
+  try {
+    const data = await postAnswerToFixedQn(token, params)
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+export const addAnswerToUniqQn = createAsyncThunk('products/addUniqQuestionAnswer', async ({ token, params }) => {
+  try {
+    const data = await postAnswerToUniqQn(token, params)
     return data
   } catch (e) {
     console.error(e)
@@ -238,34 +233,37 @@ const productSlice = createSlice({
     [createProduct.rejected]: (state) => {
       state.loading = false
     },
-    [addAnswerToFixedQuestion.pending]: (state, action) => {
+    [addQuestion.pending]: (state) => {
       state.loading = true
     },
-    [addAnswerToFixedQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload
+    [addQuestion.fulfilled]: (state, action) => {
+      const productIndex = lodash.findIndex(state.groupedProducts, { _id: action.payload._id })
+      state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
-    [addAnswerToFixedQuestion.rejected]: (state, action) => {
+    [addQuestion.rejected]: (state) => {
       state.loading = false
     },
-    [addAnswerToUniqQuestion.pending]: (state, action) => {
+    [addAnswerToFixedQn.pending]: (state) => {
       state.loading = true
     },
-    [addAnswerToUniqQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload
+    [addAnswerToFixedQn.fulfilled]: (state, action) => {
+      const productIndex = lodash.findIndex(state.groupedProducts, { _id: action.payload._id })
+      state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
-    [addAnswerToUniqQuestion.rejected]: (state, action) => {
+    [addAnswerToFixedQn.rejected]: (state) => {
       state.loading = false
     },
-    [addNewQuestion.pending]: (state, action) => {
+    [addAnswerToUniqQn.pending]: (state) => {
       state.loading = true
     },
-    [addNewQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload
+    [addAnswerToUniqQn.fulfilled]: (state, action) => {
+      const productIndex = lodash.findIndex(state.groupedProducts, { _id: action.payload._id })
+      state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
-    [addNewQuestion.rejected]: (state, action) => {
+    [addAnswerToUniqQn.rejected]: (state, action) => {
       state.loading = false
     },
     [addUserToFixedQuestionHighlight.pending]: (state, action) => {
