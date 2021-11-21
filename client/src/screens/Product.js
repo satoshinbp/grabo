@@ -35,6 +35,7 @@ import { updateReport } from '../api/product'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
+import FavIcon from '../assets/icons/Fav'
 
 const windowWidth = Dimensions.get('window').width
 
@@ -229,68 +230,63 @@ export default () => {
 
   const QaAccordions = (qas, type) =>
     qas.map((qa, qaIndex) => (
-      <>
-        <Accordion>
-          <Accordion.Item>
-            <Accordion.Summary>
-              <HStack alignItems="center">
-                <VStack flex={1}>
-                  <Text>{type === 'uniq' ? qa.question.description : qa.question}</Text>
-                  <Text fontSize="xs">
-                    This question has&nbsp;
-                    {qa.answers.length}
-                    {qa.answers.length > 1 ? ' answers' : ' answer'}
-                  </Text>
-                  <Text
-                    onPress={() =>
-                      setAnswerForm(qaIndex, type, type === 'uniq' ? qa.question.description : qa.question)
-                    }
-                  >
-                    Answer
-                  </Text>
-                </VStack>
-                <Pressable
-                  onPress={() => {
-                    const isHighlighted = qa.highlightedBy.includes(user._id)
-                    const data = {
-                      isUniqQuestion: type === 'uniq',
-                      questionIndex: qaIndex,
-                    }
-                    isHighlighted ? removeUserFromHighlight(data) : addUserToHighlight(data)
-                  }}
+      <Accordion>
+        <Accordion.Item>
+          <Accordion.Summary>
+            <HStack alignItems="center">
+              <VStack flex={1}>
+                <Text>{type === 'uniq' ? qa.question.description : qa.question}</Text>
+                <Text fontSize="xs">
+                  This question has&nbsp;
+                  {qa.answers.length}
+                  {qa.answers.length > 1 ? ' answers' : ' answer'}
+                </Text>
+                <Text
+                  onPress={() => setAnswerForm(qaIndex, type, type === 'uniq' ? qa.question.description : qa.question)}
                 >
-                  <Box>{`★ ${qa.highlightedBy.length}`}</Box>
-                </Pressable>
-                <Accordion.Icon />
-              </HStack>
-            </Accordion.Summary>
-            <Accordion.Details
-              m={0}
-              p={0}
-              backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
-            >
-              {qa.answers.map((answer, answerIndex) => (
-                <>
-                  <View p={4} flexDirection="row" justifyContent="space-between">
-                    <Text>{answer?.description}</Text>
-                    <Pressable onPress={() => setReportForm(qaIndex, answerIndex, type)}>
-                      <Image
-                        source={require('../assets/icons/exclamation.jpeg')}
-                        alt="exclamation"
-                        width="18px"
-                        height="18px"
-                        padding={2}
-                      />
-                    </Pressable>
-                  </View>
-                  <Divider w="100%" />
-                </>
-              ))}
-            </Accordion.Details>
-          </Accordion.Item>
-        </Accordion>
-        <Divider w="100%" my={4} />
-      </>
+                  Answer
+                </Text>
+              </VStack>
+              <Pressable
+                onPress={() => {
+                  const isHighlighted = qa.highlightedBy.includes(user._id)
+                  const data = {
+                    isUniqQuestion: type === 'uniq',
+                    questionIndex: qaIndex,
+                  }
+                  isHighlighted ? removeUserFromHighlight(data) : addUserToHighlight(data)
+                }}
+              >
+                <Box>{`★ ${qa.highlightedBy.length}`}</Box>
+              </Pressable>
+              <Accordion.Icon />
+            </HStack>
+          </Accordion.Summary>
+          <Accordion.Details
+            m={0}
+            p={0}
+            backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
+          >
+            {qa.answers.map((answer, answerIndex) => (
+              <>
+                <View p={4} flexDirection="row" justifyContent="space-between">
+                  <Text>{answer?.description}</Text>
+                  <Pressable onPress={() => setReportForm(qaIndex, answerIndex, type)}>
+                    <Image
+                      source={require('../assets/icons/exclamation.jpeg')}
+                      alt="exclamation"
+                      width="18px"
+                      height="18px"
+                      padding={2}
+                    />
+                  </Pressable>
+                </View>
+                <Divider w="100%" />
+              </>
+            ))}
+          </Accordion.Details>
+        </Accordion.Item>
+      </Accordion>
     ))
 
   // set up modal props
@@ -397,18 +393,15 @@ export default () => {
                   isFavored ? removeUserFromFavArray() : addUserToFavArray()
                 }}
               >
-                <Image
-                  source={require('../assets/icons/like.png')}
-                  alt="image"
-                  width="28px"
-                  height="28px"
-                  padding={2}
-                />
+                <Center size={8}>
+                  <FavIcon width="24px" />
+                </Center>
               </Pressable>
             </HStack>
           </View>
         </View>
       </View>
+
       <ScrollView variant="wrapper" flex={0.5} pt={4} mb={2}>
         {product.fixedQandAs && QaAccordions(product.fixedQandAs, 'fixed')}
         {product.uniqQandAs && QaAccordions(product.uniqQandAs, 'uniq')}
@@ -416,9 +409,11 @@ export default () => {
         {/* add extra space to avoid contents to be hidden by FAB */}
         <View h="60px" />
       </ScrollView>
+
       <Button variant="fab" onPress={setQuestionForm}>
         Ask a Question
       </Button>
+
       <SlideModal
         isOpen={isModalOpen}
         onClose={closeModal}
