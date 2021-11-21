@@ -15,7 +15,7 @@ export default () => {
           <Image source={require('../assets/icons/logo-lg.png')} alt="logo" h="48px" w="112px" resizeMode="contain" />
 
           <Center size="8">
-            <Pressable onPress={() => navigation.navigate('NotificationTab', { screen: 'NotificationStacks' })}>
+            <Pressable onPress={() => navigation.navigate('Notification')}>
               <NotificationIcon width="20px" />
             </Pressable>
           </Center>

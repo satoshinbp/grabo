@@ -8,9 +8,10 @@ import ListItemBarColored from '../elements/ListItemBarColored'
 export default () => {
   const { user } = useSelector((state) => state.auth)
   const notifications = user.notifications
+  // console.log(notifications)
   const navigation = useNavigation()
 
-  const onPress = (item) => navigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: item._id } })
+  const onPress = (item) => navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: item.productId } })
 
   return notifications ? (
     <FlatList
