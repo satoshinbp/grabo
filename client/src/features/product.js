@@ -16,6 +16,7 @@ import {
   removeUserFromFav,
 } from '../api/product'
 import { postImage } from '../api/image'
+import { patchUser } from '../api/auth'
 import { clearImage } from './image'
 import * as RootNavigation from '../navigators/RootNavigation'
 import lodash from 'lodash'
@@ -72,12 +73,23 @@ export const createProduct = createAsyncThunk(
   async ({ token, params: productParams }, { getState, dispatch }) => {
     try {
       const { image } = getState()
+      const { auth } = getState()
       const imageParams = new FormData()
       imageParams.append('image', { uri: image.value.uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
       await postImage(token, imageParams)
       const data = await postProduct(token, productParams)
 
       const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
+
+      const notificationParams = {
+        notifications: {
+          read: false,
+          message: `Help ${auth.user.firstName} to find this product`,
+          productId: data._id,
+        },
+      }
+      fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+
       const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
       const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
       notificationTokens.map((token) => sendPushNotification(token))
