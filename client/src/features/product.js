@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { fetchUsersByGroup } from '../api/auth'
 import {
+  fetchProductById,
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
@@ -19,30 +20,24 @@ import * as RootNavigation from '../navigators/RootNavigation'
 import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
-  try {
-    const data = await fetchProductsByGroup(token, code)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const products = await fetchProductsByGroup(token, code)
+  return products
 })
 
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
-  try {
-    const data = await fetchProductsByUserId(token, userId)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const products = await fetchProductsByUserId(token, userId)
+  return products
 })
 
 export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
-  try {
-    const data = await fetchProductsByFavoredUserId(token, userId)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const products = await fetchProductsByFavoredUserId(token, userId)
+  return products
+})
+
+export const navigateGroupProductById = createAsyncThunk('products/setById', async ({ token, id }) => {
+  const product = await fetchProductById(token, id)
+  RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: product._id } })
+  return product
 })
 
 const sendPushNotification = async (expoPushToken) => {
@@ -68,92 +63,64 @@ const sendPushNotification = async (expoPushToken) => {
 export const createProduct = createAsyncThunk(
   'products/create',
   async ({ token, params: productParams }, { getState, dispatch }) => {
-    try {
-      const { image } = getState()
-      const { auth } = getState()
-      const imageParams = new FormData()
-      imageParams.append('image', { uri: image.value.uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-      await postImage(token, imageParams)
-      const data = await postProduct(token, productParams)
+    const { image } = getState()
+    const { auth } = getState()
+    const imageParams = new FormData()
+    imageParams.append('image', { uri: image.value.uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    await postImage(token, imageParams)
+    const product = await postProduct(token, productParams)
 
-      const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
+    const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
 
-      const notificationParams = {
-        notifications: {
-          read: false,
-          message: `Help ${auth.user.firstName} to find this product`,
-          productId: data._id,
-        },
-      }
-      fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
-
-      const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
-      const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
-      notificationTokens.map((token) => sendPushNotification(token))
-
-      dispatch(clearImage())
-
-      RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: data._id } })
-
-      return data
-    } catch (e) {
-      console.error(e)
+    const notificationParams = {
+      notifications: {
+        read: false,
+        message: `Help ${auth.user.firstName} to find this product`,
+        productId: product._id,
+      },
     }
+    fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+
+    const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
+    const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
+    notificationTokens.map((token) => sendPushNotification(token))
+
+    dispatch(clearImage())
+
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
+
+    return product
   }
 )
 
 export const addQuestion = createAsyncThunk('products/addQuestion', async ({ token, params }) => {
-  try {
-    const data = await postQuestionUniq(token, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const product = await postQuestionUniq(token, params)
+  return product
 })
 
 export const addAnswer = createAsyncThunk('products/addAnswer', async ({ token, params }) => {
-  try {
-    const data = await postAnswer(token, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const product = await postAnswer(token, params)
+  return product
 })
 
 export const highlightQuestion = createAsyncThunk('products/highlightQuestion', async ({ token, params }) => {
-  try {
-    const data = await postUserToHighlight(token, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const product = await postUserToHighlight(token, params)
+  return product
 })
 
 export const unhighlightQuestion = createAsyncThunk('products/unhighlightQuestion', async ({ token, params }) => {
-  try {
-    const data = await deleteUserFromHighlight(token, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const product = await deleteUserFromHighlight(token, params)
+  return product
 })
 
 export const saveProduct = createAsyncThunk('products/save', async ({ token, params }) => {
-  try {
-    const data = await postUserToFavorite(token, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const product = await postUserToFavorite(token, params)
+  return product
 })
 
 export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, params }) => {
-  try {
-    const data = await deleteUserFromFavorite(token, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const product = await deleteUserFromFavorite(token, params)
+  return product
 })
 
 const startLoading = (state) => {
@@ -187,6 +154,13 @@ const productSlice = createSlice({
     [setProductsByFavoredUserId.pending]: (state) => startLoading(state),
     [setProductsByFavoredUserId.rejected]: (state) => finishLoading(state),
     [setProductsByFavoredUserId.fulfilled]: (state, action) => setProducts(state, 'savedProducts', action.payload),
+
+    [navigateGroupProductById.pending]: (state) => startLoading(state),
+    [navigateGroupProductById.rejected]: (state) => finishLoading(state),
+    [navigateGroupProductById.fulfilled]: (state, action) => {
+      state.groupedProducts = [action.payload]
+      state.loading = false
+    },
 
     [createProduct.pending]: (state) => startLoading(state),
     [createProduct.rejected]: (state) => finishLoading(state),

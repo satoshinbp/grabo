@@ -1,17 +1,20 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { FlatList, Avatar } from 'native-base'
-
+import { navigateGroupProductById } from '../features/product'
 import ListItemBarColored from '../elements/ListItemBarColored'
 
 export default () => {
-  const { user } = useSelector((state) => state.auth)
-  const notifications = user.notifications
-  // console.log(notifications)
   const navigation = useNavigation()
 
-  const onPress = (item) => navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: item.productId } })
+  const { token, user } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+
+  const notifications = user.notifications
+  // console.log(notifications)
+
+  const onPress = (item) => dispatch(navigateGroupProductById({ token, id: item.productId }))
 
   return notifications ? (
     <FlatList
