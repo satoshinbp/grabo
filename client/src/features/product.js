@@ -279,17 +279,19 @@ const productSlice = createSlice({
       state.loading = true
     },
     [addUserToHighlightFixed.fulfilled]: (state, action) => {
-      state.product = action.payload
+      const productIndex = lodash.findIndex(state.groupedProducts, { _id: action.payload._id })
+      state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
     [addUserToHighlightFixed.rejected]: (state) => {
       state.loading = false
     },
-    [addUserToHighlightUniq.pending]: (state, action) => {
+    [addUserToHighlightUniq.pending]: (state) => {
       state.loading = true
     },
     [addUserToHighlightUniq.fulfilled]: (state, action) => {
-      state.product = action.payload
+      const productIndex = lodash.findIndex(state.groupedProducts, { _id: action.payload._id })
+      state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
     [addUserToHighlightUniq.rejected]: (state) => {
@@ -299,7 +301,8 @@ const productSlice = createSlice({
       state.loading = true
     },
     [removeUserFromHighlightFixed.fulfilled]: (state, action) => {
-      state.product = action.payload
+      const productIndex = lodash.findIndex(state.groupedProducts, { _id: action.payload._id })
+      state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
     [removeUserFromHighlightFixed.rejected]: (state) => {
@@ -309,7 +312,8 @@ const productSlice = createSlice({
       state.loading = true
     },
     [removeUserFromHighlightUniq.fulfilled]: (state, action) => {
-      state.product = action.payload
+      const productIndex = lodash.findIndex(state.groupedProducts, { _id: action.payload._id })
+      state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
     [removeUserFromHighlightUniq.rejected]: (state) => {
