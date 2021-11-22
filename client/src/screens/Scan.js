@@ -10,7 +10,8 @@ import Loading from '../components/Loading'
 export default () => {
   const isFocused = useIsFocused()
 
-  const { loading, error } = useSelector((state) => state.image)
+  const { loading: imageLoading, error } = useSelector((state) => state.image)
+  const { loading: productLoading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
   const cameraRef = useRef(null)
@@ -90,7 +91,7 @@ export default () => {
   )
 
   if (!isFocused) return <View />
-  if (loading) return <Loading />
+  if (imageLoading || productLoading) return <Loading />
   if (!hasPermission) {
     return (
       <View variant="wrapper">

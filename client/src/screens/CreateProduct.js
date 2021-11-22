@@ -75,9 +75,9 @@ export default () => {
       }
 
       dispatch(createProduct({ token, params }))
-
       setHighlitedQuestions([])
       setUniqQuestions([])
+      navigation.navigate('Scan')
     } catch (e) {
       cosole.error(e)
     }
