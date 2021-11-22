@@ -8,12 +8,12 @@ import {
   postQuestionUniq,
   postAnswerFixed,
   postAnswerUniq,
-  addUserToUniqQnHighlight,
-  addUserToFixedQnHighlight,
-  removeUserFromFixedQnHighlight,
-  removeUserFromUniqQnHighlight,
-  addUserToFav,
-  removeUserFromFav,
+  postUserToHighlightFixed,
+  postUserToHighlightUniq,
+  deleteUserFromHighlightFixed,
+  deleteUserFromHighlightUniq,
+  postUserToFavorite,
+  deleteUserFromFavorite,
 } from '../api/product'
 import { postImage } from '../api/image'
 import { clearImage } from './image'
@@ -121,10 +121,10 @@ export const addAnswerToUniqQn = createAsyncThunk('products/addUniqQuestionAnswe
 })
 
 export const addUserToFixedQuestionHighlight = createAsyncThunk(
-  'products/addUserToFixedQnHighlight',
+  'products/postUserToHighlightFixed',
   async ({ token, id, params }) => {
     try {
-      const data = await addUserToFixedQnHighlight(token, id, params)
+      const data = await postUserToHighlightFixed(token, id, params)
       return data
     } catch (e) {
       console.error(e)
@@ -133,10 +133,10 @@ export const addUserToFixedQuestionHighlight = createAsyncThunk(
 )
 
 export const addUserToUniqQuestionHighlight = createAsyncThunk(
-  'products/addUserToUniqQnHighlight',
+  'products/postUserToHighlightUniq',
   async ({ token, id, params }) => {
     try {
-      const data = await addUserToUniqQnHighlight(token, id, params)
+      const data = await postUserToHighlightUniq(token, id, params)
       return data
     } catch (e) {
       console.error(e)
@@ -145,10 +145,10 @@ export const addUserToUniqQuestionHighlight = createAsyncThunk(
 )
 
 export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
-  'products/removeUserFromFixedQnHighlight',
+  'products/deleteUserFromHighlightFixed',
   async ({ token, id, userId, questionIndex }) => {
     try {
-      const data = await removeUserFromFixedQnHighlight(token, id, userId, questionIndex)
+      const data = await deleteUserFromHighlightFixed(token, id, userId, questionIndex)
       return data
     } catch (e) {
       console.error(e)
@@ -157,10 +157,10 @@ export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
 )
 
 export const removeUserFromUniqQuestionHighlight = createAsyncThunk(
-  'products/removeUserFromUniqQnHighlight',
+  'products/deleteUserFromHighlightUniq',
   async ({ token, id, userId, questionIndex }) => {
     try {
-      const data = await removeUserFromUniqQnHighlight(token, id, userId, questionIndex)
+      const data = await deleteUserFromHighlightUniq(token, id, userId, questionIndex)
       return data
     } catch (e) {
       console.error(e)
@@ -168,9 +168,9 @@ export const removeUserFromUniqQuestionHighlight = createAsyncThunk(
   }
 )
 
-export const addUserToFavorite = createAsyncThunk('products/addUserToFavorite', async ({ token, id, params }) => {
+export const addUserToFavorite = createAsyncThunk('products/addUserToFavorite', async ({ token, params }) => {
   try {
-    const data = await addUserToFav(token, id, params)
+    const data = await postUserToFavorite(token, params)
     return data
   } catch (e) {
     console.error(e)
@@ -179,9 +179,9 @@ export const addUserToFavorite = createAsyncThunk('products/addUserToFavorite', 
 
 export const removeUserFromFavorite = createAsyncThunk(
   'products/removeUserFromFavorite',
-  async ({ token, id, userId }) => {
+  async ({ token, productId, userId }) => {
     try {
-      const data = await removeUserFromFav(token, id, userId)
+      const data = await deleteUserFromFavorite(token, productId, userId)
       return data
     } catch (e) {
       console.error(e)
@@ -306,24 +306,24 @@ const productSlice = createSlice({
     [removeUserFromUniqQuestionHighlight.rejected]: (state, action) => {
       state.loading = false
     },
-    [addUserToFavorite.pending]: (state, action) => {
+    [addUserToFavorite.pending]: (state) => {
       state.loading = true
     },
     [addUserToFavorite.fulfilled]: (state, action) => {
-      state.product = action.payload
+      state.savedProducts.push(action.payload)
       state.loading = false
     },
-    [addUserToFavorite.rejected]: (state, action) => {
+    [addUserToFavorite.rejected]: (state) => {
       state.loading = false
     },
-    [removeUserFromFavorite.pending]: (state, action) => {
+    [removeUserFromFavorite.pending]: (state) => {
       state.loading = true
     },
     [removeUserFromFavorite.fulfilled]: (state, action) => {
-      state.product = action.payload
+      state.savedProducts = state.savedProducts.filter((product) => product._id !== action.payload._id)
       state.loading = false
     },
-    [removeUserFromFavorite.rejected]: (state, action) => {
+    [removeUserFromFavorite.rejected]: (state) => {
       state.loading = false
     },
   },

@@ -31,7 +31,7 @@ import {
   addUserToFavorite,
   removeUserFromFavorite,
 } from '../features/product'
-import { updateReportFixed, updateReportUniq } from '../api/product'
+import { updateReportFixedAns, updateReportUniqAns } from '../api/product'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
@@ -144,9 +144,9 @@ export default () => {
 
     try {
       if (reportFormParams.type === 'fixed') {
-        await updateReportFixed(token, params)
+        await updateReportFixedAns(token, params)
       } else {
-        await updateReportUniq(token, params)
+        await updateReportUniqAns(token, params)
       }
     } catch (e) {
       console.error(e)
@@ -205,10 +205,10 @@ export default () => {
   const toggleFavorite = () => {
     const isFavored = product?.favoredUserIds.includes(user._id)
     if (isFavored) {
-      dispatch(removeUserFromFavorite({ token, id: product?._id, userId: user._id }))
+      dispatch(removeUserFromFavorite({ token, productId: product?._id, userId: user._id }))
     } else {
-      const params = { userId: user._id }
-      dispatch(addUserToFavorite({ token, id: product?._id, params }))
+      const params = { productId: product?._id, userId: user._id }
+      dispatch(addUserToFavorite({ token, params }))
     }
   }
 

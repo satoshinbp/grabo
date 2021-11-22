@@ -110,8 +110,22 @@ const createAnswerUniq = (req, res) => {
   })
 }
 
-const createReportFixed = (req, res) => {
-  console.log(req.params, req.body)
+const createReportUniqQn = (req, res) => {
+  Product.findOne({
+    _id: req.params.id,
+  }).then((product) => {
+    const updateReport = product.fixedQandAs[req.params.index].report
+    req.body.forEach((reportKey) => {
+      updateReport[reportKey] += 1
+    })
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => res.send(e))
+  })
+}
+
+const createReportFixedAns = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -126,7 +140,7 @@ const createReportFixed = (req, res) => {
   })
 }
 
-const createReportUniq = (req, res) => {
+const createReportUniqAns = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -236,8 +250,9 @@ module.exports = {
   createQuestionUniq,
   createAnswerFixed,
   createAnswerUniq,
-  createReportFixed,
-  createReportUniq,
+  createReportUniqQn,
+  createReportFixedAns,
+  createReportUniqAns,
   createUserToHighlightFixed,
   createUserToHighlightUniq,
   removeUserFromHighlightFixed,
