@@ -16,10 +16,8 @@ router.put('/:id/questions/uniq/:index/reports', productController.createReportU
 router.put('/:id/questions/fixed/:questionIndex/answers/:answerIndex/reports', productController.createReportFixedAns)
 router.put('/:id/questions/uniq/:questionIndex/answers/:answerIndex/reports', productController.createReportUniqAns)
 
-router.post('/:id/questions/fixed/:index/highlight', productController.createUserToHighlightFixed)
-router.post('/:id/questions/uniq/:index/highlight', productController.createUserToHighlightUniq)
-router.delete('/:id/questions/fixed/:index/highlight/:userId', productController.removeUserFromHighlightFixed)
-router.delete('/:id/questions/uniq/:index/highlight/:userId', productController.removeUserFromHighlightUniq)
+router.post('/:id/questions/:type/:index/highlight', productController.createUserToHighlight)
+router.delete('/:id/questions/:type/:index/highlight/:userId', productController.removeUserFromHighlight)
 
 router.post('/:id/favor', productController.createUserToFavorite)
 router.delete('/:id/favor/:userId', productController.removeUserFromFavorite)

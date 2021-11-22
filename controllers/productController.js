@@ -153,13 +153,13 @@ const createReportUniqAns = (req, res) => {
   })
 }
 
-const createUserToHighlightFixed = (req, res) => {
-  console.log(req.params, req.body)
+const createUserToHighlight = (req, res) => {
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
-    product.markModified('fixedQandAs')
-    product.fixedQandAs[req.params.index].highlightedBy.push(req.body.userId)
+    product[questionType][req.params.index].highlightedBy.push(req.body.userId)
+    product.markModified(questionType)
     product
       .save()
       .then((result) => res.send(result))
@@ -167,44 +167,15 @@ const createUserToHighlightFixed = (req, res) => {
   })
 }
 
-const createUserToHighlightUniq = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product.markModified('uniqQandAs')
-    product.uniqQandAs[req.params.index].highlightedBy.push(req.body.userId)
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => console.error(e))
-  })
-}
+const removeUserFromHighlight = (req, res) => {
+  const { id, index } = req.params
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
 
-const removeUserFromHighlightFixed = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    const newHighlightArray = product.fixedQandAs[req.params.index].highlightedBy.filter((userId) => {
-      return userId.toString() !== req.params.userId
-    })
-    product.markModified('fixedQandAs')
-    product.fixedQandAs[req.params.index].highlightedBy = newHighlightArray
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => console.error(e))
-  })
-}
-
-const removeUserFromHighlightUniq = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    const newHighlightArray = product.uniqQandAs[req.params.index].highlightedBy.filter((userId) => {
-      return userId.toString() !== req.params.userId
-    })
-    product.markModified('uniqQandAs')
-    product.uniqQandAs[req.params.index].highlightedBy = newHighlightArray
+  Product.findOne({ _id: id }).then((product) => {
+    product[questionType][index].highlightedBy = product[questionType][index].highlightedBy.filter(
+      (userId) => userId.toString() !== req.params.userId
+    )
+    product.markModified(questionType)
     product
       .save()
       .then((result) => res.send(result))
@@ -252,10 +223,8 @@ module.exports = {
   createReportUniqQn,
   createReportFixedAns,
   createReportUniqAns,
-  createUserToHighlightFixed,
-  createUserToHighlightUniq,
-  removeUserFromHighlightFixed,
-  removeUserFromHighlightUniq,
+  createUserToHighlight,
+  removeUserFromHighlight,
   createUserToFavorite,
   removeUserFromFavorite,
 }
