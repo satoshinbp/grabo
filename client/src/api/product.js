@@ -64,39 +64,46 @@ const postAnswerUniq = async (token, { id, index, answer }) => {
   return data
 }
 
-const updateReportFixed = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
+const updateReportUniqQn = async (token, { id, index, reportKeys }) => {
+  const res = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/Uniq/${index}/report`, reportKeys, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return res
+}
+
+const updateReportFixedAns = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
   const res = await axios.put(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/answer/${answerIndex}`,
+    `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/answer/${answerIndex}/report`,
     reportKeys,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return res
 }
 
-const updateReportUniq = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
+const updateReportUniqAns = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
   const res = await axios.put(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/answer/${answerIndex}`,
+    `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/answer/${answerIndex}/report`,
     reportKeys,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return res
 }
 
-const addUserToFixedQnHighlight = async (token, id, params) => {
+const postUserToHighlightFixed = async (token, id, params) => {
   const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/highlight`, params, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
-const addUserToUniqQnHighlight = async (token, id, params) => {
+const postUserToHighlightUniq = async (token, id, params) => {
   const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/highlight`, params, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
-const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) => {
+const deleteUserFromHighlightFixed = async (token, id, userId, questionIndex) => {
   const { data } = await axios.delete(
     `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/highlight/${userId}`,
     {
@@ -106,7 +113,7 @@ const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) 
   return data
 }
 
-const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) => {
+const deleteUserFromHighlightUniq = async (token, id, userId, questionIndex) => {
   const { data } = await axios.delete(
     `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/highlight/${userId}`,
     {
@@ -116,15 +123,15 @@ const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) =
   return data
 }
 
-const addUserToFav = async (token, id, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/favor`, params, {
+const postUserToFavorite = async (token, { productId, userId }) => {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${productId}/favor`, userId, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
-const removeUserFromFav = async (token, id, userId) => {
-  const { data } = await axios.delete(`${SERVER_ROOT_URI}/api/products/${id}/favor/${userId}`, {
+const deleteUserFromFavorite = async (token, productId, userId) => {
+  const { data } = await axios.delete(`${SERVER_ROOT_URI}/api/products/${productId}/favor/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -140,12 +147,13 @@ export {
   postAnswerFixed,
   postAnswerUniq,
   postQuestionUniq,
-  updateReportFixed,
-  updateReportUniq,
-  addUserToFixedQnHighlight,
-  addUserToUniqQnHighlight,
-  removeUserFromFixedQnHighlight,
-  removeUserFromUniqQnHighlight,
-  addUserToFav,
-  removeUserFromFav,
+  updateReportUniqQn,
+  updateReportFixedAns,
+  updateReportUniqAns,
+  postUserToHighlightFixed,
+  postUserToHighlightUniq,
+  deleteUserFromHighlightFixed,
+  deleteUserFromHighlightUniq,
+  postUserToFavorite,
+  deleteUserFromFavorite,
 }
