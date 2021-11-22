@@ -39,25 +39,20 @@ const fixedQuestions = [
 ]
 
 const createProduct = (req, res) => {
+  const { userId, group, text: keywords, highlitedQuestions, uniqQuestions } = req.body
+
   const params = {
-    userId: req.body.userId,
-    group: req.body.code,
-    keywords: req.body.text,
-    userId: req.body.userId,
-    images: req.body.url.map((image, index) => ({
-      url: image,
-    })),
-
+    userId,
+    group,
+    keywords,
+    images: req.body.url.map((image) => ({ url: image })),
     fixedQandAs: fixedQuestions.map((question, index) => ({
-      question: question,
-      highlightedBy: req.body.highlitedQuestions.includes(index) ? [req.body.userId] : [],
+      question,
+      highlightedBy: highlitedQuestions.includes(index) ? [userId] : [],
     })),
-
-    uniqQandAs: req.body.uniqQuestions.map((uniqQuestion) => ({
-      question: {
-        description: uniqQuestion,
-      },
-      highlightedBy: uniqQuestion ? [req.body.userId] : [],
+    uniqQandAs: uniqQuestions.map((uniqQuestion) => ({
+      question: { description: uniqQuestion },
+      highlightedBy: uniqQuestion ? [userId] : [],
     })),
   }
 
@@ -66,13 +61,12 @@ const createProduct = (req, res) => {
     .catch((e) => console.error(e))
 }
 
-const createQuestionUniq = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product.markModified('uniqQandAs')
-    product.uniqQandAs.push(req.body)
+const createUserToFavorite = (req, res) => {
+  const { id } = req.params
+  const { userId } = req.body
 
+  Product.findOne({ _id: id }).then((product) => {
+    product.favoredUserIds.push(userId)
     product
       .save()
       .then((result) => res.send(result))
@@ -80,13 +74,11 @@ const createQuestionUniq = (req, res) => {
   })
 }
 
-const createAnswerFixed = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product.fixedQandAs[req.params.index].answers.push(req.body)
-    product.fixedQandAs[req.params.index].highlightedBy = []
-    product.markModified('fixedQandAs')
+const removeUserFromFavorite = (req, res) => {
+  const { id, userId } = req.params
+
+  Product.findOne({ _id: id }).then((product) => {
+    product.favoredUserIds = product.favoredUserIds.filter((favoredUserId) => favoredUserId.toString() !== userId)
     product
       .save()
       .then((result) => res.send(result))
@@ -94,13 +86,13 @@ const createAnswerFixed = (req, res) => {
   })
 }
 
-const createAnswerUniq = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product.uniqQandAs[req.params.index].answers.push(req.body)
-    product.uniqQandAs[req.params.index].highlightedBy = []
-    product.markModified('uniqQandAs')
+const createQuestion = (req, res) => {
+  const { id } = req.params
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+
+  Product.findOne({ _id: id }).then((product) => {
+    product[questionType].push(req.body)
+    product.markModified(questionType)
     product
       .save()
       .then((result) => res.send(result))
@@ -108,11 +100,27 @@ const createAnswerUniq = (req, res) => {
   })
 }
 
-const createReportUniqQn = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    const updateReport = product.fixedQandAs[req.params.index].report
+const createAnswer = (req, res) => {
+  const { id, index } = req.params
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+
+  Product.findOne({ _id: id }).then((product) => {
+    product[questionType][index].answers.push(req.body)
+    product[questionType][index].highlightedBy = []
+    product.markModified(questionType)
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => console.error(e))
+  })
+}
+
+const createReportToQuestion = (req, res) => {
+  const { id, index } = req.params
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+
+  Product.findOne({ _id: id }).then((product) => {
+    const updateReport = product[questionType][index].report
     req.body.forEach((reportKey) => {
       updateReport[reportKey] += 1
     })
@@ -123,26 +131,14 @@ const createReportUniqQn = (req, res) => {
   })
 }
 
-const createReportFixedAns = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    const updateReport = product.fixedQandAs[req.params.questionIndex].answers[req.params.answerIndex].report
-    req.body.forEach((reportKey) => {
-      updateReport[reportKey] += 1
-    })
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => res.send(e))
-  })
-}
+const createReportToAnswer = (req, res) => {
+  const { id, questionIndex, answerIndex } = req.params
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
 
-const createReportUniqAns = (req, res) => {
   Product.findOne({
-    _id: req.params.id,
+    _id: id,
   }).then((product) => {
-    const updateReport = product.uniqQandAs[req.params.questionIndex].answers[req.params.answerIndex].report
+    const updateReport = product[questionType][questionIndex].answers[answerIndex].report
     req.body.forEach((reportKey) => {
       updateReport[reportKey] += 1
     })
@@ -154,11 +150,12 @@ const createReportUniqAns = (req, res) => {
 }
 
 const createUserToHighlight = (req, res) => {
+  const { id, index } = req.params
   const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product[questionType][req.params.index].highlightedBy.push(req.body.userId)
+  const { userId } = req.body
+
+  Product.findOne({ _id: id }).then((product) => {
+    product[questionType][index].highlightedBy.push(userId)
     product.markModified(questionType)
     product
       .save()
@@ -168,41 +165,14 @@ const createUserToHighlight = (req, res) => {
 }
 
 const removeUserFromHighlight = (req, res) => {
-  const { id, index } = req.params
+  const { id, index, userId } = req.params
   const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
 
   Product.findOne({ _id: id }).then((product) => {
     product[questionType][index].highlightedBy = product[questionType][index].highlightedBy.filter(
-      (userId) => userId.toString() !== req.params.userId
+      (highlightedUserId) => highlightedUserId.toString() !== userId
     )
     product.markModified(questionType)
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => console.error(e))
-  })
-}
-
-const createUserToFavorite = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    product.favoredUserIds.push(req.body.userId)
-    product
-      .save()
-      .then((result) => res.send(result))
-      .catch((e) => console.error(e))
-  })
-}
-
-const removeUserFromFavorite = (req, res) => {
-  Product.findOne({
-    _id: req.params.id,
-  }).then((product) => {
-    const newFavoredArray = product.favoredUserIds.filter((userId) => {
-      return userId.toString() !== req.params.userId
-    })
-    product.favoredUserIds = newFavoredArray
     product
       .save()
       .then((result) => res.send(result))
@@ -217,14 +187,12 @@ module.exports = {
   getProductsByUserId,
   getProductsByFavoredUserId,
   createProduct,
-  createQuestionUniq,
-  createAnswerFixed,
-  createAnswerUniq,
-  createReportUniqQn,
-  createReportFixedAns,
-  createReportUniqAns,
-  createUserToHighlight,
-  removeUserFromHighlight,
   createUserToFavorite,
   removeUserFromFavorite,
+  createQuestion,
+  createAnswer,
+  createReportToQuestion,
+  createReportToAnswer,
+  createUserToHighlight,
+  removeUserFromHighlight,
 }
