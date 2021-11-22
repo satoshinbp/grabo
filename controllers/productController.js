@@ -39,7 +39,7 @@ const fixedQuestions = [
 ]
 
 const createProduct = (req, res) => {
-  const { userId, group, text: keywords, highlitedQuestions, uniqQuestions } = req.body
+  const { userId, code: group, text: keywords, highlitedQuestions, uniqQuestions } = req.body
 
   const params = {
     userId,
