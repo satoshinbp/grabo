@@ -5,9 +5,9 @@ import {
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
   postProduct,
-  postUniqQuestion,
-  postAnswerToFixedQn,
-  postAnswerToUniqQn,
+  postQuestionUniq,
+  postAnswerFixed,
+  postAnswerUniq,
   addUserToUniqQnHighlight,
   addUserToFixedQnHighlight,
   removeUserFromFixedQnHighlight,
@@ -95,7 +95,7 @@ export const createProduct = createAsyncThunk(
 
 export const addQuestion = createAsyncThunk('products/addQuestion', async ({ token, params }) => {
   try {
-    const data = await postUniqQuestion(token, params)
+    const data = await postQuestionUniq(token, params)
     return data
   } catch (e) {
     console.error(e)
@@ -104,7 +104,7 @@ export const addQuestion = createAsyncThunk('products/addQuestion', async ({ tok
 
 export const addAnswerToFixedQn = createAsyncThunk('products/addFixedQuestionAnswer', async ({ token, params }) => {
   try {
-    const data = await postAnswerToFixedQn(token, params)
+    const data = await postAnswerFixed(token, params)
     return data
   } catch (e) {
     console.error(e)
@@ -113,7 +113,7 @@ export const addAnswerToFixedQn = createAsyncThunk('products/addFixedQuestionAns
 
 export const addAnswerToUniqQn = createAsyncThunk('products/addUniqQuestionAnswer', async ({ token, params }) => {
   try {
-    const data = await postAnswerToUniqQn(token, params)
+    const data = await postAnswerUniq(token, params)
     return data
   } catch (e) {
     console.error(e)

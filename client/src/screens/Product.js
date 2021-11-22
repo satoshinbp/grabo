@@ -31,7 +31,7 @@ import {
   addUserToFavorite,
   removeUserFromFavorite,
 } from '../features/product'
-import { updateReport } from '../api/product'
+import { updateReportFixed, updateReportUniq } from '../api/product'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
@@ -51,12 +51,11 @@ export default () => {
   const [activeSlide, setActiveSlide] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalContentType, setModalContentType] = useState('') // "question", "answer", or "report"
-  const [questionType, setQuestionType] = useState('') // "fixed" or "uniq"
-  const [questionIndex, setQuestionIndex] = useState(0)
   const [question, setQuestion] = useState(null)
+  const [answerFormParams, setAnswerFormParams] = useState(null)
   const [answer, setAnswer] = useState(null)
-  const [reportItem, setReportItem] = useState(null)
-  const [reports, setReports] = useState([])
+  const [reportFormParams, setReportFormParams] = useState(null)
+  const [reportKeys, setReportKeys] = useState([])
 
   // SET UP PRODUCT WHEN SCREEN OPENED
   const getProduct = () => {
@@ -83,6 +82,32 @@ export default () => {
 
   useEffect(getProduct, [loading])
 
+  // SET UP MODAL FORM
+  const setQuestionForm = () => {
+    setIsModalOpen(true)
+    setModalContentType('question')
+  }
+
+  const setAnswerForm = (index, type, description) => {
+    setIsModalOpen(true)
+    setModalContentType('answer')
+
+    setAnswerFormParams({ index, type, description })
+  }
+
+  const setReportForm = (questionIndex, type, answerIndex) => {
+    setIsModalOpen(true)
+    setModalContentType('report')
+
+    setReportFormParams({ questionIndex, type, answerIndex })
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setQuestion(null)
+    setAnswer(null)
+  }
+
   // HANDLE SUBMISSION FROM MODAL
   const submitQuestion = () => {
     setIsModalOpen(false)
@@ -96,21 +121,39 @@ export default () => {
   const submitAnswer = () => {
     setIsModalOpen(false)
 
-    const params = { id: product?._id, questionIndex, answer }
-    if (questionType === 'fixed') {
+    const params = { id: product?._id, index: answerFormParams.index, answer }
+    if (answerFormParams.type === 'fixed') {
       dispatch(addAnswerToFixedQn({ token, params }))
     } else {
       dispatch(addAnswerToUniqQn({ token, params }))
     }
 
     setAnswer(null)
+    setAnswerFormParams(null)
   }
 
-  const submitReport = () => {
+  const submitReport = async () => {
     setIsModalOpen(false)
-    const params = { reportKeys: reports, target: reportItem }
-    updateReport(token, params)
-    setReports([])
+
+    const params = {
+      id: product?._id,
+      questionIndex: reportFormParams.questionIndex,
+      answerIndex: reportFormParams.answerIndex,
+      reportKeys,
+    }
+
+    try {
+      if (reportFormParams.type === 'fixed') {
+        await updateReportFixed(token, params)
+      } else {
+        await updateReportUniq(token, params)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+
+    setReportKeys([])
+    setReportFormParams(null)
   }
 
   // TOGGLE HIGHLIGHT / FAVORITE
@@ -169,34 +212,6 @@ export default () => {
     }
   }
 
-  // SET UP MODAL FORM
-  const setQuestionForm = () => {
-    setIsModalOpen(true)
-    setModalContentType('question')
-  }
-
-  const setAnswerForm = (index, type, questionDescription) => {
-    setIsModalOpen(true)
-    setModalContentType('answer')
-
-    setQuestionIndex(index)
-    setQuestionType(type)
-    setQuestion(questionDescription)
-  }
-
-  const setReportForm = (questionIndex, answerIndex, type) => {
-    setIsModalOpen(true)
-    setModalContentType('report')
-
-    setReportItem({ QandAsId: product?._id, questionIndex, answerIndex, type })
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
-    setQuestion(null)
-    setAnswer(null)
-  }
-
   // SUB COMPONENTS
   const CarouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
 
@@ -220,8 +235,8 @@ export default () => {
     </View>
   )
 
-  const QaAccordions = (qas, type) =>
-    qas.map((qa, questionIndex) => (
+  const QuestionAccordions = (qas, type) =>
+    qas.map((qa, index) => (
       <Accordion>
         <Accordion.Item>
           <Accordion.Summary>
@@ -234,14 +249,12 @@ export default () => {
                   {qa.answers.length > 1 ? ' answers' : ' answer'}
                 </Text>
                 <Text
-                  onPress={() =>
-                    setAnswerForm(questionIndex, type, type === 'uniq' ? qa.question.description : qa.question)
-                  }
+                  onPress={() => setAnswerForm(index, type, type === 'uniq' ? qa.question.description : qa.question)}
                 >
                   Answer
                 </Text>
               </VStack>
-              <Pressable onPress={() => toggleHighlight(qa, questionIndex)}>
+              <Pressable onPress={() => toggleHighlight(qa, index)}>
                 <Box>{`★ ${qa.highlightedBy.length}`}</Box>
               </Pressable>
               <Accordion.Icon />
@@ -256,7 +269,7 @@ export default () => {
               <>
                 <View p={4} flexDirection="row" justifyContent="space-between">
                   <Text>{answer?.description}</Text>
-                  <Pressable onPress={() => setReportForm(questionIndex, answerIndex, type)}>
+                  <Pressable onPress={() => setReportForm(index, type, answerIndex)}>
                     <Image
                       source={require('../assets/icons/exclamation.jpeg')}
                       alt="exclamation"
@@ -307,7 +320,7 @@ export default () => {
       </FormControl>
     ) : modalContentType === 'answer' ? (
       <FormControl>
-        <FormControl.Label>{question}</FormControl.Label>
+        <FormControl.Label>{answerFormParams.question}</FormControl.Label>
         <TextArea
           placeholder="Write your answer here"
           blurOnSubmit
@@ -324,7 +337,7 @@ export default () => {
         />
       </FormControl>
     ) : modalContentType === 'report' ? (
-      <Checkbox.Group colorScheme="green" accessibilityLabel="Report" onChange={(values) => setReports(values)}>
+      <Checkbox.Group colorScheme="green" accessibilityLabel="Report" onChange={(values) => setReportKeys(values)}>
         {reportOptions.map((report) => (
           <Checkbox value={report.value} my={0.5}>
             {report.message}
@@ -379,8 +392,8 @@ export default () => {
       </View>
 
       <ScrollView variant="wrapper" flex={0.5} pt={4} mb={2}>
-        {product?.fixedQandAs && QaAccordions(product?.fixedQandAs, 'fixed')}
-        {product?.uniqQandAs && QaAccordions(product?.uniqQandAs, 'uniq')}
+        {product?.fixedQandAs && QuestionAccordions(product?.fixedQandAs, 'fixed')}
+        {product?.uniqQandAs && QuestionAccordions(product?.uniqQandAs, 'uniq')}
 
         {/* add extra space to avoid contents to be hidden by FAB */}
         <View h="60px" />

@@ -43,33 +43,43 @@ const postProduct = async (token, params) => {
   return data
 }
 
-const postUniqQuestion = async (token, { id, question }) => {
+const postQuestionUniq = async (token, { id, question }) => {
   const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq`, question, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
-const postAnswerToFixedQn = async (token, { id, questionIndex, answer }) => {
-  const { data } = await axios.post(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/answer`,
-    answer,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  )
+const postAnswerFixed = async (token, { id, index, answer }) => {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${index}/answer`, answer, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
   return data
 }
 
-const postAnswerToUniqQn = async (token, { id, questionIndex, answer }) => {
-  const { data } = await axios.post(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/answer`,
-    answer,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  )
+const postAnswerUniq = async (token, { id, index, answer }) => {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${index}/answer`, answer, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
   return data
+}
+
+const updateReportFixed = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
+  const res = await axios.put(
+    `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/answer/${answerIndex}`,
+    reportKeys,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res
+}
+
+const updateReportUniq = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
+  const res = await axios.put(
+    `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/answer/${answerIndex}`,
+    reportKeys,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res
 }
 
 const addUserToFixedQnHighlight = async (token, id, params) => {
@@ -120,13 +130,6 @@ const removeUserFromFav = async (token, id, userId) => {
   return data
 }
 
-const updateReport = async (token, params) => {
-  const res = await axios.put(`${SERVER_ROOT_URI}/api/products/report`, params, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return res
-}
-
 export {
   fetchProductById,
   fetchProductsByGroup,
@@ -134,14 +137,15 @@ export {
   fetchProductsByFavoredUserId,
   // searchProducts,
   postProduct,
-  postAnswerToFixedQn,
-  postAnswerToUniqQn,
-  postUniqQuestion,
+  postAnswerFixed,
+  postAnswerUniq,
+  postQuestionUniq,
+  updateReportFixed,
+  updateReportUniq,
   addUserToFixedQnHighlight,
   addUserToUniqQnHighlight,
   removeUserFromFixedQnHighlight,
   removeUserFromUniqQnHighlight,
   addUserToFav,
   removeUserFromFav,
-  updateReport,
 }

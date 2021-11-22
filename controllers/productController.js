@@ -53,7 +53,7 @@ const createProduct = (req, res) => {
       highlightedBy: req.body.highlitedQuestions.includes(index) ? [req.body.userId] : [],
     })),
 
-    uniqQandAs: req.body.uniqQuestions.map((uniqQuestion, index) => ({
+    uniqQandAs: req.body.uniqQuestions.map((uniqQuestion) => ({
       question: {
         description: uniqQuestion,
       },
@@ -66,7 +66,7 @@ const createProduct = (req, res) => {
     .catch((e) => console.error(e))
 }
 
-const createUniqQuestion = (req, res) => {
+const createQuestionUniq = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -80,7 +80,7 @@ const createUniqQuestion = (req, res) => {
   })
 }
 
-const createAnswerToFixedQuestion = (req, res) => {
+const createAnswerFixed = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -94,7 +94,7 @@ const createAnswerToFixedQuestion = (req, res) => {
   })
 }
 
-const createAnswerToUniqQuestion = (req, res) => {
+const createAnswerUniq = (req, res) => {
   console.log(req.params.id)
   console.log(req.params.index)
   Product.findOne({
@@ -110,7 +110,38 @@ const createAnswerToUniqQuestion = (req, res) => {
   })
 }
 
-const createUserToFixedQuestionHighlight = (req, res) => {
+const createReportFixed = (req, res) => {
+  console.log(req.params, req.body)
+  Product.findOne({
+    _id: req.params.id,
+  }).then((product) => {
+    const updateReport = product.fixedQandAs[req.params.questionIndex].answers[req.params.answerIndex].report
+    req.body.forEach((reportKey) => {
+      updateReport[reportKey] += 1
+    })
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => res.send(e))
+  })
+}
+
+const createReportUniq = (req, res) => {
+  Product.findOne({
+    _id: req.params.id,
+  }).then((product) => {
+    const updateReport = product.uniqQandAs[req.params.questionIndex].answers[req.params.answerIndex].report
+    req.body.forEach((reportKey) => {
+      updateReport[reportKey] += 1
+    })
+    product
+      .save()
+      .then((result) => res.send(result))
+      .catch((e) => res.send(e))
+  })
+}
+
+const createUserToHighlightFixed = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -123,7 +154,7 @@ const createUserToFixedQuestionHighlight = (req, res) => {
   })
 }
 
-const createUserToUniqQuestionHighlight = (req, res) => {
+const createUserToHighlightUniq = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -136,7 +167,7 @@ const createUserToUniqQuestionHighlight = (req, res) => {
   })
 }
 
-const removeUserFromFixedQuestionHighlight = (req, res) => {
+const removeUserFromHighlightFixed = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -152,7 +183,7 @@ const removeUserFromFixedQuestionHighlight = (req, res) => {
   })
 }
 
-const removeUserFromUniqQuestionHighlight = (req, res) => {
+const removeUserFromHighlightUniq = (req, res) => {
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -195,25 +226,6 @@ const removeUserFromFavorite = (req, res) => {
   })
 }
 
-const updateReport = async (req, res) => {
-  let targetProduct = await Product.findOne({
-    _id: req.body.target.QandAsId,
-  })
-
-  let targetreport = await targetProduct[req.body.target.type === 'uniq' ? 'uniqQandAs' : 'fixedQandAs'][
-    req.body.target.questionIndex
-  ].answers[req.body.target.answerIndex].report
-
-  req.body.reportKeys.forEach((reportKey) => {
-    targetreport[reportKey] += 1
-  })
-
-  await targetProduct
-    .save()
-    .then((result) => res.send(result))
-    .catch((e) => res.send(e))
-}
-
 module.exports = {
   getProducts,
   getProductById,
@@ -221,14 +233,15 @@ module.exports = {
   getProductsByUserId,
   getProductsByFavoredUserId,
   createProduct,
-  createAnswerToFixedQuestion,
-  createAnswerToUniqQuestion,
-  createUniqQuestion,
-  createUserToFixedQuestionHighlight,
-  createUserToUniqQuestionHighlight,
-  removeUserFromFixedQuestionHighlight,
-  removeUserFromUniqQuestionHighlight,
+  createQuestionUniq,
+  createAnswerFixed,
+  createAnswerUniq,
+  createReportFixed,
+  createReportUniq,
+  createUserToHighlightFixed,
+  createUserToHighlightUniq,
+  removeUserFromHighlightFixed,
+  removeUserFromHighlightUniq,
   createUserToFavorite,
   removeUserFromFavorite,
-  updateReport,
 }
