@@ -95,8 +95,6 @@ const createAnswerFixed = (req, res) => {
 }
 
 const createAnswerUniq = (req, res) => {
-  console.log(req.params.id)
-  console.log(req.params.index)
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
@@ -156,11 +154,12 @@ const createReportUniqAns = (req, res) => {
 }
 
 const createUserToHighlightFixed = (req, res) => {
+  console.log(req.params, req.body)
   Product.findOne({
     _id: req.params.id,
   }).then((product) => {
     product.markModified('fixedQandAs')
-    product.fixedQandAs[req.body.questionIndex].highlightedBy.push(req.body.userId)
+    product.fixedQandAs[req.params.index].highlightedBy.push(req.body.userId)
     product
       .save()
       .then((result) => res.send(result))
@@ -173,7 +172,7 @@ const createUserToHighlightUniq = (req, res) => {
     _id: req.params.id,
   }).then((product) => {
     product.markModified('uniqQandAs')
-    product.uniqQandAs[req.body.questionIndex].highlightedBy.push(req.body.userId)
+    product.uniqQandAs[req.params.index].highlightedBy.push(req.body.userId)
     product
       .save()
       .then((result) => res.send(result))

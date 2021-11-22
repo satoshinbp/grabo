@@ -120,11 +120,11 @@ export const addAnswerToUniqQn = createAsyncThunk('products/addUniqQuestionAnswe
   }
 })
 
-export const addUserToFixedQuestionHighlight = createAsyncThunk(
+export const addUserToHighlightFixed = createAsyncThunk(
   'products/postUserToHighlightFixed',
-  async ({ token, id, params }) => {
+  async ({ token, params }) => {
     try {
-      const data = await postUserToHighlightFixed(token, id, params)
+      const data = await postUserToHighlightFixed(token, params)
       return data
     } catch (e) {
       console.error(e)
@@ -132,11 +132,11 @@ export const addUserToFixedQuestionHighlight = createAsyncThunk(
   }
 )
 
-export const addUserToUniqQuestionHighlight = createAsyncThunk(
+export const addUserToHighlightUniq = createAsyncThunk(
   'products/postUserToHighlightUniq',
-  async ({ token, id, params }) => {
+  async ({ token, params }) => {
     try {
-      const data = await postUserToHighlightUniq(token, id, params)
+      const data = await postUserToHighlightUniq(token, params)
       return data
     } catch (e) {
       console.error(e)
@@ -144,11 +144,11 @@ export const addUserToUniqQuestionHighlight = createAsyncThunk(
   }
 )
 
-export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
+export const removeUserFromHighlightFixed = createAsyncThunk(
   'products/deleteUserFromHighlightFixed',
-  async ({ token, id, userId, questionIndex }) => {
+  async ({ token, params }) => {
     try {
-      const data = await deleteUserFromHighlightFixed(token, id, userId, questionIndex)
+      const data = await deleteUserFromHighlightFixed(token, params)
       return data
     } catch (e) {
       console.error(e)
@@ -156,11 +156,11 @@ export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
   }
 )
 
-export const removeUserFromUniqQuestionHighlight = createAsyncThunk(
+export const removeUserFromHighlightUniq = createAsyncThunk(
   'products/deleteUserFromHighlightUniq',
-  async ({ token, id, userId, questionIndex }) => {
+  async ({ token, params }) => {
     try {
-      const data = await deleteUserFromHighlightUniq(token, id, userId, questionIndex)
+      const data = await deleteUserFromHighlightUniq(token, params)
       return data
     } catch (e) {
       console.error(e)
@@ -177,17 +177,14 @@ export const addUserToFavorite = createAsyncThunk('products/addUserToFavorite', 
   }
 })
 
-export const removeUserFromFavorite = createAsyncThunk(
-  'products/removeUserFromFavorite',
-  async ({ token, productId, userId }) => {
-    try {
-      const data = await deleteUserFromFavorite(token, productId, userId)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
+export const removeUserFromFavorite = createAsyncThunk('products/removeUserFromFavorite', async ({ token, params }) => {
+  try {
+    const data = await deleteUserFromFavorite(token, params)
+    return data
+  } catch (e) {
+    console.error(e)
   }
-)
+})
 
 const productSlice = createSlice({
   name: 'product',
@@ -263,47 +260,47 @@ const productSlice = createSlice({
       state.groupedProducts[productIndex] = action.payload
       state.loading = false
     },
-    [addAnswerToUniqQn.rejected]: (state, action) => {
+    [addAnswerToUniqQn.rejected]: (state) => {
       state.loading = false
     },
-    [addUserToFixedQuestionHighlight.pending]: (state, action) => {
+    [addUserToHighlightFixed.pending]: (state) => {
       state.loading = true
     },
-    [addUserToFixedQuestionHighlight.fulfilled]: (state, action) => {
+    [addUserToHighlightFixed.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [addUserToFixedQuestionHighlight.rejected]: (state, action) => {
+    [addUserToHighlightFixed.rejected]: (state) => {
       state.loading = false
     },
-    [addUserToUniqQuestionHighlight.pending]: (state, action) => {
+    [addUserToHighlightUniq.pending]: (state, action) => {
       state.loading = true
     },
-    [addUserToUniqQuestionHighlight.fulfilled]: (state, action) => {
+    [addUserToHighlightUniq.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [addUserToUniqQuestionHighlight.rejected]: (state, action) => {
+    [addUserToHighlightUniq.rejected]: (state) => {
       state.loading = false
     },
-    [removeUserFromFixedQuestionHighlight.pending]: (state, action) => {
+    [removeUserFromHighlightFixed.pending]: (state) => {
       state.loading = true
     },
-    [removeUserFromFixedQuestionHighlight.fulfilled]: (state, action) => {
+    [removeUserFromHighlightFixed.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [removeUserFromFixedQuestionHighlight.rejected]: (state, action) => {
+    [removeUserFromHighlightFixed.rejected]: (state) => {
       state.loading = false
     },
-    [removeUserFromUniqQuestionHighlight.pending]: (state, action) => {
+    [removeUserFromHighlightUniq.pending]: (state) => {
       state.loading = true
     },
-    [removeUserFromUniqQuestionHighlight.fulfilled]: (state, action) => {
+    [removeUserFromHighlightUniq.fulfilled]: (state, action) => {
       state.product = action.payload
       state.loading = false
     },
-    [removeUserFromUniqQuestionHighlight.rejected]: (state, action) => {
+    [removeUserFromHighlightUniq.rejected]: (state) => {
       state.loading = false
     },
     [addUserToFavorite.pending]: (state) => {

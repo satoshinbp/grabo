@@ -43,69 +43,17 @@ const postProduct = async (token, params) => {
   return data
 }
 
-const postQuestionUniq = async (token, { id, question }) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq`, question, {
+const postQuestionUniq = async (token, { productId, question }) => {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq`, question, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
-const postAnswerFixed = async (token, { id, index, answer }) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${index}/answer`, answer, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
-}
-
-const postAnswerUniq = async (token, { id, index, answer }) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${index}/answer`, answer, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
-}
-
-const updateReportUniqQn = async (token, { id, index, reportKeys }) => {
-  const res = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/Uniq/${index}/report`, reportKeys, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return res
-}
-
-const updateReportFixedAns = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
-  const res = await axios.put(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/answer/${answerIndex}/report`,
-    reportKeys,
-    { headers: { Authorization: `Bearer ${token}` } }
-  )
-  return res
-}
-
-const updateReportUniqAns = async (token, { id, questionIndex, answerIndex, reportKeys }) => {
-  const res = await axios.put(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/answer/${answerIndex}/report`,
-    reportKeys,
-    { headers: { Authorization: `Bearer ${token}` } }
-  )
-  return res
-}
-
-const postUserToHighlightFixed = async (token, id, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/highlight`, params, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
-}
-
-const postUserToHighlightUniq = async (token, id, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/highlight`, params, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
-}
-
-const deleteUserFromHighlightFixed = async (token, id, userId, questionIndex) => {
-  const { data } = await axios.delete(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/highlight/${userId}`,
+const postAnswerFixed = async (token, { productId, index, answer }) => {
+  const { data } = await axios.post(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/fixed/${index}/answers`,
+    answer,
     {
       headers: { Authorization: `Bearer ${token}` },
     }
@@ -113,9 +61,71 @@ const deleteUserFromHighlightFixed = async (token, id, userId, questionIndex) =>
   return data
 }
 
-const deleteUserFromHighlightUniq = async (token, id, userId, questionIndex) => {
+const postAnswerUniq = async (token, { productId, index, answer }) => {
+  const { data } = await axios.post(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq/${index}/answers`,
+    answer,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return data
+}
+
+const updateReportUniqQn = async (token, { productId, index, reportKeys }) => {
+  const res = await axios.put(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq/${index}/reports`,
+    reportKeys,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res
+}
+
+const updateReportFixedAns = async (token, { productId, questionIndex, answerIndex, reportKeys }) => {
+  const res = await axios.put(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/fixed/${questionIndex}/answers/${answerIndex}/reports`,
+    reportKeys,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res
+}
+
+const updateReportUniqAns = async (token, { productId, questionIndex, answerIndex, reportKeys }) => {
+  const res = await axios.put(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq/${questionIndex}/answers/${answerIndex}/reports`,
+    reportKeys,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res
+}
+
+const postUserToHighlightFixed = async (token, { productId, userId, questionIndex }) => {
+  const { data } = await axios.post(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/fixed/${questionIndex}/highlight`,
+    { userId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return data
+}
+
+const postUserToHighlightUniq = async (token, { productId, userId, questionIndex }) => {
+  const { data } = await axios.post(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq/${questionIndex}/highlight`,
+    { userId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return data
+}
+
+const deleteUserFromHighlightFixed = async (token, { productId, userId, questionIndex }) => {
   const { data } = await axios.delete(
-    `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/highlight/${userId}`,
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/fixed/${questionIndex}/highlight/${userId}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return data
+}
+
+const deleteUserFromHighlightUniq = async (token, { productId, userId, questionIndex }) => {
+  const { data } = await axios.delete(
+    `${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq/${questionIndex}/highlight/${userId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }
@@ -130,7 +140,7 @@ const postUserToFavorite = async (token, { productId, userId }) => {
   return data
 }
 
-const deleteUserFromFavorite = async (token, productId, userId) => {
+const deleteUserFromFavorite = async (token, { productId, userId }) => {
   const { data } = await axios.delete(`${SERVER_ROOT_URI}/api/products/${productId}/favor/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   })

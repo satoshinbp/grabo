@@ -24,10 +24,10 @@ import {
   addQuestion,
   addAnswerToUniqQn,
   addAnswerToFixedQn,
-  addUserToFixedQuestionHighlight,
-  addUserToUniqQuestionHighlight,
-  removeUserFromFixedQuestionHighlight,
-  removeUserFromUniqQuestionHighlight,
+  addUserToHighlightFixed,
+  addUserToHighlightUniq,
+  removeUserFromHighlightFixed,
+  removeUserFromHighlightUniq,
   addUserToFavorite,
   removeUserFromFavorite,
 } from '../features/product'
@@ -112,7 +112,7 @@ export default () => {
   const submitQuestion = () => {
     setIsModalOpen(false)
 
-    const params = { id: product?._id, question }
+    const params = { productId: product?._id, question }
     dispatch(addQuestion({ token, params }))
 
     setQuestion(null)
@@ -121,7 +121,7 @@ export default () => {
   const submitAnswer = () => {
     setIsModalOpen(false)
 
-    const params = { id: product?._id, index: answerFormParams.index, answer }
+    const params = { productId: product?._id, index: answerFormParams.index, answer }
     if (answerFormParams.type === 'fixed') {
       dispatch(addAnswerToFixedQn({ token, params }))
     } else {
@@ -136,12 +136,13 @@ export default () => {
     setIsModalOpen(false)
 
     const params = {
-      id: product?._id,
+      productId: product?._id,
       questionIndex: reportFormParams.questionIndex,
       answerIndex: reportFormParams.answerIndex,
       reportKeys,
     }
 
+    // Report state is not stored in redux, thus calling api here directly
     try {
       if (reportFormParams.type === 'fixed') {
         await updateReportFixedAns(token, params)
@@ -156,58 +157,30 @@ export default () => {
     setReportFormParams(null)
   }
 
-  // TOGGLE HIGHLIGHT / FAVORITE
-  const addUserToHighlight = (data) => {
-    const params = { userId: user._id, questionIndex: data.questionIndex }
-    if (data.isUniqQuestion) {
-      dispatch(addUserToUniqQuestionHighlight({ token, id: product?._id, params }))
-    } else {
-      dispatch(addUserToFixedQuestionHighlight({ token, id: product?._id, params }))
-    }
-  }
-
-  const removeUserFromHighlight = (params) => {
-    if (params.isUniqQuestion) {
-      dispatch(
-        removeUserFromUniqQuestionHighlight({
-          token,
-          id: product?._id,
-          userId: user._id,
-          questionIndex: params.questionIndex,
-        })
-      )
-    } else {
-      dispatch(
-        removeUserFromFixedQuestionHighlight({
-          token,
-          id: product?._id,
-          userId: user._id,
-          questionIndex: params.questionIndex,
-        })
-      )
-    }
-  }
-
-  const toggleHighlight = (qa, questionIndex) => {
-    const isHighlighted = qa.highlightedBy.includes(user._id)
-    const data = {
-      isUniqQuestion: type === 'uniq',
-      questionIndex,
-    }
-
+  // TOGGLE HIGHLIGHT / FAVORITE FROM ICON BUTTON
+  const toggleHighlight = (questionIndex, questionType, isHighlighted) => {
+    const params = { productId: product?._id, userId: user._id, questionIndex }
     if (isHighlighted) {
-      removeUserFromHighlight(data)
+      if (questionType === 'fixed') {
+        dispatch(removeUserFromHighlightFixed({ token, params }))
+      } else {
+        dispatch(removeUserFromHighlightUniq({ token, params }))
+      }
     } else {
-      addUserToHighlight(data)
+      if (questionType === 'fixed') {
+        dispatch(addUserToHighlightFixed({ token, params }))
+      } else {
+        dispatch(addUserToHighlightUniq({ token, params }))
+      }
     }
   }
 
   const toggleFavorite = () => {
     const isFavored = product?.favoredUserIds.includes(user._id)
+    const params = { productId: product?._id, userId: user._id }
     if (isFavored) {
-      dispatch(removeUserFromFavorite({ token, productId: product?._id, userId: user._id }))
+      dispatch(removeUserFromFavorite({ token, params }))
     } else {
-      const params = { productId: product?._id, userId: user._id }
       dispatch(addUserToFavorite({ token, params }))
     }
   }
@@ -254,7 +227,7 @@ export default () => {
                   Answer
                 </Text>
               </VStack>
-              <Pressable onPress={() => toggleHighlight(qa, index)}>
+              <Pressable onPress={() => toggleHighlight(index, type, qa.highlightedBy.includes(user._id))}>
                 <Box>{`★ ${qa.highlightedBy.length}`}</Box>
               </Pressable>
               <Accordion.Icon />
@@ -320,7 +293,7 @@ export default () => {
       </FormControl>
     ) : modalContentType === 'answer' ? (
       <FormControl>
-        <FormControl.Label>{answerFormParams.question}</FormControl.Label>
+        <FormControl.Label>{answerFormParams?.question}</FormControl.Label>
         <TextArea
           placeholder="Write your answer here"
           blurOnSubmit
