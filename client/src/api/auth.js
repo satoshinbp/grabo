@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { SERVER_ROOT_URI } from '@env'
 // SERVER_ROOT_URI might not work depends on dev environment
-// In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
+// In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const signInWithGoogle = async (idToken) => {
   try {

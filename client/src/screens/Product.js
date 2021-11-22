@@ -22,16 +22,13 @@ import {
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
   addQuestion,
-  addAnswerToUniqQn,
-  addAnswerToFixedQn,
-  addUserToHighlightFixed,
-  addUserToHighlightUniq,
-  removeUserFromHighlightFixed,
-  removeUserFromHighlightUniq,
-  addUserToFavorite,
-  removeUserFromFavorite,
+  addAnswer,
+  highlightQuestion,
+  unhighlightQuestion,
+  saveProduct,
+  unsaveProduct,
 } from '../features/product'
-import { updateReportFixedAns, updateReportUniqAns } from '../api/product'
+import { reportQuestion, reportAnswer } from '../api/product'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
@@ -61,13 +58,13 @@ export default () => {
   const getProduct = () => {
     switch (route.name) {
       case 'GroupProduct':
-        setProduct(groupedProducts.filter((product) => product._id === route.params.id)[0])
+        setProduct(groupedProducts.find((product) => product._id === route.params.id))
         break
       case 'MyProduct':
-        setProduct(postedProducts.filter((product) => product._id === route.params.id)[0])
+        setProduct(postedProducts.find((product) => product._id === route.params.id))
         break
       case 'Favorite':
-        setProduct(savedProducts.filter((product) => product._id === route.params.id)[0])
+        setProduct(savedProducts.find((product) => product._id === route.params.id))
         break
       default:
         break
@@ -121,12 +118,8 @@ export default () => {
   const submitAnswer = () => {
     setIsModalOpen(false)
 
-    const params = { productId: product?._id, index: answerFormParams.index, answer }
-    if (answerFormParams.type === 'fixed') {
-      dispatch(addAnswerToFixedQn({ token, params }))
-    } else {
-      dispatch(addAnswerToUniqQn({ token, params }))
-    }
+    const params = { productId: product?._id, index: answerFormParams.index, type: answerFormParams.type, answer }
+    dispatch(addAnswer({ token, params }))
 
     setAnswer(null)
     setAnswerFormParams(null)
@@ -138,17 +131,14 @@ export default () => {
     const params = {
       productId: product?._id,
       questionIndex: reportFormParams.questionIndex,
+      type: reportFormParams.type,
       answerIndex: reportFormParams.answerIndex,
       reportKeys,
     }
 
-    // Report state is not stored in redux, thus calling api here directly
+    // Report state is not stored in redux, thus calling api directly
     try {
-      if (reportFormParams.type === 'fixed') {
-        await updateReportFixedAns(token, params)
-      } else {
-        await updateReportUniqAns(token, params)
-      }
+      await reportAnswer(token, params)
     } catch (e) {
       console.error(e)
     }
@@ -159,19 +149,11 @@ export default () => {
 
   // TOGGLE HIGHLIGHT / FAVORITE FROM ICON BUTTON
   const toggleHighlight = (questionIndex, questionType, isHighlighted) => {
-    const params = { productId: product?._id, userId: user._id, questionIndex }
+    const params = { productId: product?._id, userId: user._id, questionIndex, questionType }
     if (isHighlighted) {
-      if (questionType === 'fixed') {
-        dispatch(removeUserFromHighlightFixed({ token, params }))
-      } else {
-        dispatch(removeUserFromHighlightUniq({ token, params }))
-      }
+      dispatch(unhighlightQuestion({ token, params }))
     } else {
-      if (questionType === 'fixed') {
-        dispatch(addUserToHighlightFixed({ token, params }))
-      } else {
-        dispatch(addUserToHighlightUniq({ token, params }))
-      }
+      dispatch(highlightQuestion({ token, params }))
     }
   }
 
@@ -179,9 +161,9 @@ export default () => {
     const isFavored = product?.favoredUserIds.includes(user._id)
     const params = { productId: product?._id, userId: user._id }
     if (isFavored) {
-      dispatch(removeUserFromFavorite({ token, params }))
+      dispatch(unsaveProduct({ token, params }))
     } else {
-      dispatch(addUserToFavorite({ token, params }))
+      dispatch(saveProduct({ token, params }))
     }
   }
 

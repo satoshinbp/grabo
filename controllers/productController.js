@@ -88,7 +88,7 @@ const removeUserFromFavorite = (req, res) => {
 
 const createQuestion = (req, res) => {
   const { id } = req.params
-  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
 
   Product.findOne({ _id: id }).then((product) => {
     product[questionType].push(req.body)
@@ -102,7 +102,7 @@ const createQuestion = (req, res) => {
 
 const createAnswer = (req, res) => {
   const { id, index } = req.params
-  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
 
   Product.findOne({ _id: id }).then((product) => {
     product[questionType][index].answers.push(req.body)
@@ -117,7 +117,7 @@ const createAnswer = (req, res) => {
 
 const createReportToQuestion = (req, res) => {
   const { id, index } = req.params
-  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
 
   Product.findOne({ _id: id }).then((product) => {
     const updateReport = product[questionType][index].report
@@ -133,7 +133,7 @@ const createReportToQuestion = (req, res) => {
 
 const createReportToAnswer = (req, res) => {
   const { id, questionIndex, answerIndex } = req.params
-  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
 
   Product.findOne({
     _id: id,
@@ -151,7 +151,7 @@ const createReportToAnswer = (req, res) => {
 
 const createUserToHighlight = (req, res) => {
   const { id, index } = req.params
-  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
   const { userId } = req.body
 
   Product.findOne({ _id: id }).then((product) => {
@@ -166,7 +166,7 @@ const createUserToHighlight = (req, res) => {
 
 const removeUserFromHighlight = (req, res) => {
   const { id, index, userId } = req.params
-  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniqQandAs'
+  const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
 
   Product.findOne({ _id: id }).then((product) => {
     product[questionType][index].highlightedBy = product[questionType][index].highlightedBy.filter(
