@@ -325,8 +325,8 @@ export default () => {
           <Text position="absolute" bottom={0}>
             {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
           </Text>
-          <View backgroundColor="black" width={windowWidth}>
-            <HStack position="absolute" bottom={13} right={13} space={3}>
+          <View position="absolute" bottom={0} right={3}>
+            <HStack space={3}>
               <Pressable>
                 <Image
                   source={require('../assets/icons/exclamation.jpeg')}
