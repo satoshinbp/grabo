@@ -1,13 +1,10 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigation } from '@react-navigation/native'
 import { FlatList, Avatar } from 'native-base'
 import { navigateGroupProductById } from '../features/product'
 import ListItemBarColored from '../elements/ListItemBarColored'
 
 export default () => {
-  const navigation = useNavigation()
-
   const { token, user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
