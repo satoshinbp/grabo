@@ -18,7 +18,7 @@ export default ({ isOpen, onClose, title, content, action, actionLabel }) => (
       </Modal.Body>
 
       <Modal.Footer bg="white" justifyContent="center">
-        <Button variant="primary" onPress={action}>
+        <Button onPress={action} w="100%">
           {actionLabel}
         </Button>
       </Modal.Footer>

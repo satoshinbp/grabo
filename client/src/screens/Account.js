@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
 import { updateUser } from '../features/auth'
+import FormContainer from '../elements/FormContainer'
 
 export default () => {
   const navigation = useNavigation()
@@ -55,18 +56,8 @@ export default () => {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <VStack
-        flex={1}
-        justifyContent="space-between"
-        space={3}
-        m={3}
-        px={3}
-        py={6}
-        bg="white"
-        borderRadius="md"
-        shadow={2}
-      >
-        <VStack space={2}>
+      <FormContainer>
+        <VStack variant="container">
           <Avatar
             source={{ uri: user.image }}
             size="2xl"
@@ -107,10 +98,8 @@ export default () => {
           </FormControl>
         </VStack>
 
-        <Button variant="primary" onPress={onSave}>
-          Save
-        </Button>
-      </VStack>
+        <Button onPress={onSave}>Save</Button>
+      </FormContainer>
     </ScrollView>
   )
 }

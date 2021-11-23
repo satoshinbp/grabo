@@ -1,50 +1,42 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/core'
-import { View, Text, Radio, Button, SunIcon, Heading, Box, HStack, Center, ScrollView } from 'native-base'
+import { View, ScrollView, Box, Center, VStack, HStack, Heading, Text, Radio, Button, SunIcon } from 'native-base'
 import { updateCode } from '../features/image'
 import groups from '../utils/groups'
 
 export default () => {
   const navigation = useNavigation()
 
-  const { code } = useSelector((state) => state.image.value)
+  const image = useSelector((state) => state.image.value)
   const dispatch = useDispatch()
 
   const [isTextDetected, setIsTextDetected] = useState(false)
+  const [code, setCode] = useState(image.code)
 
   useEffect(() => {
     groups.map((group) => {
-      if (group.code === code) {
+      if (group.code === image.code) {
         setIsTextDetected(true)
       }
     })
-  }, [code])
+  }, [image.code])
 
   return (
     <ScrollView variant="wrapper">
-      <Heading size="sm" my={2}>
-        {isTextDetected ? (
-          <>
-            <Text fontSize="lg" bold>
-              Text detected!{'\n'}
-            </Text>
-            <Text>Press next button to continue or change language if you think the detected language is wrong.</Text>
-          </>
-        ) : (
-          <>
-            <Text fontSize="lg" bold>
-              Sorry! The language is not detectable!{'\n'}
-            </Text>
-            <Text>Create a new product by selecting a language that we currently support from the list below.</Text>
-          </>
-        )}
-      </Heading>
+      <VStack variant="container">
+        <View>
+          <Heading size="md">{isTextDetected ? 'Text detected!' : 'Sorry! The language is not detectable!'}</Heading>
+          <Text>
+            {isTextDetected
+              ? 'Press next button to continue or change language if you think the detected language is wrong.'
+              : 'Create a new product by selecting a language that we currently support from the list below.'}
+          </Text>
+        </View>
 
-      <View>
-        <Radio.Group name="Group" value={code} onChange={(newCode) => dispatch(updateCode(newCode))} flex={1}>
+        <Radio.Group name="Group" value={code} onChange={(value) => setCode(value)} flex={1}>
           {groups.map((group) => (
-            <Box variant="listItemBarColored" alignSelf="stretch">
+            <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
                   <SunIcon size={8} />
@@ -52,20 +44,22 @@ export default () => {
                 <Text fontSize="md" bold>
                   {group.language}
                 </Text>
-                <Radio value={group.code} marginLeft="auto"></Radio>
+                <Radio value={group.code} marginLeft="auto" accessibilityLabel={group.language} />
               </HStack>
             </Box>
           ))}
         </Radio.Group>
+
         <Button
-          variant="primary"
-          isDisabled={!isTextDetected}
-          onPress={() => navigation.navigate('CreateProduct')}
-          my={2}
+          isDisabled={!code}
+          onPress={() => {
+            dispatch(updateCode(code))
+            navigation.navigate('CreateProduct')
+          }}
         >
           Next
         </Button>
-      </View>
+      </VStack>
     </ScrollView>
   )
 }

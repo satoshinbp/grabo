@@ -18,6 +18,7 @@ import {
   Image,
   Button,
   AddIcon,
+  FormControl,
 } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 import { updateCode, deleteImage, clearImage } from '../features/image'
@@ -83,12 +84,11 @@ export default () => {
     }
   }
 
-  // FormContorl might be useful rather thatn Box, to be considered
   if (loading) return <Loading />
   return (
-    <ScrollView variant="wrapper">
+    <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <VStack variant="container">
+        <VStack flex={1} space={3} m={3} px={3} py={3} bg="white" borderRadius="md" shadow={2}>
           <Heading>Product Information</Heading>
 
           <View>
@@ -123,7 +123,7 @@ export default () => {
               ) : (
                 <Text>At lease one picture is required.</Text>
               )}
-              <Button onPress={openCamera}>{uris.length > 0 ? 'Take another picture' : 'Take a picture'}</Button>
+              <Button onPress={openCamera}>Add Image</Button>
             </VStack>
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
@@ -134,44 +134,43 @@ export default () => {
             /> */}
           </View>
 
-          <View>
-            <Text fontSize="md" bold>
-              Language
-            </Text>
+          <FormControl>
+            <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>Language</FormControl.Label>
             <Select
-              marginLeft="2"
-              selectedValue={code}
-              minWidth="200px"
               placeholder="Choose Language"
-              _selectedItem={{
-                bg: 'teal.600',
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
+              selectedValue={code}
               onValueChange={(nextValue) => dispatch(updateCode(nextValue))}
+              minWidth="200px"
+              mt={1}
+              ml={2}
+              _selectedItem={{
+                bg: 'primary.500',
+                endIcon: <CheckIcon size="5" color="black" />,
+                _text: {
+                  color: 'black',
+                },
+              }}
             >
               {groups.map((group) => (
                 <Select.Item value={group.code} label={group.language} />
               ))}
             </Select>
-          </View>
+          </FormControl>
 
-          <View>
-            <Text fontSize="md" bold>
+          <FormControl>
+            <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>
               Choose which default questions to highlight
-            </Text>
-            <Checkbox.Group marginLeft="2" onChange={setHighlitedQuestions} value={highlitedQuestions}>
+            </FormControl.Label>
+            <Checkbox.Group ml={2} onChange={setHighlitedQuestions} value={highlitedQuestions}>
               {fixedQuestions.map((question, index) => (
                 <Checkbox value={index}>{question}</Checkbox>
               ))}
             </Checkbox.Group>
-          </View>
+          </FormControl>
 
-          <View>
-            <Text fontSize="md" bold>
-              Ask your own question
-            </Text>
-            <VStack marginLeft="2" space={2} alignItems="center">
+          <FormControl>
+            <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>Ask your own question</FormControl.Label>
+            <VStack marginLeft={2} space={2} alignItems="center">
               {uniqQuestions.map((uniqQuestion, index) => (
                 <HStack key={index} alignItems="center" space={2}>
                   <Input
@@ -187,18 +186,20 @@ export default () => {
                   <MaterialIcons name="delete" size={18} color="black" onPress={() => removeQuestion(index)} />
                 </HStack>
               ))}
-              <Center w="36px" h="36px" borderRadius="full" bg="primary.500" my="2">
-                <AddIcon size="4" onPress={addQuestion} />
+              <Center w="36px" h="36px" borderRadius="full" bg="primary.500" my={2}>
+                <AddIcon size={4} onPress={addQuestion} />
               </Center>
             </VStack>
-          </View>
+          </FormControl>
 
-          <Button variant="primary" isDisabled={uris.length === 0} onPress={submitProduct}>
-            Create a Product
-          </Button>
-          <Button variant="primary" bg="white" onPress={cancelProduct}>
-            Cancel
-          </Button>
+          <Button.Group w="100%" direction="column" alignItems="stretch" space={2}>
+            <Button isDisabled={uris.length === 0} onPress={submitProduct}>
+              Submit
+            </Button>
+            <Button variant="outline" onPress={cancelProduct} _text={{ color: 'black' }}>
+              Cancel
+            </Button>
+          </Button.Group>
         </VStack>
       </TouchableWithoutFeedback>
     </ScrollView>
