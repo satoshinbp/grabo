@@ -127,7 +127,7 @@ const startLoading = (state) => {
   state.loading = true
 }
 const finishLoading = (state) => {
-  state.loading = true
+  state.loading = false
 }
 const setProducts = (state, category, products) => {
   state[category] = products
