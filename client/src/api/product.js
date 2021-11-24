@@ -4,14 +4,14 @@ import { SERVER_ROOT_URI } from '@env'
 // In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const fetchProductById = async (token, id) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
+  const { data } = await axios.get(`http://54.202.13.134/api/products/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const fetchProductsByGroup = async (token, code) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${code}`, {
+  const { data } = await axios.get(`http://54.202.13.134/api/products/group/${code}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -19,7 +19,7 @@ const fetchProductsByGroup = async (token, code) => {
 
 const fetchProductsByUserId = async (token, userId) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
+    const { data } = await axios.get(`http://54.202.13.134/api/products/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -29,21 +29,21 @@ const fetchProductsByUserId = async (token, userId) => {
 }
 
 const fetchProductsByFavoredUserId = async (token, userId) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/fav/user/${userId}`, {
+  const { data } = await axios.get(`http://54.202.13.134/api/products/fav/user/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const postProduct = async (token, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products`, params, {
+  const { data } = await axios.post(`http://54.202.13.134/api/products`, params, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const postQuestionUniq = async (token, { productId, question }) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq`, question, {
+  const { data } = await axios.post(`http://54.202.13.134/api/products/${productId}/questions/uniq`, question, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -51,7 +51,7 @@ const postQuestionUniq = async (token, { productId, question }) => {
 
 const postAnswer = async (token, { productId, index, type, answer }) => {
   const { data } = await axios.post(
-    `${SERVER_ROOT_URI}/api/products/${productId}/questions/${type}/${index}/answers`,
+    `http://54.202.13.134/api/products/${productId}/questions/${type}/${index}/answers`,
     answer,
     {
       headers: { Authorization: `Bearer ${token}` },
@@ -62,7 +62,7 @@ const postAnswer = async (token, { productId, index, type, answer }) => {
 
 const reportQuestion = async (token, { productId, index, type, reportKeys }) => {
   const res = await axios.put(
-    `${SERVER_ROOT_URI}/api/products/${productId}/questions/${type}/${index}/reports`,
+    `http://54.202.13.134/api/products/${productId}/questions/${type}/${index}/reports`,
     reportKeys,
     { headers: { Authorization: `Bearer ${token}` } }
   )
@@ -71,7 +71,7 @@ const reportQuestion = async (token, { productId, index, type, reportKeys }) => 
 
 const reportAnswer = async (token, { productId, questionIndex, type, answerIndex, reportKeys }) => {
   const res = await axios.put(
-    `${SERVER_ROOT_URI}/api/products/${productId}/questions/${type}/${questionIndex}/answers/${answerIndex}/reports`,
+    `http://54.202.13.134/api/products/${productId}/questions/${type}/${questionIndex}/answers/${answerIndex}/reports`,
     reportKeys,
     { headers: { Authorization: `Bearer ${token}` } }
   )
@@ -80,7 +80,7 @@ const reportAnswer = async (token, { productId, questionIndex, type, answerIndex
 
 const postUserToHighlight = async (token, { productId, userId, questionIndex, questionType }) => {
   const { data } = await axios.post(
-    `${SERVER_ROOT_URI}/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight`,
+    `http://54.202.13.134/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight`,
     { userId },
     { headers: { Authorization: `Bearer ${token}` } }
   )
@@ -89,21 +89,21 @@ const postUserToHighlight = async (token, { productId, userId, questionIndex, qu
 
 const deleteUserFromHighlight = async (token, { productId, userId, questionIndex, questionType }) => {
   const { data } = await axios.delete(
-    `${SERVER_ROOT_URI}/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight/${userId}`,
+    `http://54.202.13.134/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight/${userId}`,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return data
 }
 
 const postUserToFavorite = async (token, { productId, userId }) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${productId}/favor`, userId, {
+  const { data } = await axios.post(`http://54.202.13.134/api/products/${productId}/favor`, userId, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const deleteUserFromFavorite = async (token, { productId, userId }) => {
-  const { data } = await axios.delete(`${SERVER_ROOT_URI}/api/products/${productId}/favor/${userId}`, {
+  const { data } = await axios.delete(`http://54.202.13.134/api/products/${productId}/favor/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
