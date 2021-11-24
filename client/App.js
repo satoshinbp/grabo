@@ -3,7 +3,7 @@ import { Provider } from 'react-redux'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { NavigationContainer } from '@react-navigation/native'
-import { NativeBaseProvider, extendTheme } from 'native-base'
+import { NativeBaseProvider, extendTheme, Center } from 'native-base'
 import authReducer from './src/features/auth'
 import imageReducer from './src/features/image'
 import productReducer from './src/features/product'
@@ -82,6 +82,20 @@ export default () => {
             overflow: 'hidden',
             width: '72px',
             height: '72px',
+          }),
+          sortProductToggleOn: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: '#FFC814',
+          }),
+          sortProductToggleOff: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: 'transparent',
           }),
         },
       },

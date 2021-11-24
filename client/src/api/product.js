@@ -6,7 +6,7 @@ import groups from '../utils/groups'
 
 const fetchProductById = async (token, id) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -17,7 +17,7 @@ const fetchProductById = async (token, id) => {
 
 const fetchProductsByGroup = async (token, code) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${code}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/group/${code}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -28,7 +28,7 @@ const fetchProductsByGroup = async (token, code) => {
 
 const fetchProductsByUserId = async (token, userId) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -39,7 +39,7 @@ const fetchProductsByUserId = async (token, userId) => {
 
 const fetchProductsByFavoredUserId = async (token, userId) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/fav/user/${userId}`, {
+    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/fav/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -50,7 +50,7 @@ const fetchProductsByFavoredUserId = async (token, userId) => {
 
 const postImage = async (token, params) => {
   try {
-    const res = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
+    const res = await axios.post(`http://192.168.1.65:8000/api/images`, params, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ const postImage = async (token, params) => {
 
 const postProduct = async (token, params) => {
   try {
-    const res = await axios.post(`${SERVER_ROOT_URI}/api/products`, params, {
+    const res = await axios.post(`http://192.168.1.65:8000/api/products`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res
@@ -104,7 +104,7 @@ const getOcrText = async (image) => {
 
 const addAnswerToFixedQn = async (token, id, params) => {
   try {
-    const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/answer`, params, {
+    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question/fixed/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -115,7 +115,7 @@ const addAnswerToFixedQn = async (token, id, params) => {
 
 const addAnswerToUniqQn = async (token, id, params) => {
   try {
-    const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/answer`, params, {
+    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question/uniq/answer`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -126,7 +126,7 @@ const addAnswerToUniqQn = async (token, id, params) => {
 
 const addUniqQuestion = async (token, id, params) => {
   try {
-    const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${id}/question`, params, {
+    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -137,7 +137,7 @@ const addUniqQuestion = async (token, id, params) => {
 
 const addUserToFixedQnHighlight = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/fixed/highlight`, params, {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/fixed/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -148,7 +148,7 @@ const addUserToFixedQnHighlight = async (token, id, params) => {
 
 const addUserToUniqQnHighlight = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/question/uniq/highlight`, params, {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/uniq/highlight`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -160,7 +160,7 @@ const addUserToUniqQnHighlight = async (token, id, params) => {
 const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) => {
   try {
     const { data } = await axios.delete(
-      `${SERVER_ROOT_URI}/api/products/${id}/question/fixed/${questionIndex}/highlight/${userId}`,
+      `http://192.168.1.65:8000/api/products/${id}/question/fixed/${questionIndex}/highlight/${userId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -174,7 +174,7 @@ const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) 
 const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) => {
   try {
     const { data } = await axios.delete(
-      `${SERVER_ROOT_URI}/api/products/${id}/question/uniq/${questionIndex}/highlight/${userId}`,
+      `http://192.168.1.65:8000/api/products/${id}/question/uniq/${questionIndex}/highlight/${userId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -187,7 +187,7 @@ const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) =
 
 const addUserToFav = async (token, id, params) => {
   try {
-    const { data } = await axios.put(`${SERVER_ROOT_URI}/api/products/${id}/favor`, params, {
+    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/favor`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -199,7 +199,7 @@ const addUserToFav = async (token, id, params) => {
 const removeUserFromFav = async (token, id, userId) => {
   console.log(token, id, userId)
   try {
-    const { data } = await axios.delete(`${SERVER_ROOT_URI}/api/products/${id}/favor/${userId}`, {
+    const { data } = await axios.delete(`http://192.168.1.65:8000/api/products/${id}/favor/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -210,7 +210,7 @@ const removeUserFromFav = async (token, id, userId) => {
 
 const updateReport = async (token, params) => {
   try {
-    const res = await axios.put(`${SERVER_ROOT_URI}/api/products/report`, params, {
+    const res = await axios.put(`http://192.168.1.65:8000/api/products/report`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return res

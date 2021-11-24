@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { ImageBackground } from 'react-native'
-import { View, Box, Pressable, FlatList } from 'native-base'
+import { View, Box, Pressable, FlatList, Text } from 'native-base'
 
 export default () => {
   const route = useRoute()
@@ -48,7 +48,8 @@ export default () => {
         <ImageBackground
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
           resizeMode="cover"
-          style={{ width: 144, height: 144, alignSelf: 'center', borderRadius: 32 }}
+          imageStyle={{ borderRadius: 12 }}
+          style={{ width: 144, height: 144, alignSelf: 'center' }}
         >
           <Box variant="productCard" />
         </ImageBackground>
@@ -60,11 +61,14 @@ export default () => {
   const numColumns = 2
 
   return (
-    <FlatList
-      data={gridLayoutFormat(products, numColumns)}
-      renderItem={ProductCard}
-      numColumns={numColumns}
-      keyExtractor={(item) => item._id}
-    />
+    <>
+      <Text>{products.length === 0 && 'No products added'}</Text>
+      <FlatList
+        data={gridLayoutFormat(products, numColumns)}
+        renderItem={ProductCard}
+        numColumns={numColumns}
+        keyExtractor={(item) => item._id}
+      />
+    </>
   )
 }
