@@ -4,10 +4,10 @@
     "slug": "client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/icons/logo-sm.png",
     "splash": {
-      "image": "./src/assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./src/assets/images/splash.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -19,12 +19,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./src/assets/icons/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./src/assets/favicon.png"
+      "favicon": "./src/assets/icons/favicon.png"
     }
   }
 }

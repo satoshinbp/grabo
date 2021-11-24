@@ -1,6 +1,6 @@
 <h1 align="center">Grabo</h1>
 
-<p align="center">
+<!-- <p align="center">
   <a href="" target="_blank">
     <img width="25%" alt="logo" src="">
    </a>
@@ -8,9 +8,9 @@
 
 <p align="center">
   <a href="" target="_blank">Grabo</a>
-</p>
+</p> -->
 
-<br>
+<!-- <br> -->
 
 ## Problem to Tackle
 
