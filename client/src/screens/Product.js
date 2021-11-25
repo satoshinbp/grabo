@@ -338,7 +338,7 @@ export default () => {
               </Pressable>
               <Pressable onPress={toggleFavorite}>
                 <Center size={8}>
-                  <FavIcon width="24px" />
+                  {product.favoredUserIds.includes(user._id) ? <FavIcon width="24px" /> : <FavIcon width="34px" />}
                 </Center>
               </Pressable>
             </HStack>
