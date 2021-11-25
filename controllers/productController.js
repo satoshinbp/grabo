@@ -39,13 +39,13 @@ const fixedQuestions = [
 ]
 
 const createProduct = (req, res) => {
-  const { userId, code: group, text: keywords, highlitedQuestions, uniqQuestions } = req.body
+  const { userId, code: group, text: keywords, urls, highlitedQuestions, uniqQuestions } = req.body
 
   const params = {
     userId,
     group,
     keywords,
-    images: req.body.url.map((image) => ({ url: image })),
+    images: urls.map((url) => ({ url })),
     fixedQandAs: fixedQuestions.map((question, index) => ({
       question,
       highlightedBy: highlitedQuestions.includes(index) ? [userId] : [],
