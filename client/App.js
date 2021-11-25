@@ -7,6 +7,7 @@ import { NativeBaseProvider, extendTheme, Center } from 'native-base'
 import authReducer from './src/features/auth'
 import imageReducer from './src/features/image'
 import productReducer from './src/features/product'
+import sortCategoryReducer from './src/features/ProductSortCategory'
 import AppContainer from './src/components/AppContainer'
 import { navigationRef } from './src/navigators/RootNavigation'
 
@@ -15,6 +16,7 @@ const store = createStore(
     auth: authReducer,
     image: imageReducer,
     product: productReducer,
+    sortCategory: sortCategoryReducer,
   }),
   applyMiddleware(thunk)
 )

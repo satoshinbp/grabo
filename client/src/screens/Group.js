@@ -5,12 +5,14 @@ import { Box, Button, Divider, Flex, HStack, Pressable, Text, View } from 'nativ
 import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
 import { setProductsByGroup } from '../features/product'
+import { switchSortCategory } from '../features/ProductSortCategory'
 
 export default ({ navigation }) => {
   const route = useRoute()
   const { token } = useSelector((state) => state.auth)
   const { loading } = useSelector((state) => state.product)
   const [isProductByDate, setIsProductByDate] = useState(true)
+  const { categoryIsDate } = useSelector((state) => state.sortCategory)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -28,26 +30,28 @@ export default ({ navigation }) => {
           {route.params.language} Group
         </Text>
         <Flex direction="row" alignItems="center" justify="center" width="100%">
-          <Box variant={isProductByDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
+          <Box variant={categoryIsDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
             <Pressable
               py="4"
               onPress={() => {
-                setIsProductByDate(true)
+                dispatch(switchSortCategory(true))
+                console.log(categoryIsDate)
               }}
             >
-              <Text alignItems="center" fontWeight={isProductByDate ? 'bold' : 'normal'}>
+              <Text alignItems="center" fontWeight={categoryIsDate ? 'bold' : 'normal'}>
                 Products by Date
               </Text>
             </Pressable>
           </Box>
-          <Box variant={!isProductByDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
+          <Box variant={!categoryIsDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
             <Pressable
               py="4"
               onPress={() => {
-                setIsProductByDate(false)
+                dispatch(switchSortCategory(false))
+                console.log(categoryIsDate)
               }}
             >
-              <Text fontWeight={isProductByDate ? 'normal' : 'bold'}>Products by Highlights</Text>
+              <Text fontWeight={categoryIsDate ? 'normal' : 'bold'}>Products by Highlights</Text>
             </Pressable>
           </Box>
         </Flex>
