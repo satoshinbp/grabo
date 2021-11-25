@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Center, VStack, HStack, Pressable, Text } from 'native-base'
 
-export default ({ text, subtext, icon, onPress }) => (
+export default ({ text, subtext, icon, onPress, props }) => (
   <Pressable onPress={onPress}>
     <Box variant="listItemBarColored">
       <HStack space={3} alignItems="center">
@@ -9,7 +9,7 @@ export default ({ text, subtext, icon, onPress }) => (
           {icon}
         </Center>
         <VStack flex={1}>
-          <Text fontSize={subtext ? 'sm' : 'md'} bold>
+          <Text fontSize={subtext ? 'sm' : 'md'} bold color={props}>
             {text}
           </Text>
           {subtext && (

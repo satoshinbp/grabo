@@ -84,9 +84,7 @@ export default () => {
         flex={1}
         isDisabled={!hasPermission}
         onPress={takePicture}
-      >
-        Snap
-      </Button>
+      ></Button>
     </>
   )
 

@@ -93,8 +93,8 @@ export default () => {
     getCurrentUser()
 
     if (token) {
-      dispatch(setProductsByUserId({ token, userId: user._id }))
-      dispatch(setProductsByFavoredUserId({ token, userId: user._id }))
+      dispatch(setProductsByUserId({ token, userId: user?._id }))
+      dispatch(setProductsByFavoredUserId({ token, userId: user?._id }))
 
       // notificationの確認
       registerForPushNotifications().then((expotoken) => {

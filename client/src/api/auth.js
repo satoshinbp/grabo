@@ -45,4 +45,15 @@ const patchUser = async (token, id, params) => {
   }
 }
 
-export { signInWithGoogle, fetchUser, fetchUsersByGroup, patchUser }
+const setNotificationTrue = async (token, params) => {
+  try {
+    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${params.id}/isRead`, params, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export { signInWithGoogle, fetchUser, fetchUsersByGroup, patchUser, setNotificationTrue }
