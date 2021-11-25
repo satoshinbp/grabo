@@ -102,7 +102,7 @@ export default () => {
       VStack: {
         variants: {
           container: {
-            my: 2,
+            my: 3,
             space: 3,
           },
         },
@@ -115,34 +115,6 @@ export default () => {
           },
         },
         variants: {
-          primary: (props) => {
-            // Copied from variant "solid". It is better if there is a way to extend instead of copy
-            const { colorScheme: c } = props
-            let bg = `${c}.500`
-            return {
-              _web: {
-                outlineWidth: '0',
-              },
-              bg,
-              _hover: {
-                bg: `${c}.600`,
-              },
-              _pressed: {
-                bg: `${c}.700`,
-              },
-              _focus: {
-                bg: `${c}.600`,
-              },
-              _loading: {
-                bg: 'warmGray.50',
-                opacity: '50',
-              },
-              _disabled: { bg: 'trueGray.300' },
-              ////////////////////
-              width: '232px',
-              alignSelf: 'center',
-            }
-          },
           fab: (props) => {
             // Copied from variant "solid". It is better if there is a way to extend instead of copy
             const { colorScheme: c } = props

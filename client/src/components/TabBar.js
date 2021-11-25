@@ -1,15 +1,9 @@
 import React from 'react'
-import { Center, View, Pressable, Text, SunIcon } from 'native-base'
+import { Center, View, Pressable, Text } from 'native-base'
 
 export default ({ state, descriptors, navigation }) => {
   return (
-    <View
-      style={{
-        height: 56,
-        flexDirection: 'row',
-        backgroundColor: 'white',
-      }}
-    >
+    <View h="56px" flexDirection="row" bg="white" shadow={2}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const label =

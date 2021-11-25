@@ -1,29 +1,20 @@
 import axios from 'axios'
-import { SERVER_ROOT_URI, REACT_APP_VISION_API_KEY } from '@env'
-import groups from '../utils/groups'
+import { SERVER_ROOT_URI } from '@env'
 // SERVER_ROOT_URI might not work depends on dev environment
-// In that case, replace SERVER_ROOT_URI to "<your network IP address>:<PORT>""
+// In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const fetchProductById = async (token, id) => {
-  try {
-    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`http://192.168.1.65:8000/api/products/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const fetchProductsByGroup = async (token, code) => {
-  try {
-    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/group/${code}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`http://192.168.1.65:8000/api/products/group/${code}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const fetchProductsByUserId = async (token, userId) => {
@@ -38,185 +29,84 @@ const fetchProductsByUserId = async (token, userId) => {
 }
 
 const fetchProductsByFavoredUserId = async (token, userId) => {
-  try {
-    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/fav/user/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-const postImage = async (token, params) => {
-  try {
-    const res = await axios.post(`http://192.168.1.65:8000/api/images`, params, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    return res
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`http://192.168.1.65:8000/api/products/fav/user/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const postProduct = async (token, params) => {
-  try {
-    const res = await axios.post(`http://192.168.1.65:8000/api/products`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return res
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-const getOcrText = async (image) => {
-  const url = `https://vision.googleapis.com/v1/images:annotate?key=${REACT_APP_VISION_API_KEY}`
-  const params = {
-    requests: [
-      {
-        features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
-        image: { content: image },
-        imageContext: { languageHints: groups.map((group) => group.code) },
-      },
-    ],
-  }
-
-  const { data } = await axios.post(url, params, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+  const { data } = await axios.post(`http://192.168.1.65:8000/api/products`, params, {
+    headers: { Authorization: `Bearer ${token}` },
   })
-
-  if (!data.responses[0].textAnnotations) throw new Error()
-
-  const locale = data.responses[0].textAnnotations[0].locale
-  const descriptions = data.responses[0].textAnnotations
-    .filter((_, index) => index !== 0)
-    .map((annotation) => annotation.description)
-
-  return { locale, descriptions }
+  return data
 }
 
-const addAnswerToFixedQn = async (token, id, params) => {
-  try {
-    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question/fixed/answer`, params, {
+const postQuestionUniq = async (token, { productId, question }) => {
+  const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${productId}/questions/uniq`, question, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
+}
+
+const postAnswer = async (token, { productId, index, type, answer }) => {
+  const { data } = await axios.post(
+    `http://192.168.1.65:8000/api/products/${productId}/questions/${type}/${index}/answers`,
+    answer,
+    {
       headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+    }
+  )
+  return data
 }
 
-const addAnswerToUniqQn = async (token, id, params) => {
-  try {
-    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question/uniq/answer`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const reportQuestion = async (token, { productId, index, type, reportKeys }) => {
+  const res = await axios.put(
+    `http://192.168.1.65:8000/api/products/${productId}/questions/${type}/${index}/reports`,
+    reportKeys,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res
 }
 
-const addUniqQuestion = async (token, id, params) => {
-  try {
-    const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${id}/question`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const reportAnswer = async (token, { productId, questionIndex, type, answerIndex, reportKeys }) => {
+  const res = await axios.put(
+    `http://192.168.1.65:8000/api/products/${productId}/questions/${type}/${questionIndex}/answers/${answerIndex}/reports`,
+    reportKeys,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res
 }
 
-const addUserToFixedQnHighlight = async (token, id, params) => {
-  try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/fixed/highlight`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const postUserToHighlight = async (token, { productId, userId, questionIndex, questionType }) => {
+  const { data } = await axios.post(
+    `http://192.168.1.65:8000/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight`,
+    { userId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return data
 }
 
-const addUserToUniqQnHighlight = async (token, id, params) => {
-  try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/question/uniq/highlight`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const deleteUserFromHighlight = async (token, { productId, userId, questionIndex, questionType }) => {
+  const { data } = await axios.delete(
+    `http://192.168.1.65:8000/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight/${userId}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return data
 }
 
-const removeUserFromFixedQnHighlight = async (token, id, userId, questionIndex) => {
-  try {
-    const { data } = await axios.delete(
-      `http://192.168.1.65:8000/api/products/${id}/question/fixed/${questionIndex}/highlight/${userId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const postUserToFavorite = async (token, { productId, userId }) => {
+  const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${productId}/favor`, userId, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
-const removeUserFromUniqQnHighlight = async (token, id, userId, questionIndex) => {
-  try {
-    const { data } = await axios.delete(
-      `http://192.168.1.65:8000/api/products/${id}/question/uniq/${questionIndex}/highlight/${userId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-const addUserToFav = async (token, id, params) => {
-  try {
-    const { data } = await axios.put(`http://192.168.1.65:8000/api/products/${id}/favor`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-const removeUserFromFav = async (token, id, userId) => {
-  console.log(token, id, userId)
-  try {
-    const { data } = await axios.delete(`http://192.168.1.65:8000/api/products/${id}/favor/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-const updateReport = async (token, params) => {
-  try {
-    const res = await axios.put(`http://192.168.1.65:8000/api/products/report`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return res
-  } catch (e) {
-    console.error(e)
-  }
+const deleteUserFromFavorite = async (token, { productId, userId }) => {
+  const { data } = await axios.delete(`http://192.168.1.65:8000/api/products/${productId}/favor/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 export {
@@ -224,18 +114,14 @@ export {
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
-  getOcrText,
   // searchProducts,
-  postImage,
   postProduct,
-  addAnswerToFixedQn,
-  addAnswerToUniqQn,
-  addUniqQuestion,
-  addUserToFixedQnHighlight,
-  addUserToUniqQnHighlight,
-  removeUserFromFixedQnHighlight,
-  removeUserFromUniqQnHighlight,
-  addUserToFav,
-  removeUserFromFav,
-  updateReport,
+  postAnswer,
+  postQuestionUniq,
+  reportQuestion,
+  reportAnswer,
+  postUserToHighlight,
+  deleteUserFromHighlight,
+  postUserToFavorite,
+  deleteUserFromFavorite,
 }

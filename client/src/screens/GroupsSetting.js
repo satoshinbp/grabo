@@ -11,12 +11,12 @@ export default () => {
   const { token, user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
-  const [groups, setGroups] = useState([])
-  const [isError, setIsError] = useState(false)
+  const [groups, setGroups] = useState(user.groups)
+  // const [isError, setIsError] = useState(false)
 
   const handleSave = () => {
-    if (groups.length === 0) return setIsError(true)
-    setIsError(false)
+    // if (groups.length === 0) return setIsError(true)
+    // setIsError(false)
 
     const params = { groups }
     dispatch(updateUser({ token, id: user._id, params }))
@@ -38,10 +38,8 @@ export default () => {
             </Checkbox>
           ))}
         </Checkbox.Group>
-        {isError && <Text>You have to belong to at least one Group</Text>}
-        <Button variant="primary" onPress={handleSave}>
-          Save
-        </Button>
+        {/* {isError && <Text>You have to belong to at least one Group</Text>} */}
+        <Button onPress={handleSave}>Save</Button>
       </VStack>
     </View>
   )

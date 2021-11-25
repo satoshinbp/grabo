@@ -18,11 +18,11 @@ import {
   Image,
   Button,
   AddIcon,
+  FormControl,
 } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 import { updateCode, deleteImage, clearImage } from '../features/image'
-import { fetchUsersByGroup } from '../api/auth'
-import { postImage, postProduct } from '../api/product'
+import { createProduct } from '../features/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
 import Loading from '../components/Loading'
@@ -32,11 +32,11 @@ export default () => {
 
   const { token, user } = useSelector((state) => state.auth)
   const { texts, uris, code } = useSelector((state) => state.image.value)
+  const { loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
   const [highlitedQuestions, setHighlitedQuestions] = useState([])
   const [uniqQuestions, setUniqQuestions] = useState([])
-  const [loading, setLoading] = useState(false)
 
   const openCamera = () => {
     if (uris.length >= 3) {
@@ -46,87 +46,49 @@ export default () => {
     }
   }
 
-  const uploadImage = async () => {
-    const params = new FormData()
-    params.append('image', { uri: uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    await postImage(token, params)
-  }
-  const removeImage = (index) => dispatch(deleteImage({ index }))
-
   const addQuestion = () => setUniqQuestions([...uniqQuestions, ''])
   const changeQuestion = (index, text) => setUniqQuestions(uniqQuestions.map((q, i) => (i === index ? text : q)))
   const removeQuestion = (index) => setUniqQuestions(uniqQuestions.filter((_, i) => i !== index))
 
-  const clearProduct = () => {
-    dispatch(clearImage())
-    setHighlitedQuestions([])
-    setUniqQuestions([])
-    navigation.navigate('Scan')
-  }
   const cancelProduct = () =>
     Alert.alert('Alert', 'Are you sure to cancel posting this product?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'OK', onPress: clearProduct },
+      {
+        text: 'OK',
+        onPress: () => {
+          dispatch(clearImage())
+          setHighlitedQuestions([])
+          setUniqQuestions([])
+          navigation.navigate('Scan')
+        },
+      },
     ])
-  const submitProduct = async () => {
-    setLoading(true)
-    try {
-      await uploadImage()
 
+  const submitProduct = async () => {
+    try {
       const params = {
         userId: user._id,
         code,
         url: uris,
         text: texts,
-        highlitedQuestions: highlitedQuestions,
-        uniqQuestions: uniqQuestions,
+        highlitedQuestions,
+        uniqQuestions,
       }
 
-      const res = await postProduct(token, params)
-
-      const fetchedUsers = await fetchUsersByGroup(token, code)
-      // console.log('this is a', fetchedUsers)
-      const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn === true)
-      // console.log('notified users', notifiedUsers)
-      const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
-      notificationTokens.map((token) => sendPushNotification(token))
-
-      setLoading(false)
-
-      clearProduct()
-      navigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: res.data._id } })
+      dispatch(createProduct({ token, params }))
+      setHighlitedQuestions([])
+      setUniqQuestions([])
+      navigation.navigate('Scan')
     } catch (e) {
       cosole.error(e)
-      setLoading(false)
     }
   }
 
-  const sendPushNotification = async (expoPushToken) => {
-    const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: 'Help',
-      body: 'Someone need your help!',
-      data: { someData: 'goes here' },
-    }
-
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    })
-  }
-
-  // FormContorl might be useful rather thatn Box, to be considered
   if (loading) return <Loading />
   return (
-    <ScrollView variant="wrapper">
+    <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <VStack variant="container">
+        <VStack flex={1} space={3} m={3} px={3} py={3} bg="white" borderRadius="md" shadow={2}>
           <Heading>Product Information</Heading>
 
           <View>
@@ -148,7 +110,12 @@ export default () => {
                         borderRadius="full"
                         bg="primary.500"
                       >
-                        <MaterialIcons name="delete" size={18} color="black" onPress={() => removeImage(index)} />
+                        <MaterialIcons
+                          name="delete"
+                          size={18}
+                          color="black"
+                          onPress={() => dispatch(deleteImage({ index }))}
+                        />
                       </Center>
                     </Box>
                   ))}
@@ -156,7 +123,7 @@ export default () => {
               ) : (
                 <Text>At lease one picture is required.</Text>
               )}
-              <Button onPress={openCamera}>{uris.length > 0 ? 'Take another picture' : 'Take a picture'}</Button>
+              <Button onPress={openCamera}>Add Image</Button>
             </VStack>
             {/* leave this comment */}
             {/* example of fetched image from S3 */}
@@ -167,44 +134,43 @@ export default () => {
             /> */}
           </View>
 
-          <View>
-            <Text fontSize="md" bold>
-              Language
-            </Text>
+          <FormControl>
+            <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>Language</FormControl.Label>
             <Select
-              marginLeft="2"
-              selectedValue={code}
-              minWidth="200px"
               placeholder="Choose Language"
-              _selectedItem={{
-                bg: 'teal.600',
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
+              selectedValue={code}
               onValueChange={(nextValue) => dispatch(updateCode(nextValue))}
+              minWidth="200px"
+              mt={1}
+              ml={2}
+              _selectedItem={{
+                bg: 'primary.500',
+                endIcon: <CheckIcon size="5" color="black" />,
+                _text: {
+                  color: 'black',
+                },
+              }}
             >
               {groups.map((group) => (
                 <Select.Item value={group.code} label={group.language} />
               ))}
             </Select>
-          </View>
+          </FormControl>
 
-          <View>
-            <Text fontSize="md" bold>
+          <FormControl>
+            <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>
               Choose which default questions to highlight
-            </Text>
-            <Checkbox.Group marginLeft="2" onChange={setHighlitedQuestions} value={highlitedQuestions}>
+            </FormControl.Label>
+            <Checkbox.Group ml={2} onChange={setHighlitedQuestions} value={highlitedQuestions}>
               {fixedQuestions.map((question, index) => (
                 <Checkbox value={index}>{question}</Checkbox>
               ))}
             </Checkbox.Group>
-          </View>
+          </FormControl>
 
-          <View>
-            <Text fontSize="md" bold>
-              Ask your own question
-            </Text>
-            <VStack marginLeft="2" space={2} alignItems="center">
+          <FormControl>
+            <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>Ask your own question</FormControl.Label>
+            <VStack marginLeft={2} space={2} alignItems="center">
               {uniqQuestions.map((uniqQuestion, index) => (
                 <HStack key={index} alignItems="center" space={2}>
                   <Input
@@ -220,18 +186,20 @@ export default () => {
                   <MaterialIcons name="delete" size={18} color="black" onPress={() => removeQuestion(index)} />
                 </HStack>
               ))}
-              <Center w="36px" h="36px" borderRadius="full" bg="primary.500" my="2">
-                <AddIcon size="4" onPress={addQuestion} />
+              <Center w="36px" h="36px" borderRadius="full" bg="primary.500" my={2}>
+                <AddIcon size={4} onPress={addQuestion} />
               </Center>
             </VStack>
-          </View>
+          </FormControl>
 
-          <Button variant="primary" isDisabled={uris.length === 0} onPress={submitProduct}>
-            Create a Product
-          </Button>
-          <Button variant="primary" bg="white" onPress={cancelProduct}>
-            Cancel
-          </Button>
+          <Button.Group w="100%" direction="column" alignItems="stretch" space={2}>
+            <Button isDisabled={uris.length === 0} onPress={submitProduct}>
+              Submit
+            </Button>
+            <Button variant="outline" onPress={cancelProduct} _text={{ color: 'black' }}>
+              Cancel
+            </Button>
+          </Button.Group>
         </VStack>
       </TouchableWithoutFeedback>
     </ScrollView>

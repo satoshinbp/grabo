@@ -7,6 +7,7 @@ import GroupsStacks from './GroupsStacks'
 import ScanStacks from './ScanStacks'
 import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
+import Notification from '../screens/Notification'
 import TabBar from '../components/TabBar'
 import GroupIcon from '../assets/icons/Group'
 import PostIcon from '../assets/icons/Post'
@@ -50,6 +51,7 @@ export default () => {
         component={ProfileStacks}
         options={{ tabBarLabel: 'Profile', tabBarIcon: ({ width }) => <ProfileIcon width={width} /> }}
       />
+      <Tab.Screen name="Notification" component={Notification} />
     </Tab.Navigator>
   )
 }

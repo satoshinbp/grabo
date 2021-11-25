@@ -1,270 +1,212 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { fetchUsersByGroup } from '../api/auth'
 import {
+  fetchProductById,
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
-  addUniqQuestion,
-  addAnswerToFixedQn,
-  addAnswerToUniqQn,
-  addUserToUniqQnHighlight,
-  addUserToFixedQnHighlight,
-  removeUserFromFixedQnHighlight,
-  removeUserFromUniqQnHighlight,
-  addUserToFav,
-  removeUserFromFav,
+  postProduct,
+  postQuestionUniq,
+  postAnswer,
+  postUserToHighlight,
+  deleteUserFromHighlight,
+  postUserToFavorite,
+  deleteUserFromFavorite,
 } from '../api/product'
+import { postImage } from '../api/image'
+import { patchUser } from '../api/auth'
+import { clearImage } from './image'
+import * as RootNavigation from '../navigators/RootNavigation'
+import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
-  try {
-    const data = await fetchProductsByGroup(token, code)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const products = await fetchProductsByGroup(token, code)
+  return products
 })
 
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
-  try {
-    const data = await fetchProductsByUserId(token, userId)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const products = await fetchProductsByUserId(token, userId)
+  return products
 })
 
 export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
-  try {
-    const data = await fetchProductsByFavoredUserId(token, userId)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const products = await fetchProductsByFavoredUserId(token, userId)
+  return products
 })
 
-export const addAnswerToFixedQuestion = createAsyncThunk(
-  'products/addFixedQuestionAnswer',
-  async ({ token, id, params }) => {
-    try {
-      const data = await addAnswerToFixedQn(token, id, params)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
-  }
-)
-
-export const addAnswerToUniqQuestion = createAsyncThunk(
-  'products/addUniqQuestionAnswer',
-  async ({ token, id, params }) => {
-    try {
-      const data = await addAnswerToUniqQn(token, id, params)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
-  }
-)
-
-export const addNewQuestion = createAsyncThunk('products/addQuestion', async ({ token, id, params }) => {
-  try {
-    const data = await addUniqQuestion(token, id, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+export const navigateGroupProductById = createAsyncThunk('products/setById', async ({ token, id }) => {
+  const product = await fetchProductById(token, id)
+  RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: product._id } })
+  return product
 })
 
-export const addUserToFixedQuestionHighlight = createAsyncThunk(
-  'products/addUserToFixedQnHighlight',
-  async ({ token, id, params }) => {
-    try {
-      const data = await addUserToFixedQnHighlight(token, id, params)
-      return data
-    } catch (e) {
-      console.error(e)
+const sendPushNotification = async (expoPushToken) => {
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Help',
+    body: 'Someone need your help!',
+    data: { someData: 'goes here' },
+  }
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  })
+}
+
+export const createProduct = createAsyncThunk(
+  'products/create',
+  async ({ token, params: productParams }, { getState, dispatch }) => {
+    const { image } = getState()
+    const { auth } = getState()
+    const imageParams = new FormData()
+    imageParams.append('image', { uri: image.value.uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+    await postImage(token, imageParams)
+    const product = await postProduct(token, productParams)
+
+    const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
+
+    const notificationParams = {
+      notifications: {
+        read: false,
+        message: `Help ${auth.user.firstName} to find this product`,
+        productId: product._id,
+      },
     }
+    fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+
+    const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
+    const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
+    notificationTokens.map((token) => sendPushNotification(token))
+
+    dispatch(clearImage())
+
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
+
+    return product
   }
 )
 
-export const addUserToUniqQuestionHighlight = createAsyncThunk(
-  'products/addUserToUniqQnHighlight',
-  async ({ token, id, params }) => {
-    try {
-      const data = await addUserToUniqQnHighlight(token, id, params)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
-  }
-)
-
-export const removeUserFromFixedQuestionHighlight = createAsyncThunk(
-  'products/removeUserFromFixedQnHighlight',
-  async ({ token, id, userId, questionIndex }) => {
-    try {
-      const data = await removeUserFromFixedQnHighlight(token, id, userId, questionIndex)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
-  }
-)
-
-export const removeUserFromUniqQuestionHighlight = createAsyncThunk(
-  'products/removeUserFromUniqQnHighlight',
-  async ({ token, id, userId, questionIndex }) => {
-    try {
-      const data = await removeUserFromUniqQnHighlight(token, id, userId, questionIndex)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
-  }
-)
-
-export const addUserToFavorite = createAsyncThunk('products/addUserToFavorite', async ({ token, id, params }) => {
-  try {
-    const data = await addUserToFav(token, id, params)
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+export const addQuestion = createAsyncThunk('products/addQuestion', async ({ token, params }) => {
+  const product = await postQuestionUniq(token, params)
+  return product
 })
 
-export const removeUserFromFavorite = createAsyncThunk(
-  'products/removeUserFromFavorite',
-  async ({ token, id, userId }) => {
-    try {
-      const data = await removeUserFromFav(token, id, userId)
-      return data
-    } catch (e) {
-      console.error(e)
-    }
+export const addAnswer = createAsyncThunk('products/addAnswer', async ({ token, params }) => {
+  const product = await postAnswer(token, params)
+  return product
+})
+
+export const highlightQuestion = createAsyncThunk('products/highlightQuestion', async ({ token, params }) => {
+  const product = await postUserToHighlight(token, params)
+  return product
+})
+
+export const unhighlightQuestion = createAsyncThunk('products/unhighlightQuestion', async ({ token, params }) => {
+  const product = await deleteUserFromHighlight(token, params)
+  return product
+})
+
+export const saveProduct = createAsyncThunk('products/save', async ({ token, params }) => {
+  const product = await postUserToFavorite(token, params)
+  return product
+})
+
+export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, params }) => {
+  const product = await deleteUserFromFavorite(token, params)
+  return product
+})
+
+const startLoading = (state) => {
+  state.loading = true
+}
+const finishLoading = (state) => {
+  state.loading = false
+}
+const setProducts = (state, category, products) => {
+  state[category] = products
+  state.loading = false
+}
+const updateProduct = (state, product) => {
+  const groupedIroductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
+  state.groupedProducts[groupedIroductIndex] = product
+
+  const postedIroductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
+  if (postedIroductIndex !== -1) {
+    state.postedProducts[postedIroductIndex] = product
   }
-)
+
+  const savedProductIndex = lodash.findIndex(state.savedProducts, { _id: product._id })
+  if (savedProductIndex !== -1) {
+    state.savedProducts[savedProductIndex] = product
+  }
+
+  state.loading = false
+}
 
 const productSlice = createSlice({
   name: 'product',
   initialState: { groupedProducts: [], postedProducts: [], savedProducts: [], loading: false },
   extraReducers: {
-    [setProductsByGroup.pending]: (state) => {
-      state.loading = true
-    },
-    [setProductsByGroup.fulfilled]: (state, action) => {
-      state.groupedProducts = action.payload
+    [setProductsByGroup.pending]: (state) => startLoading(state),
+    [setProductsByGroup.rejected]: (state) => finishLoading(state),
+    [setProductsByGroup.fulfilled]: (state, action) => setProducts(state, 'groupedProducts', action.payload),
+
+    [setProductsByUserId.pending]: (state) => startLoading(state),
+    [setProductsByUserId.rejected]: (state) => finishLoading(state),
+    [setProductsByUserId.fulfilled]: (state, action) => setProducts(state, 'postedProducts', action.payload),
+
+    [setProductsByFavoredUserId.pending]: (state) => startLoading(state),
+    [setProductsByFavoredUserId.rejected]: (state) => finishLoading(state),
+    [setProductsByFavoredUserId.fulfilled]: (state, action) => setProducts(state, 'savedProducts', action.payload),
+
+    [navigateGroupProductById.pending]: (state) => startLoading(state),
+    [navigateGroupProductById.rejected]: (state) => finishLoading(state),
+    [navigateGroupProductById.fulfilled]: (state, action) => {
+      state.groupedProducts = [action.payload]
       state.loading = false
     },
-    [setProductsByGroup.rejected]: (state) => {
+
+    [createProduct.pending]: (state) => startLoading(state),
+    [createProduct.rejected]: (state) => finishLoading(state),
+    [createProduct.fulfilled]: (state, action) => {
+      state.postedProducts.push(action.payload)
       state.loading = false
     },
-    [setProductsByUserId.pending]: (state) => {
-      state.loading = true
-    },
-    [setProductsByUserId.fulfilled]: (state, action) => {
-      state.postedProducts = action.payload
+
+    [addQuestion.pending]: (state) => startLoading(state),
+    [addQuestion.rejected]: (state) => finishLoading(state),
+    [addQuestion.fulfilled]: (state, action) => updateProduct(state, action.payload),
+
+    [addAnswer.pending]: (state) => startLoading(state),
+    [addAnswer.rejected]: (state) => finishLoading(state),
+    [addAnswer.fulfilled]: (state, action) => updateProduct(state, action.payload),
+
+    [highlightQuestion.pending]: (state) => startLoading(state),
+    [highlightQuestion.rejected]: (state) => finishLoading(state),
+    [highlightQuestion.fulfilled]: (state, action) => updateProduct(state, action.payload),
+
+    [unhighlightQuestion.pending]: (state) => startLoading(state),
+    [unhighlightQuestion.rejected]: (state) => finishLoading(state),
+    [unhighlightQuestion.fulfilled]: (state, action) => updateProduct(state, action.payload),
+
+    [saveProduct.pending]: (state) => startLoading(state),
+    [saveProduct.rejected]: (state) => finishLoading(state),
+    [saveProduct.fulfilled]: (state, action) => {
+      state.savedProducts.push(action.payload)
       state.loading = false
     },
-    [setProductsByUserId.rejected]: (state) => {
-      state.loading = false
-    },
-    [setProductsByFavoredUserId.pending]: (state) => {
-      state.loading = true
-    },
-    [setProductsByFavoredUserId.fulfilled]: (state, action) => {
-      state.savedProducts = action.payload
-      state.loading = false
-    },
-    [setProductsByFavoredUserId.rejected]: (state) => {
-      state.loading = false
-    },
-    [addAnswerToFixedQuestion.pending]: (state, action) => {
-      state.loading = true
-    },
-    [addAnswerToFixedQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [addAnswerToFixedQuestion.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [addAnswerToUniqQuestion.pending]: (state, action) => {
-      state.loading = true
-    },
-    [addAnswerToUniqQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [addAnswerToUniqQuestion.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [addNewQuestion.pending]: (state, action) => {
-      state.loading = true
-    },
-    [addNewQuestion.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [addNewQuestion.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [addUserToFixedQuestionHighlight.pending]: (state, action) => {
-      state.loading = true
-    },
-    [addUserToFixedQuestionHighlight.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [addUserToFixedQuestionHighlight.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [addUserToUniqQuestionHighlight.pending]: (state, action) => {
-      state.loading = true
-    },
-    [addUserToUniqQuestionHighlight.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [addUserToUniqQuestionHighlight.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [removeUserFromFixedQuestionHighlight.pending]: (state, action) => {
-      state.loading = true
-    },
-    [removeUserFromFixedQuestionHighlight.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [removeUserFromFixedQuestionHighlight.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [removeUserFromUniqQuestionHighlight.pending]: (state, action) => {
-      state.loading = true
-    },
-    [removeUserFromUniqQuestionHighlight.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [removeUserFromUniqQuestionHighlight.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [addUserToFavorite.pending]: (state, action) => {
-      state.loading = true
-    },
-    [addUserToFavorite.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [addUserToFavorite.rejected]: (state, action) => {
-      state.loading = false
-    },
-    [removeUserFromFavorite.pending]: (state, action) => {
-      state.loading = true
-    },
-    [removeUserFromFavorite.fulfilled]: (state, action) => {
-      state.product = action.payload
-      state.loading = false
-    },
-    [removeUserFromFavorite.rejected]: (state, action) => {
+
+    [unsaveProduct.pending]: (state) => startLoading(state),
+    [unsaveProduct.rejected]: (state) => finishLoading(state),
+    [unsaveProduct.fulfilled]: (state, action) => {
+      state.savedProducts = state.savedProducts.filter((product) => product._id !== action.payload._id)
       state.loading = false
     },
   },
