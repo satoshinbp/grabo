@@ -18,11 +18,7 @@ export default ({ text, subtext, icon, onPress, textColor, productIcon }) => (
             </Text>
           )}
         </VStack>
-        {/* {productIcon && (
-          <Center size={12} bg="primary.500">
-            {productIcon}
-          </Center>
-        )} */}
+        {productIcon && <Center size={12}>{productIcon}</Center>}
       </HStack>
     </Box>
   </Pressable>
