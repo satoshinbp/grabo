@@ -19,6 +19,21 @@ const updateUser = async (req, res) => {
       user.notifications.push(req.body.notifications)
     }
   })
+  await user
+    .save()
+    .then((result) => res.send(result))
+    .catch((error) => res.send(error))
+}
+
+const readNotification = async (req, res) => {
+  let user = await User.findOne({ _id: req.body.id }, { notifications: 1 })
+
+  user.notifications.map((notification) => {
+    if (notification._id === req.body.notificationId) {
+      notification.read = true
+    }
+  })
+  // console.log('after', user)
 
   await user
     .save()
@@ -37,4 +52,4 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = { getCurrentUser, getUsersByGroup, updateUser, logout }
+module.exports = { getCurrentUser, getUsersByGroup, updateUser, logout, readNotification }
