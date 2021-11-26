@@ -62,7 +62,7 @@ export default () => {
   }
 
   useEffect(() => {
-    AsyncStorage.clear() // This is to test onboarding slides.
+    // AsyncStorage.clear() // This is to test onboarding slides.
     AsyncStorage.getItem('alreadyLaunched').then((value) => {
       if (value) {
         setIsFirstLaunch(false)
