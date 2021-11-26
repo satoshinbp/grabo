@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
-import { signInWithGoogle, fetchUser, patchUser } from '../api/auth'
+import { signInWithGoogle, fetchUser, patchUser, setNotificationTrue } from '../api/auth'
 
 export const setUser = createAsyncThunk('users/fetch', async (token) => {
   const user = await fetchUser(token)
@@ -19,6 +19,12 @@ export const logout = createAsyncThunk('users/logout', async () => {
 
 export const updateUser = createAsyncThunk('users/update', async ({ token, id, params }) => {
   const user = await patchUser(token, id, params)
+  return user
+})
+
+export const readNotification = createAsyncThunk('users/notification', async ({ token, params }) => {
+  // console.log(params)
+  const user = await setNotificationTrue(token, params)
   return user
 })
 
@@ -90,6 +96,16 @@ const authSlice = createSlice({
       state.loading = false
     },
     [updateUser.rejected]: (state) => {
+      state.loading = false
+    },
+    [readNotification.pending]: (state) => {
+      state.loading = true
+    },
+    [readNotification.fulfilled]: (state, action) => {
+      state.user = action.payload
+      state.loading = false
+    },
+    [readNotification.rejected]: (state) => {
       state.loading = false
     },
   },

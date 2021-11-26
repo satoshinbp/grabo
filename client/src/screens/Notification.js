@@ -1,23 +1,43 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FlatList, Avatar } from 'native-base'
+import { FlatList, Avatar, View } from 'native-base'
 import { navigateGroupProductById } from '../features/product'
 import ListItemBarColored from '../elements/ListItemBarColored'
+import { readNotification } from '../features/auth'
+import { fetchProductById } from '../api/product'
 
 export default () => {
   const { token, user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
+  const [urls, setUrls] = useState('')
 
   const notifications = user.notifications
-  // console.log(notifications)
 
-  const onPress = (item) => dispatch(navigateGroupProductById({ token, id: item.productId }))
+  const productIds = notifications.map((notification) => notification.productId)
 
-  return notifications ? (
+  const getListedProducts = async () => {
+    const products = productIds.map((productId) => fetchProductById(token, productId))
+    const results = await Promise.all(products)
+    const imageUrls = results.map((result) => result.images[0].url)
+    setUrls(imageUrls)
+  }
+  getListedProducts()
+
+  const onPress = (item) => {
+    params = {
+      id: user._id,
+      notificationId: item._id,
+    }
+    dispatch(readNotification({ token, params }))
+    dispatch(navigateGroupProductById({ token, id: item.productId }))
+  }
+
+  return notifications && urls ? (
     <FlatList
       data={notifications}
-      renderItem={({ item }) => (
+      renderItem={({ item, index }) => (
         <ListItemBarColored
+          textColor={item.read ? '#BBBCBD' : 'black'}
           text={item.message}
           icon={
             <Avatar
@@ -28,6 +48,9 @@ export default () => {
               alignSelf="center"
               borderRadius="full"
             />
+          }
+          productIcon={
+            <Avatar source={{ uri: urls[index] }} size={8} alt="user portrait" position="relative" alignSelf="center" />
           }
           onPress={() => onPress(item)}
         />
