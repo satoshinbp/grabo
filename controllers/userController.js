@@ -29,7 +29,7 @@ const readNotification = async (req, res) => {
   let user = await User.findOne({ _id: req.body.id }, { notifications: 1 })
 
   user.notifications.map((notification) => {
-    if (notification._id == req.body.notificationId) {
+    if (notification._id === req.body.notificationId) {
       notification.read = true
     }
   })

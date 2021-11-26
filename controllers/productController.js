@@ -8,7 +8,9 @@ const getProducts = (req, res) => {
 
 const getProductById = (req, res) => {
   Product.findById(req.params.id)
-    .then((result) => res.send(result))
+    .then((result) => {
+      res.send(result)
+    })
     .catch((e) => console.error(e))
 }
 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { View, Button, HStack, VStack, Text } from 'native-base'
+import { View, Button, HStack, VStack, Text, Pressable } from 'native-base'
 import { useIsFocused } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { addImage } from '../features/image'
 import Loading from '../components/Loading'
+import GalleryIcon from '../assets/icons/Gallery'
 
 export default () => {
   const isFocused = useIsFocused()
@@ -59,19 +60,21 @@ export default () => {
 
   const actionButtons = (
     <>
-      <Button
+      <Pressable
         position="absolute"
         top="4"
         right="4"
-        width="84px"
+        width="42px"
         height="42px"
-        backgroundColor="primary.500"
-        shadow="2"
+        borderRadius="full"
+        // backgroundColor="primary.500"
+        // shadow="2"
         flex={1}
         onPress={openImagePickerAsync}
       >
-        Gallery
-      </Button>
+        <GalleryIcon width="43px" />
+      </Pressable>
+
       <Button
         position="absolute"
         bottom="4"
