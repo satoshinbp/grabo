@@ -45,7 +45,6 @@ export default () => {
         return
       }
       token = (await Notifications.getExpoPushTokenAsync()).data
-      // console.log('notificationtoken', token)
     } else {
       alert('Must use physical device for Push Notifications')
     }
@@ -63,7 +62,6 @@ export default () => {
   }
 
   useEffect(() => {
-    // AsyncStorage.clear() // This is to test onboarding slides.
     AsyncStorage.getItem('alreadyLaunched').then((value) => {
       if (value) {
         setIsFirstLaunch(false)

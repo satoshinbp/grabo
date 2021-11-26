@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
 import { signInWithGoogle, fetchUser, patchUser } from '../api/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const setUser = createAsyncThunk('users/fetch', async (token) => {
   const user = await fetchUser(token)
@@ -15,6 +16,7 @@ export const login = createAsyncThunk('users/login', async (idToken) => {
 
 export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
+  AsyncStorage.clear() // This is to test onboarding slides.
 })
 
 export const updateUser = createAsyncThunk('users/update', async ({ token, id, params }) => {
