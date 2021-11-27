@@ -103,10 +103,11 @@ const createQuestion = (req, res) => {
 }
 
 const createAnswer = (req, res) => {
-  const { id, index } = req.params
+  const { id } = req.params
   const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
+  const query = { [`${questionType}.answers._id`]: id }
 
-  Product.findOne({ _id: id }).then((product) => {
+  Product.findOne(query).then((product) => {
     product[questionType][index].answers.push(req.body)
     product[questionType][index].highlightedBy = []
     product.markModified(questionType)
