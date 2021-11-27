@@ -69,7 +69,6 @@ export default () => {
       const params = {
         userId: user._id,
         code,
-        url: uris,
         text: texts,
         highlitedQuestions,
         uniqQuestions,

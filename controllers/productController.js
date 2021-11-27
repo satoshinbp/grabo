@@ -8,7 +8,9 @@ const getProducts = (req, res) => {
 
 const getProductById = (req, res) => {
   Product.findById(req.params.id)
-    .then((result) => res.send(result))
+    .then((result) => {
+      res.send(result)
+    })
     .catch((e) => console.error(e))
 }
 
@@ -39,13 +41,13 @@ const fixedQuestions = [
 ]
 
 const createProduct = (req, res) => {
-  const { userId, code: group, text: keywords, highlitedQuestions, uniqQuestions } = req.body
+  const { userId, code: group, text: keywords, urls, highlitedQuestions, uniqQuestions } = req.body
 
   const params = {
     userId,
     group,
     keywords,
-    images: req.body.url.map((image) => ({ url: image })),
+    images: urls.map((url) => ({ url })),
     fixedQandAs: fixedQuestions.map((question, index) => ({
       question,
       highlightedBy: highlitedQuestions.includes(index) ? [userId] : [],

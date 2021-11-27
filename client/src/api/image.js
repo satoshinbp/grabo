@@ -11,6 +11,8 @@ const postImage = async (token, params) => {
       Authorization: `Bearer ${token}`,
     },
   })
+
+  return data
 }
 
 const getOcrText = async (image) => {

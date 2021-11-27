@@ -62,9 +62,9 @@ export default () => {
         isOpen={notificationModalOpen}
         onClose={() => setNotificationModalOpen(false)}
         title="Notification"
-        content={user.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
+        content={user?.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
         primaryAction={toggleNotification}
-        primaryActionLabel={user.isNotificationOn ? 'Mute' : 'Unmute'}
+        primaryActionLabel={user?.isNotificationOn ? 'Mute' : 'Unmute'}
         secondaryAction={() => setNotificationModalOpen(false)}
         secondaryActionLabel="Cancel"
       />
