@@ -113,7 +113,7 @@ const createAnswer = (req, res) => {
 
   Product.findOne(query)
     .then((product) => {
-      const question = product[questionType].find((question) => question._id.equals(id))
+      const question = product[questionType].find((question) => question._id.toString() === id)
       question.answers.push(req.body)
       question.highlightedBy = []
       product.markModified(questionType)
@@ -132,7 +132,7 @@ const createReportToQuestion = (req, res) => {
 
   Product.findOne(query)
     .then((product) => {
-      const report = product[questionType].find((question) => question._id.equals(id)).report
+      const report = product[questionType].find((question) => question._id.toString() === id).report
       req.body.forEach((reportKey) => {
         report[reportKey] += 1
       })
@@ -152,8 +152,8 @@ const createReportToAnswer = (req, res) => {
   Product.findOne(query)
     .then((product) => {
       const report = product[questionType]
-        .find((question) => question._id.equals(questionId))
-        .answers.find((answer) => answer._id.equals(answerId)).report
+        .find((question) => question._id.toString() === questionId)
+        .answers.find((answer) => answer._id.toString() === answerId).report
       req.body.forEach((reportKey) => {
         report[reportKey] += 1
       })
@@ -172,7 +172,7 @@ const createUserToHighlight = (req, res) => {
   const query = { [`${questionType}._id`]: id }
 
   Product.findOne(query).then((product) => {
-    const question = product[questionType].find((question) => question._id.equals(id))
+    const question = product[questionType].find((question) => question._id.toString() === id)
     question.highlightedBy.push(userId)
     product.markModified(questionType)
     product
@@ -189,8 +189,10 @@ const removeUserFromHighlight = (req, res) => {
 
   Product.findOne(query)
     .then((product) => {
-      const highlightedBy = product[questionType].find((question) => question._id.equals(id)).highlightedBy
-      highlightedBy = highlightedBy.filter((highlightedUserId) => !highlightedUserId.equals(userId))
+      const question = product[questionType].find((question) => question._id.toString() === id)
+      question.highlightedBy = question.highlightedBy.filter(
+        (highlightedUserId) => highlightedUserId.toString() !== userId
+      )
       product.markModified(questionType)
       product
         .save()
