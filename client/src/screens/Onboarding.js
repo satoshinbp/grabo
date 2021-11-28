@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
-import { Animated, Dimensions, StyleSheet } from 'react-native'
-import { View, Box, FlatList, Button, Image, useTheme, ScrollView } from 'native-base'
+import { Animated, Dimensions } from 'react-native'
+import { View, Box, FlatList, Button, Image, useTheme } from 'native-base'
 import OnboardingItem from '../components/OnboardingItem'
 import onboardingSlides from '../utils/onboardingSlides'
 
@@ -56,19 +56,18 @@ export default ({ setIsFirstLaunch }) => {
     const inputRange = [0, (onboardingSlides.length - 1) * windowWidth]
     const left = scrollX.interpolate({
       inputRange,
-      // outputRange: [0, -(onboardingSlides.length - 1) * windowWidth * 0.2], // with parallax effect
-      outputRange: [0, -(onboardingSlides.length - 1) * windowWidth],
+      outputRange: [0, -(onboardingSlides.length - 1) * windowWidth * 0.25], // with parallax effect
+      // outputRange: [0, -(onboardingSlides.length - 1) * windowWidth], // without parallax effect
       extrapolate: 'clamp',
     })
-    console.log(windowWidth)
     return (
       <Animated.Image
         source={require('../assets/images/onboarding-background.png')}
         alt="wave"
         style={{
-          // width: (onboardingSlides.length - 1) * windowWidth * 0.2 + windowWidth, // with parallax effect
-          width: onboardingSlides.length * windowWidth + windowWidth,
-          height: windowHeight * 0.7,
+          width: (onboardingSlides.length - 1) * windowWidth * 0.25 + windowWidth, // with parallax effect
+          // width: onboardingSlides.length * windowWidth + windowWidth, // without parallax effect
+          height: windowHeight * 0.65,
           resizeMode: 'stretch',
           position: 'absolute',
           left,
@@ -78,7 +77,7 @@ export default ({ setIsFirstLaunch }) => {
   }
 
   return (
-    <View flex={1} bg="lightText" pt={12}>
+    <View flex={1} bg="lightText" pt="56px">
       <Backdrop scrollX={scrollX} />
       <Animated.FlatList
         data={onboardingSlides}
