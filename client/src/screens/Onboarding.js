@@ -96,6 +96,7 @@ export default ({ setIsFirstLaunch }) => {
       <Square scrollX={scrollX} /> */}
       <Image
         source={require('../assets/images/onboarding-background.png')}
+        alt="wave"
         w={windowWidth * onboardingSlides.length}
         h={windowHeight / 2}
         position="absolute"
@@ -109,7 +110,7 @@ export default ({ setIsFirstLaunch }) => {
         showsHorizontalScrollIndicator={false}
         pagingEnabled
         bounces={false}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.alt}
       />
       <Indicator scrollX={scrollX} />
       <Button
