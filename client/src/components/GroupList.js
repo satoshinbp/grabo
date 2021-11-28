@@ -15,7 +15,7 @@ export default () => {
     <FlatList
       data={groups.filter((group) => user?.groups?.includes(group.code))}
       renderItem={({ item }) => (
-        <ListItemBarColored text={item.language} icon={<SunIcon size={8} />} onPress={() => onPress(item)} />
+        <ListItemBarColored text={item.language} code={item.code} onPress={() => onPress(item)} />
       )}
       keyExtractor={(item) => item.code}
       showsVerticalScrollIndicator={false}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { ScrollView, VStack, Checkbox, Text, Button, Box, HStack, SunIcon, Center } from 'native-base'
+import { ScrollView, VStack, Checkbox, Text, Button, Box, HStack, SunIcon, Center, Icon } from 'native-base'
 import groupList from '../utils/groups'
 import { updateUser } from '../features/auth'
 
@@ -36,7 +36,9 @@ export default () => {
             <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
-                  <SunIcon size={8} />
+                  <Text fontSize="md" bold>
+                    {group.code}
+                  </Text>
                 </Center>
                 <Text fontSize="md" bold>
                   {group.language}

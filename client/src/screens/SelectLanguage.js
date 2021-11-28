@@ -39,7 +39,9 @@ export default () => {
             <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
-                  <SunIcon size={8} />
+                  <Text fontSize="md" bold>
+                    {group.code}
+                  </Text>
                 </Center>
                 <Text fontSize="md" bold>
                   {group.language}
