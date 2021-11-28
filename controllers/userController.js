@@ -4,7 +4,7 @@ const getCurrentUser = (req, res) => res.status(200).send(req.user)
 
 const getUsersByGroup = async (req, res) => {
   try {
-    const users = User.find({ groups: { $in: req.params.group } })
+    const users = await User.find({ groups: { $in: req.params.group } })
     res.status(200).send(users)
   } catch (e) {
     res.status(400).send()
@@ -13,7 +13,7 @@ const getUsersByGroup = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    let user = await User.findOne({ _id: req.params.id })
+    let user = await User.findById(req.params.id)
     const updates = Object.keys(req.body)
 
     updates.forEach((update) => {
@@ -33,10 +33,10 @@ const updateUser = async (req, res) => {
 
 const readNotification = async (req, res) => {
   try {
-    let user = await User.findOne({ _id: req.body.id }, { notifications: 1 })
+    let user = await User.findById(req.params.id)
 
     user.notifications.forEach((notification) => {
-      if (notification._id === req.body.notificationId) {
+      if (notification._id === req.params.notificationId) {
         notification.read = true
       }
     })

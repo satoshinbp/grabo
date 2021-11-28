@@ -74,6 +74,7 @@ export const createProduct = createAsyncThunk(
     const product = await postProduct(token, productParams)
 
     const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
+    console.log('user fetched', fetchedUsers)
 
     const notificationParams = {
       notifications: {
@@ -82,11 +83,17 @@ export const createProduct = createAsyncThunk(
         productId: product._id,
       },
     }
-    fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+    fetchedUsers.forEach(async (user) => {
+      await patchUser(token, user._id, notificationParams)
+    })
+    console.log('set notifications')
 
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
-    const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
-    notificationTokens.map((token) => sendPushNotification(token))
+    const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
+    notificationTokens.forEach(async (token) => {
+      await sendPushNotification(token)
+    })
+    console.log('notifications sent')
 
     dispatch(clearImage())
 
