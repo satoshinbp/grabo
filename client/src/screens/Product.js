@@ -85,11 +85,11 @@ export default () => {
     setModalContentType('question')
   }
 
-  const setAnswerForm = (index, type, description) => {
+  const setAnswerForm = (id, type, description) => {
     setIsModalOpen(true)
     setModalContentType('answer')
 
-    setAnswerFormParams({ index, type, description })
+    setAnswerFormParams({ id, type, description })
   }
 
   const setReportForm = (questionIndex, type, answerIndex) => {
@@ -118,7 +118,7 @@ export default () => {
   const submitAnswer = () => {
     setIsModalOpen(false)
 
-    const params = { productId: product?._id, index: answerFormParams.index, type: answerFormParams.type, answer }
+    const params = { id: answerFormParams.id, type: answerFormParams.type, answer }
     dispatch(addAnswer({ token, params }))
 
     setAnswer(null)
@@ -204,7 +204,7 @@ export default () => {
                   {qa.answers.length > 1 ? ' answers' : ' answer'}
                 </Text>
                 <Text
-                  onPress={() => setAnswerForm(index, type, type === 'uniq' ? qa.question.description : qa.question)}
+                  onPress={() => setAnswerForm(qa._id, type, type === 'uniq' ? qa.question.description : qa.question)}
                 >
                   Answer
                 </Text>
