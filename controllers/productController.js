@@ -166,12 +166,14 @@ const createReportToAnswer = (req, res) => {
 }
 
 const createUserToHighlight = (req, res) => {
-  const { id, index } = req.params
+  const { id } = req.params
   const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
   const { userId } = req.body
+  const query = { [`${questionType}._id`]: id }
 
-  Product.findById(id).then((product) => {
-    product[questionType][index].highlightedBy.push(userId)
+  Product.findOne(query).then((product) => {
+    const question = product[questionType].find((question) => question._id.equals(id))
+    question.highlightedBy.push(userId)
     product.markModified(questionType)
     product
       .save()
@@ -181,14 +183,14 @@ const createUserToHighlight = (req, res) => {
 }
 
 const removeUserFromHighlight = (req, res) => {
-  const { id, index, userId } = req.params
+  const { id, userId } = req.params
   const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
+  const query = { [`${questionType}._id`]: id }
 
-  Product.findById(id)
+  Product.findOne(query)
     .then((product) => {
-      product[questionType][index].highlightedBy = product[questionType][index].highlightedBy.filter(
-        (highlightedUserId) => highlightedUserId.toString() !== userId
-      )
+      const highlightedBy = product[questionType].find((question) => question._id.equals(id)).highlightedBy
+      highlightedBy = highlightedBy.filter((highlightedUserId) => !highlightedUserId.equals(userId))
       product.markModified(questionType)
       product
         .save()

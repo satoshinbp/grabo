@@ -148,8 +148,8 @@ export default () => {
   }
 
   // TOGGLE HIGHLIGHT / FAVORITE FROM ICON BUTTON
-  const toggleHighlight = (questionIndex, questionType, isHighlighted) => {
-    const params = { productId: product?._id, userId: user._id, questionIndex, questionType }
+  const toggleHighlight = (questionId, questionType, isHighlighted) => {
+    const params = { userId: user._id, questionId, questionType }
     if (isHighlighted) {
       dispatch(unhighlightQuestion({ token, params }))
     } else {
@@ -191,7 +191,7 @@ export default () => {
   )
 
   const QuestionAccordions = (questions, type) =>
-    questions.map((question, index) => (
+    questions.map((question) => (
       <Accordion>
         <Accordion.Item>
           <Accordion.Summary>
@@ -215,7 +215,7 @@ export default () => {
                   Answer
                 </Text>
               </VStack>
-              <Pressable onPress={() => toggleHighlight(index, type, question.highlightedBy.includes(user._id))}>
+              <Pressable onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}>
                 <Box>{`★ ${question.highlightedBy.length}`}</Box>
               </Pressable>
               <Accordion.Icon />

@@ -15,8 +15,8 @@ router.post('/questions/:type/:id/answers', productController.createAnswer)
 router.put('/questions/:type/:id/reports', productController.createReportToQuestion)
 router.put('/questions/:type/:questionId/answers/:answerId/reports', productController.createReportToAnswer)
 
-router.post('/:id/questions/:type/:index/highlight', productController.createUserToHighlight)
-router.delete('/:id/questions/:type/:index/highlight/:userId', productController.removeUserFromHighlight)
+router.post('/questions/:type/:id/highlight', productController.createUserToHighlight)
+router.delete('/questions/:type/:id/highlight/:userId', productController.removeUserFromHighlight)
 
 router.post('/:id/favor', productController.createUserToFavorite)
 router.delete('/:id/favor/:userId', productController.removeUserFromFavorite)
