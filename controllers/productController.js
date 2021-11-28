@@ -139,7 +139,7 @@ const createReportToQuestion = (req, res) => {
       product
         .save()
         .then((result) => res.send(result))
-        .catch((e) => res.send(e))
+        .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
 }
@@ -160,7 +160,7 @@ const createReportToAnswer = (req, res) => {
       product
         .save()
         .then((result) => res.send(result))
-        .catch((e) => res.send(e))
+        .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
 }
