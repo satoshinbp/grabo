@@ -126,14 +126,15 @@ const createAnswer = (req, res) => {
 }
 
 const createReportToQuestion = (req, res) => {
-  const { id, index } = req.params
+  const { id } = req.params
   const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
+  const query = { [`${questionType}._id`]: id }
 
-  Product.findById(id)
+  Product.findOne(query)
     .then((product) => {
-      const updateReport = product[questionType][index].report
+      const report = product[questionType].find((question) => question._id.equals(id)).report
       req.body.forEach((reportKey) => {
-        updateReport[reportKey] += 1
+        report[reportKey] += 1
       })
       product
         .save()
@@ -144,14 +145,17 @@ const createReportToQuestion = (req, res) => {
 }
 
 const createReportToAnswer = (req, res) => {
-  const { id, questionIndex, answerIndex } = req.params
+  const { questionId, answerId } = req.params
   const questionType = req.params.type === 'fixed' ? 'fixedQandAs' : 'uniq' ? 'uniqQandAs' : null
+  const query = { [`${questionType}._id`]: questionId }
 
-  Product.findById(id)
+  Product.findOne(query)
     .then((product) => {
-      const updateReport = product[questionType][questionIndex].answers[answerIndex].report
+      const report = product[questionType]
+        .find((question) => question._id.equals(questionId))
+        .answers.find((answer) => answer._id.equals(answerId)).report
       req.body.forEach((reportKey) => {
-        updateReport[reportKey] += 1
+        report[reportKey] += 1
       })
       product
         .save()

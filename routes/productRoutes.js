@@ -12,8 +12,8 @@ router.post('/', productController.createProduct)
 router.post('/:id/questions/:type', productController.createQuestion)
 router.post('/questions/:type/:id/answers', productController.createAnswer)
 
-router.put('/:id/questions/:type/:index/reports', productController.createReportToQuestion)
-router.put('/:id/questions/:type/:questionIndex/answers/:answerIndex/reports', productController.createReportToAnswer)
+router.put('/questions/:type/:id/reports', productController.createReportToQuestion)
+router.put('/questions/:type/:questionId/answers/:answerId/reports', productController.createReportToAnswer)
 
 router.post('/:id/questions/:type/:index/highlight', productController.createUserToHighlight)
 router.delete('/:id/questions/:type/:index/highlight/:userId', productController.removeUserFromHighlight)
