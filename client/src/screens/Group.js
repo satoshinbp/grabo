@@ -11,9 +11,7 @@ export default ({ navigation }) => {
   const route = useRoute()
   const { token } = useSelector((state) => state.auth)
   const { loading } = useSelector((state) => state.product)
-  //const [isProductByDate, setIsProductByDate] = useState(true)
-  const { categoryIsDate } = useSelector((state) => state.sortCategory)
-  const { groupedProducts } = useSelector((state) => state.product)
+  const { isSortedByDate } = useSelector((state) => state.sortCategory)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -25,44 +23,44 @@ export default ({ navigation }) => {
   }, [navigation])
 
   useEffect(() => {
-    if (categoryIsDate === true) {
+    if (isSortedByDate === true) {
       dispatch(sortGroupedProductsByDate())
     } else {
       dispatch(sortGroupedProductsByHighlight())
     }
-  }, [categoryIsDate, groupedProducts])
+  }, [isSortedByDate])
 
   if (loading) return <Loading />
   return (
     <View variant="wrapper">
-      <Text>{categoryIsDate ? 'Date' : 'highlight'}</Text>
+      <Text>{isSortedByDate ? 'Date' : 'highlight'}</Text>
       <>
         <Text fontSize="lg" bold my="3">
           {route.params.language} Group
         </Text>
         <Flex direction="row" alignItems="center" justify="center" width="100%">
-          <Box variant={categoryIsDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
+          <Box variant={isSortedByDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
             <Pressable
               py="4"
               onPress={() => {
                 dispatch(switchSortCategory(true))
-                console.log(categoryIsDate)
+                console.log(isSortedByDate)
               }}
             >
-              <Text alignItems="center" fontWeight={categoryIsDate ? 'bold' : 'normal'}>
+              <Text alignItems="center" fontWeight={isSortedByDate ? 'bold' : 'normal'}>
                 Products by Date
               </Text>
             </Pressable>
           </Box>
-          <Box variant={!categoryIsDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
+          <Box variant={!isSortedByDate ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
             <Pressable
               py="4"
               onPress={() => {
                 dispatch(switchSortCategory(false))
-                console.log(categoryIsDate)
+                console.log(isSortedByDate)
               }}
             >
-              <Text fontWeight={categoryIsDate ? 'normal' : 'bold'}>Products by Highlights</Text>
+              <Text fontWeight={isSortedByDate ? 'normal' : 'bold'}>Products by Highlights</Text>
             </Pressable>
           </Box>
         </Flex>

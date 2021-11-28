@@ -10,7 +10,6 @@ export default () => {
   const navigation = useNavigation()
 
   const { groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
-  const { categoryIsDate } = useSelector((state) => state.sortCategory) // sort by "date" or "highlight"
 
   const gridLayoutFormat = (data, numColumns) => {
     const tempData = data.concat()
@@ -53,7 +52,7 @@ export default () => {
           imageStyle={{ borderRadius: 12 }}
           style={{ width: 144, height: 144, alignSelf: 'center' }}
         >
-          <Box variant="productCard" />
+          <Box variant="productCard"></Box>
         </ImageBackground>
       </Pressable>
     ) : (
