@@ -1,49 +1,11 @@
 import React, { useRef } from 'react'
 import { Animated, Dimensions, StyleSheet } from 'react-native'
-import { View, Box, FlatList, Button, Image, useTheme } from 'native-base'
+import { View, Box, FlatList, Button, Image, useTheme, ScrollView } from 'native-base'
 import OnboardingItem from '../components/OnboardingItem'
 import onboardingSlides from '../utils/onboardingSlides'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
-
-// const Square = ({ scrollX }) => {
-//   const YOLO = Animated.modulo(
-//     Animated.divide(Animated.modulo(scrollX, windowWidth), new Animated.Value(windowWidth)),
-//     1
-//   )
-//   const rotate = YOLO.interpolate({
-//     inputRange: [0, 0.5, 1],
-//     outputRange: ['35deg', '0deg', '35deg'],
-//   })
-//   const translateX = YOLO.interpolate({
-//     inputRange: [0, 0.5, 1],
-//     outputRange: [0, -windowHeight, 0],
-//   })
-//   return (
-//     <Animated.View
-//       style={{
-//         position: 'absolute',
-//         top: -windowHeight * 0.6,
-//         left: -windowHeight * 0.3,
-//         width: windowHeight,
-//         height: windowHeight,
-//         borderRadius: 86,
-//         backgroundColor: '#fff',
-//         transform: [{ rotate }, { translateX }],
-//       }}
-//     />
-//   )
-// }
-
-// const bgs = ['#A5BBFF', '#DDBEFE', '#FF63ED', '#B98EFF']
-// const Backdrop = ({ scrollX }) => {
-//   const backgroundColor = scrollX.interpolate({
-//     inputRange: bgs.map((_, i) => i * windowWidth),
-//     outputRange: bgs.map((bg) => bg),
-//   })
-//   return <Animated.View style={[StyleSheet.absoluteFillObject, { backgroundColor }]} />
-// }
 
 export default ({ setIsFirstLaunch }) => {
   const scrollX = useRef(new Animated.Value(0)).current
@@ -90,17 +52,34 @@ export default ({ setIsFirstLaunch }) => {
     </Box>
   )
 
-  return (
-    <View flex={1} bg="lightText">
-      {/* <Backdrop scrollX={scrollX} />
-      <Square scrollX={scrollX} /> */}
-      <Image
+  const Backdrop = ({ scrollX }) => {
+    const inputRange = [0, (onboardingSlides.length - 1) * windowWidth]
+    const left = scrollX.interpolate({
+      inputRange,
+      // outputRange: [0, -(onboardingSlides.length - 1) * windowWidth * 0.2], // with parallax effect
+      outputRange: [0, -(onboardingSlides.length - 1) * windowWidth],
+      extrapolate: 'clamp',
+    })
+    console.log(windowWidth)
+    return (
+      <Animated.Image
         source={require('../assets/images/onboarding-background.png')}
         alt="wave"
-        w={windowWidth * onboardingSlides.length}
-        h={windowHeight / 2}
-        position="absolute"
+        style={{
+          // width: (onboardingSlides.length - 1) * windowWidth * 0.2 + windowWidth, // with parallax effect
+          width: onboardingSlides.length * windowWidth + windowWidth,
+          height: windowHeight * 0.7,
+          resizeMode: 'stretch',
+          position: 'absolute',
+          left,
+        }}
       />
+    )
+  }
+
+  return (
+    <View flex={1} bg="lightText" pt={12}>
+      <Backdrop scrollX={scrollX} />
       <Animated.FlatList
         data={onboardingSlides}
         renderItem={({ item }) => <OnboardingItem item={item} />}
