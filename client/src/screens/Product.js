@@ -85,18 +85,18 @@ export default () => {
     setModalContentType('question')
   }
 
-  const setAnswerForm = (index, type, description) => {
+  const setAnswerForm = (id, type, description) => {
     setIsModalOpen(true)
     setModalContentType('answer')
 
-    setAnswerFormParams({ index, type, description })
+    setAnswerFormParams({ id, type, description })
   }
 
-  const setReportForm = (questionIndex, type, answerIndex) => {
+  const setReportForm = (type, questionId, answerId) => {
     setIsModalOpen(true)
     setModalContentType('report')
 
-    setReportFormParams({ questionIndex, type, answerIndex })
+    setReportFormParams({ type, questionId, answerId })
   }
 
   const closeModal = () => {
@@ -118,7 +118,7 @@ export default () => {
   const submitAnswer = () => {
     setIsModalOpen(false)
 
-    const params = { productId: product?._id, index: answerFormParams.index, type: answerFormParams.type, answer }
+    const params = { id: answerFormParams.id, type: answerFormParams.type, answer }
     dispatch(addAnswer({ token, params }))
 
     setAnswer(null)
@@ -130,9 +130,9 @@ export default () => {
 
     const params = {
       productId: product?._id,
-      questionIndex: reportFormParams.questionIndex,
       type: reportFormParams.type,
-      answerIndex: reportFormParams.answerIndex,
+      questionId: reportFormParams.questionId,
+      answerId: reportFormParams.answerId,
       reportKeys,
     }
 
@@ -148,8 +148,8 @@ export default () => {
   }
 
   // TOGGLE HIGHLIGHT / FAVORITE FROM ICON BUTTON
-  const toggleHighlight = (questionIndex, questionType, isHighlighted) => {
-    const params = { productId: product?._id, userId: user._id, questionIndex, questionType }
+  const toggleHighlight = (questionId, questionType, isHighlighted) => {
+    const params = { userId: user._id, questionId, questionType }
     if (isHighlighted) {
       dispatch(unhighlightQuestion({ token, params }))
     } else {
@@ -190,27 +190,33 @@ export default () => {
     </View>
   )
 
-  const QuestionAccordions = (qas, type) =>
-    qas.map((qa, index) => (
+  const QuestionAccordions = (questions, type) =>
+    questions.map((question) => (
       <Accordion>
         <Accordion.Item>
           <Accordion.Summary>
             <HStack alignItems="center">
               <VStack flex={1}>
-                <Text>{type === 'uniq' ? qa.question.description : qa.question}</Text>
+                <Text>{type === 'uniq' ? question.question.description : question.question}</Text>
                 <Text fontSize="xs">
                   This question has&nbsp;
-                  {qa.answers.length}
-                  {qa.answers.length > 1 ? ' answers' : ' answer'}
+                  {question.answers.length}
+                  {question.answers.length > 1 ? ' answers' : ' answer'}
                 </Text>
                 <Text
-                  onPress={() => setAnswerForm(index, type, type === 'uniq' ? qa.question.description : qa.question)}
+                  onPress={() =>
+                    setAnswerForm(
+                      question.question.id,
+                      type,
+                      type === 'uniq' ? question.question.description : question.question
+                    )
+                  }
                 >
                   Answer
                 </Text>
               </VStack>
-              <Pressable onPress={() => toggleHighlight(index, type, qa.highlightedBy.includes(user._id))}>
-                <Box>{`★ ${qa.highlightedBy.length}`}</Box>
+              <Pressable onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}>
+                <Box>{`★ ${question.highlightedBy.length}`}</Box>
               </Pressable>
               <Accordion.Icon />
             </HStack>
@@ -220,11 +226,11 @@ export default () => {
             p={0}
             backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
           >
-            {qa.answers.map((answer, answerIndex) => (
+            {question.answers.map((answer) => (
               <>
                 <View p={4} flexDirection="row" justifyContent="space-between">
                   <Text>{answer?.description}</Text>
-                  <Pressable onPress={() => setReportForm(index, type, answerIndex)}>
+                  <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
                     <Image
                       source={require('../assets/icons/exclamation.jpeg')}
                       alt="exclamation"

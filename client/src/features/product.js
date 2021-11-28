@@ -65,9 +65,12 @@ export const createProduct = createAsyncThunk(
   async ({ token, params: productParams }, { getState, dispatch }) => {
     const { image } = getState()
     const { auth } = getState()
+
     const imageParams = new FormData()
     imageParams.append('image', { uri: image.value.uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    await postImage(token, imageParams)
+    const urls = await postImage(token, imageParams)
+
+    productParams.urls = urls
     const product = await postProduct(token, productParams)
 
     const fetchedUsers = await fetchUsersByGroup(token, image.value.code)

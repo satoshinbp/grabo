@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { View, VStack, Checkbox, Text, Button } from 'native-base'
+import { ScrollView, VStack, Checkbox, Text, Button, Box, HStack, SunIcon, Center } from 'native-base'
 import groupList from '../utils/groups'
 import { updateUser } from '../features/auth'
 
@@ -25,7 +25,7 @@ export default () => {
   }
 
   return (
-    <View variant="wrapper">
+    <ScrollView variant="wrapper">
       <VStack variant="container">
         <Checkbox.Group
           defaultValue={user.groups}
@@ -33,14 +33,22 @@ export default () => {
           onChange={(values) => setGroups(values)}
         >
           {groupList.map((group) => (
-            <Checkbox value={group.code} my={0.5}>
-              {group.language}
-            </Checkbox>
+            <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
+              <HStack space={3} alignItems="center">
+                <Center size={12} bg="primary.500" borderRadius="full">
+                  <SunIcon size={8} />
+                </Center>
+                <Text fontSize="md" bold>
+                  {group.language}
+                </Text>
+                <Checkbox value={group.code} my={0.5} marginLeft="auto" />
+              </HStack>
+            </Box>
           ))}
         </Checkbox.Group>
         {/* {isError && <Text>You have to belong to at least one Group</Text>} */}
         <Button onPress={handleSave}>Save</Button>
       </VStack>
-    </View>
+    </ScrollView>
   )
 }
