@@ -1,7 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import * as RootNavigation from '../navigators/RootNavigation'
-import lodash from 'lodash'
-import { ParallaxImage } from 'react-native-snap-carousel'
 
 const sortCategorySlice = createSlice({
   name: 'sortCategory',

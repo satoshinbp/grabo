@@ -4,15 +4,16 @@ import { useRoute } from '@react-navigation/core'
 import { Box, Button, Divider, Flex, HStack, Pressable, Text, View } from 'native-base'
 import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
-import { setProductsByGroup } from '../features/product'
+import { setProductsByGroup, sortGroupedProductsByDate, sortGroupedProductsByHighlight } from '../features/product'
 import { switchSortCategory } from '../features/ProductSortCategory'
 
 export default ({ navigation }) => {
   const route = useRoute()
   const { token } = useSelector((state) => state.auth)
   const { loading } = useSelector((state) => state.product)
-  const [isProductByDate, setIsProductByDate] = useState(true)
+  //const [isProductByDate, setIsProductByDate] = useState(true)
   const { categoryIsDate } = useSelector((state) => state.sortCategory)
+  const { groupedProducts } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -22,9 +23,19 @@ export default ({ navigation }) => {
 
     return unsubscribe
   }, [navigation])
+
+  useEffect(() => {
+    if (categoryIsDate === true) {
+      dispatch(sortGroupedProductsByDate())
+    } else {
+      dispatch(sortGroupedProductsByHighlight())
+    }
+  }, [categoryIsDate, groupedProducts])
+
   if (loading) return <Loading />
   return (
     <View variant="wrapper">
+      <Text>{categoryIsDate ? 'Date' : 'highlight'}</Text>
       <>
         <Text fontSize="lg" bold my="3">
           {route.params.language} Group
