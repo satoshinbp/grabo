@@ -52,35 +52,34 @@ export default () => {
           {user?.email}
         </Text>
       </VStack>
+
       <View variant="wrapper">
-        <View>
-          {menu.map(({ text, icon, onPress }) => (
-            <ListItemBarPlain key={text} text={text} icon={icon} onPress={onPress} />
-          ))}
-        </View>
-
-        <FadeModal
-          isOpen={notificationModalOpen}
-          onClose={() => setNotificationModalOpen(false)}
-          title="Notification"
-          content={user?.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
-          primaryAction={toggleNotification}
-          primaryActionLabel={user?.isNotificationOn ? 'Mute' : 'Unmute'}
-          secondaryAction={() => setNotificationModalOpen(false)}
-          secondaryActionLabel="Cancel"
-        />
-
-        <FadeModal
-          isOpen={logoutModalOpen}
-          onClose={() => setLogoutModalOpen(false)}
-          title="Logout"
-          content="Are you sure to logout from Grabo?"
-          primaryAction={() => dispatch(logout())}
-          primaryActionLabel="Logout"
-          secondaryAction={() => setLogoutModalOpen(false)}
-          secondaryActionLabel="Cancel"
-        />
+        {menu.map(({ text, icon, onPress }) => (
+          <ListItemBarPlain key={text} text={text} icon={icon} onPress={onPress} />
+        ))}
       </View>
+
+      <FadeModal
+        isOpen={notificationModalOpen}
+        onClose={() => setNotificationModalOpen(false)}
+        title="Notification"
+        content={user?.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
+        primaryAction={toggleNotification}
+        primaryActionLabel={user?.isNotificationOn ? 'Mute' : 'Unmute'}
+        secondaryAction={() => setNotificationModalOpen(false)}
+        secondaryActionLabel="Cancel"
+      />
+
+      <FadeModal
+        isOpen={logoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        title="Logout"
+        content="Are you sure to logout from Grabo?"
+        primaryAction={() => dispatch(logout())}
+        primaryActionLabel="Logout"
+        secondaryAction={() => setLogoutModalOpen(false)}
+        secondaryActionLabel="Cancel"
+      />
     </>
   )
 }
