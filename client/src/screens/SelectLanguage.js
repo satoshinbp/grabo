@@ -30,7 +30,7 @@ export default () => {
           <Text>
             {isTextDetected
               ? 'Press next button to continue or change language if you think the detected language is wrong.'
-              : 'Create a new product by selecting a language that we currently support from the list below.'}
+              : 'Create a new product by selecting a language that grabo currently support from the list below.'}
           </Text>
         </View>
 
@@ -39,7 +39,9 @@ export default () => {
             <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
-                  <SunIcon size={8} />
+                  <Text fontSize="md" bold>
+                    {group.code}
+                  </Text>
                 </Center>
                 <Text fontSize="md" bold>
                   {group.language}

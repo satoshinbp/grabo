@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
-import { signInWithGoogle, fetchUser, patchUser } from '../api/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { signInWithGoogle, fetchUser, patchUser, setNotificationTrue } from '../api/auth'
 
 export const setUser = createAsyncThunk('users/fetch', async (token) => {
   const user = await fetchUser(token)
@@ -15,10 +16,16 @@ export const login = createAsyncThunk('users/login', async (idToken) => {
 
 export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
+  AsyncStorage.clear() // This is to test onboarding slides.
 })
 
 export const updateUser = createAsyncThunk('users/update', async ({ token, id, params }) => {
   const user = await patchUser(token, id, params)
+  return user
+})
+
+export const readNotification = createAsyncThunk('users/notification', async ({ token, params }) => {
+  const user = await setNotificationTrue(token, params)
   return user
 })
 
@@ -90,6 +97,16 @@ const authSlice = createSlice({
       state.loading = false
     },
     [updateUser.rejected]: (state) => {
+      state.loading = false
+    },
+    [readNotification.pending]: (state) => {
+      state.loading = true
+    },
+    [readNotification.fulfilled]: (state, action) => {
+      state.user = action.payload
+      state.loading = false
+    },
+    [readNotification.rejected]: (state) => {
       state.loading = false
     },
   },

@@ -45,7 +45,7 @@ const sendPushNotification = async (expoPushToken) => {
     to: expoPushToken,
     sound: 'default',
     title: 'Help',
-    body: 'Someone need your help!',
+    body: 'Someone is waiting for your help!',
     data: { someData: 'goes here' },
   }
 
@@ -65,13 +65,18 @@ export const createProduct = createAsyncThunk(
   async ({ token, params: productParams }, { getState, dispatch }) => {
     const { image } = getState()
     const { auth } = getState()
-    const imageParams = new FormData()
-    imageParams.append('image', { uri: image.value.uris[0], name: 'uploadedImage.jpeg', type: 'image/jpeg' })
-    await postImage(token, imageParams)
+
+    const postImagePromises = image.value.uris.map((uri) => {
+      const imageParams = new FormData()
+      imageParams.append('image', { uri, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
+      return postImage(token, imageParams)
+    })
+    const urls = await Promise.all(postImagePromises)
+
+    productParams.urls = urls
     const product = await postProduct(token, productParams)
 
     const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
-
     const notificationParams = {
       notifications: {
         read: false,
@@ -79,14 +84,15 @@ export const createProduct = createAsyncThunk(
         productId: product._id,
       },
     }
-    fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+    const patchUserPromises = fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+    await Promise.all(patchUserPromises)
 
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
-    const notificationTokens = await notifiedUsers.map((user) => user.notificationToken)
-    notificationTokens.map((token) => sendPushNotification(token))
+    const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
+    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token))
+    await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-
     RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
 
     return product
@@ -134,14 +140,59 @@ const setProducts = (state, category, products) => {
   state.loading = false
 }
 const updateProduct = (state, product) => {
-  const productIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
-  state.groupedProducts[productIndex] = product
+  const groupedIroductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
+  state.groupedProducts[groupedIroductIndex] = product
+
+  const postedIroductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
+  if (postedIroductIndex !== -1) {
+    state.postedProducts[postedIroductIndex] = product
+  }
+
+  const savedProductIndex = lodash.findIndex(state.savedProducts, { _id: product._id })
+  if (savedProductIndex !== -1) {
+    state.savedProducts[savedProductIndex] = product
+  }
+
   state.loading = false
+}
+const selectProductsByRoute = (route) => {
+  switch (route) {
+    case 'Group':
+      return 'groupedProducts'
+    case 'MyProducts':
+      return 'postedProducts'
+    case 'Favorites':
+      return 'savedProducts'
+    default:
+      return null
+  }
 }
 
 const productSlice = createSlice({
   name: 'product',
   initialState: { groupedProducts: [], postedProducts: [], savedProducts: [], loading: false },
+  reducers: {
+    sortProductsByDate: (state, action) => {
+      const productsType = selectProductsByRoute(action.payload)
+      state[productsType].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    },
+    sortProductsByHighlight: (state, action) => {
+      const productsType = selectProductsByRoute(action.payload)
+      let highlightSum = 0
+
+      const productsWithHighlightSum = state[productsType].map((product) => {
+        product.fixedQandAs.forEach((question) => {
+          highlightSum += question.highlightedBy.length
+        })
+        product.uniqQandAs.forEach((question) => {
+          highlightSum += question.highlightedBy.length
+        })
+        return { ...product, highlightSum }
+      })
+
+      state[productsType] = productsWithHighlightSum.sort((a, b) => b.highlightSum - a.highlightSum)
+    },
+  },
   extraReducers: {
     [setProductsByGroup.pending]: (state) => startLoading(state),
     [setProductsByGroup.rejected]: (state) => finishLoading(state),
@@ -201,4 +252,5 @@ const productSlice = createSlice({
   },
 })
 
+export const { sortProductsByDate, sortProductsByHighlight } = productSlice.actions
 export default productSlice.reducer

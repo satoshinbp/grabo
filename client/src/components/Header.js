@@ -10,8 +10,8 @@ export default () => {
   return (
     <>
       <StatusBar backgroundColor={colors.primary[500]} barStyle="dark-content" />
-      <Box safeAreaTop bg="white" shadow={2}>
-        <HStack px={3} py={2} alignItems="center" justifyContent="space-between" bg="white">
+      <Box safeAreaTop bg="white" shadow={2} borderRadius="md">
+        <HStack justifyContent="space-between" alignItems="center" px={3} py={2}>
           <Image source={require('../assets/icons/logo-lg.png')} alt="logo" h="48px" w="112px" resizeMode="contain" />
 
           <Center size="8">

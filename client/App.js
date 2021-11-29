@@ -3,12 +3,15 @@ import { Provider } from 'react-redux'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { NavigationContainer } from '@react-navigation/native'
+import { LogBox } from 'react-native'
 import { NativeBaseProvider, extendTheme } from 'native-base'
 import authReducer from './src/features/auth'
 import imageReducer from './src/features/image'
 import productReducer from './src/features/product'
 import AppContainer from './src/components/AppContainer'
 import { navigationRef } from './src/navigators/RootNavigation'
+
+LogBox.ignoreAllLogs()
 
 const store = createStore(
   combineReducers({
@@ -93,6 +96,24 @@ export default () => {
           },
         },
       },
+      Pressable: {
+        variants: {
+          activeTab: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: 'primary.500',
+          }),
+          inactiveTab: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: 'transparent',
+          }),
+        },
+      },
       Button: {
         baseStyle: {
           _text: {
@@ -102,7 +123,7 @@ export default () => {
         },
         variants: {
           fab: (props) => {
-            // Copied from variant "solid". It is better if there is a way to extend instead of copy
+            // Copied from variant "solid". More sustainable if it could be extended from variant "solid".
             const { colorScheme: c } = props
             let bg = `${c}.500`
             return {
@@ -124,7 +145,8 @@ export default () => {
                 opacity: '50',
               },
               _disabled: { bg: 'trueGray.300' },
-              ////////////////////
+
+              // Original code below
               position: 'absolute',
               bottom: 4,
               right: 4,

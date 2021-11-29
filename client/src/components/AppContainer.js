@@ -45,7 +45,6 @@ export default () => {
         return
       }
       token = (await Notifications.getExpoPushTokenAsync()).data
-      // console.log('notificationtoken', token)
     } else {
       alert('Must use physical device for Push Notifications')
     }
@@ -89,12 +88,11 @@ export default () => {
         dispatch(setAppReady())
       }
     }
-
     getCurrentUser()
 
     if (token) {
-      dispatch(setProductsByUserId({ token, userId: user._id }))
-      dispatch(setProductsByFavoredUserId({ token, userId: user._id }))
+      dispatch(setProductsByUserId({ token, userId: user?._id }))
+      dispatch(setProductsByFavoredUserId({ token, userId: user?._id }))
 
       // notificationの確認
       registerForPushNotifications().then((expotoken) => {

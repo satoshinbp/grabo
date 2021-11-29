@@ -49,47 +49,41 @@ const postQuestionUniq = async (token, { productId, question }) => {
   return data
 }
 
-const postAnswer = async (token, { productId, index, type, answer }) => {
-  const { data } = await axios.post(
-    `http://54.202.13.134/api/products/${productId}/questions/${type}/${index}/answers`,
-    answer,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  )
+const postAnswer = async (token, { id, type, answer }) => {
+  const { data } = await axios.post(`http://54.202.13.134/api/products/questions/${type}/${id}/answers`, answer, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
   return data
 }
 
-const reportQuestion = async (token, { productId, index, type, reportKeys }) => {
+const reportQuestion = async (token, { id, type, reportKeys }) => {
+  const res = await axios.put(`http://54.202.13.134/api/products/questions/${type}/${id}/reports`, reportKeys, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return res
+}
+
+const reportAnswer = async (token, { type, questionId, answerId, reportKeys }) => {
   const res = await axios.put(
-    `http://54.202.13.134/api/products/${productId}/questions/${type}/${index}/reports`,
+    `http://54.202.13.134/api/products/questions/${type}/${questionId}/answers/${answerId}/reports`,
     reportKeys,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return res
 }
 
-const reportAnswer = async (token, { productId, questionIndex, type, answerIndex, reportKeys }) => {
-  const res = await axios.put(
-    `http://54.202.13.134/api/products/${productId}/questions/${type}/${questionIndex}/answers/${answerIndex}/reports`,
-    reportKeys,
-    { headers: { Authorization: `Bearer ${token}` } }
-  )
-  return res
-}
-
-const postUserToHighlight = async (token, { productId, userId, questionIndex, questionType }) => {
+const postUserToHighlight = async (token, { userId, questionId, questionType }) => {
   const { data } = await axios.post(
-    `http://54.202.13.134/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight`,
+    `http://54.202.13.134/api/products/questions/${questionType}/${questionId}/highlight`,
     { userId },
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return data
 }
 
-const deleteUserFromHighlight = async (token, { productId, userId, questionIndex, questionType }) => {
+const deleteUserFromHighlight = async (token, { userId, questionId, questionType }) => {
   const { data } = await axios.delete(
-    `http://54.202.13.134/api/products/${productId}/questions/${questionType}/${questionIndex}/highlight/${userId}`,
+    `http://54.202.13.134/api/products/questions/${questionType}/${questionId}/highlight/${userId}`,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return data

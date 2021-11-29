@@ -5,12 +5,14 @@ import groups from '../utils/groups'
 // In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const postImage = async (token, params) => {
-  await axios.post(`http://54.202.13.134/api/images`, params, {
+  const { data } = await axios.post(`http://54.202.13.134/api/images`, params, {
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`,
     },
   })
+
+  return data
 }
 
 const getOcrText = async (image) => {

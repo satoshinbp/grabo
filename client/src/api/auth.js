@@ -34,6 +34,17 @@ const fetchUsersByGroup = async (token, code) => {
   }
 }
 
+const fetchUserByUserId = async (token, id) => {
+  try {
+    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/highlight/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 const patchUser = async (token, id, params) => {
   try {
     const { data } = await axios.patch(`http://54.202.13.134/api/users/${id}`, params, {
@@ -45,4 +56,15 @@ const patchUser = async (token, id, params) => {
   }
 }
 
-export { signInWithGoogle, fetchUser, fetchUsersByGroup, patchUser }
+const setNotificationTrue = async (token, { userId, notificationId }) => {
+  try {
+    const { data } = await axios.patch(`http://54.202.13.134/api/users/${userId}/notification/${notificationId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export { signInWithGoogle, fetchUser, fetchUsersByGroup, fetchUserByUserId, patchUser, setNotificationTrue }

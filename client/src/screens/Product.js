@@ -18,6 +18,7 @@ import {
   TextArea,
   Button,
   Checkbox,
+  useTheme,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -29,16 +30,20 @@ import {
   unsaveProduct,
 } from '../features/product'
 import { reportQuestion, reportAnswer } from '../api/product'
+import { fetchUserByUserId, patchUser } from '../api/auth'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
 import FavIcon from '../assets/icons/Fav'
 
 const windowWidth = Dimensions.get('window').width
+const windowHeight = Dimensions.get('window').height
 
 export default () => {
   const route = useRoute()
   const navigation = useNavigation()
+
+  const { colors } = useTheme()
 
   const { token, user } = useSelector((state) => state.auth)
   const { loading, groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
@@ -85,18 +90,18 @@ export default () => {
     setModalContentType('question')
   }
 
-  const setAnswerForm = (index, type, description) => {
+  const setAnswerForm = (id, type, description, highlightedBy) => {
     setIsModalOpen(true)
     setModalContentType('answer')
 
-    setAnswerFormParams({ index, type, description })
+    setAnswerFormParams({ id, type, description, highlightedBy })
   }
 
-  const setReportForm = (questionIndex, type, answerIndex) => {
+  const setReportForm = (type, questionId, answerId) => {
     setIsModalOpen(true)
     setModalContentType('report')
 
-    setReportFormParams({ questionIndex, type, answerIndex })
+    setReportFormParams({ type, questionId, answerId })
   }
 
   const closeModal = () => {
@@ -115,11 +120,58 @@ export default () => {
     setQuestion(null)
   }
 
-  const submitAnswer = () => {
+  const submitAnswer = async () => {
     setIsModalOpen(false)
 
-    const params = { productId: product?._id, index: answerFormParams.index, type: answerFormParams.type, answer }
+    const params = { id: answerFormParams.id, type: answerFormParams.type, answer }
     dispatch(addAnswer({ token, params }))
+
+    //send notification if question is highlighted
+    const userIds = answerFormParams.highlightedBy
+    const users = userIds.map((userId) => fetchUserByUserId(token, userId))
+    const fetchedUsers = await Promise.all(users)
+
+    const notificationParams = {
+      notifications: {
+        read: false,
+        message: `${user.firstName} answered your highlighted question`,
+        productId: product._id,
+      },
+    }
+
+    fetchedUsers.forEach(async (user) => {
+      await patchUser(token, user._id, notificationParams)
+    })
+
+    const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
+
+    const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
+    console.log(notificationTokens)
+
+    const sendPushNotification = async (expoPushToken) => {
+      const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: 'Got Answer!',
+        body: 'Someone answered your highlighted qusetion!',
+        data: { someData: 'goes here' },
+      }
+
+      await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      })
+    }
+
+    notificationTokens.forEach(async (token) => {
+      console.log(token)
+      await sendPushNotification(token)
+    })
 
     setAnswer(null)
     setAnswerFormParams(null)
@@ -130,9 +182,9 @@ export default () => {
 
     const params = {
       productId: product?._id,
-      questionIndex: reportFormParams.questionIndex,
       type: reportFormParams.type,
-      answerIndex: reportFormParams.answerIndex,
+      questionId: reportFormParams.questionId,
+      answerId: reportFormParams.answerId,
       reportKeys,
     }
 
@@ -148,8 +200,8 @@ export default () => {
   }
 
   // TOGGLE HIGHLIGHT / FAVORITE FROM ICON BUTTON
-  const toggleHighlight = (questionIndex, questionType, isHighlighted) => {
-    const params = { productId: product?._id, userId: user._id, questionIndex, questionType }
+  const toggleHighlight = (questionId, questionType, isHighlighted) => {
+    const params = { userId: user._id, questionId, questionType }
     if (isHighlighted) {
       dispatch(unhighlightQuestion({ token, params }))
     } else {
@@ -168,49 +220,51 @@ export default () => {
   }
 
   // SUB COMPONENTS
-  const CarouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
-
   const PaginationComponent = (images) => (
-    <View>
+    <Center w={windowWidth}>
       <Pagination
         dotsLength={images.length}
         activeDotIndex={activeSlide}
-        containerStyle={{ backgroundColor: 'rgba(255, 255, 255)' }}
-        alignSelf="center"
         dotStyle={{
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          backgroundColor: 'rgba(0, 0, 0, 0.54)',
+          width: 12,
+          height: 12,
+          borderRadius: 6,
+          backgroundColor: colors.primary[600],
         }}
-        inactiveDotOpacity={0.4}
+        inactiveDotOpacity={0.6}
         inactiveDotScale={0.6}
       />
-      <Center w={windowWidth} />
-    </View>
+    </Center>
   )
 
-  const QuestionAccordions = (qas, type) =>
-    qas.map((qa, index) => (
+  const QuestionAccordions = (questions, type) =>
+    questions.map((question) => (
       <Accordion>
         <Accordion.Item>
           <Accordion.Summary>
             <HStack alignItems="center">
               <VStack flex={1}>
-                <Text>{type === 'uniq' ? qa.question.description : qa.question}</Text>
+                <Text>{type === 'uniq' ? question.question.description : question.question}</Text>
                 <Text fontSize="xs">
                   This question has&nbsp;
-                  {qa.answers.length}
-                  {qa.answers.length > 1 ? ' answers' : ' answer'}
+                  {question.answers.length}
+                  {question.answers.length > 1 ? ' answers' : ' answer'}
                 </Text>
                 <Text
-                  onPress={() => setAnswerForm(index, type, type === 'uniq' ? qa.question.description : qa.question)}
+                  onPress={() =>
+                    setAnswerForm(
+                      question._id,
+                      type,
+                      type === 'uniq' ? question.question.description : question.question,
+                      question.highlightedBy
+                    )
+                  }
                 >
                   Answer
                 </Text>
               </VStack>
-              <Pressable onPress={() => toggleHighlight(index, type, qa.highlightedBy.includes(user._id))}>
-                <Box>{`★ ${qa.highlightedBy.length}`}</Box>
+              <Pressable onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}>
+                <Box>{`★ ${question.highlightedBy.length}`}</Box>
               </Pressable>
               <Accordion.Icon />
             </HStack>
@@ -220,11 +274,11 @@ export default () => {
             p={0}
             backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
           >
-            {qa.answers.map((answer, answerIndex) => (
+            {question.answers.map((answer) => (
               <>
                 <View p={4} flexDirection="row" justifyContent="space-between">
                   <Text>{answer?.description}</Text>
-                  <Pressable onPress={() => setReportForm(index, type, answerIndex)}>
+                  <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
                     <Image
                       source={require('../assets/icons/exclamation.jpeg')}
                       alt="exclamation"
@@ -313,45 +367,45 @@ export default () => {
   if (loading || !product) return <Loading />
   return (
     <>
-      <View flex={0.5}>
-        <View position="relative">
-          <Carousel
-            data={product?.images}
-            renderItem={CarouselImages}
-            itemWidth={windowWidth}
-            sliderWidth={windowWidth}
-            onSnapToItem={(index) => setActiveSlide(index)}
-          />
-          <Text position="absolute" bottom={0}>
-            {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
-          </Text>
-          <View position="absolute" bottom={0} right={3}>
-            <HStack space={3}>
-              <Pressable>
-                <Image
-                  source={require('../assets/icons/exclamation.jpeg')}
-                  alt="exclamation"
-                  width="28px"
-                  height="28px"
-                  padding={2}
-                />
-              </Pressable>
-              <Pressable onPress={toggleFavorite}>
-                <Center size={8}>
-                  <FavIcon width="24px" />
-                </Center>
-              </Pressable>
-            </HStack>
-          </View>
+      <View height={windowHeight * 0.3} position="relative" bg="primary.100">
+        <Carousel
+          data={product?.images}
+          renderItem={({ item }) => (
+            <Image source={{ uri: item.url }} alt="product image" w="100%" h="100%" resizeMode="contain" />
+          )}
+          itemWidth={windowWidth}
+          sliderWidth={windowWidth}
+          onSnapToItem={(index) => setActiveSlide(index)}
+        />
+        <View position="absolute" bottom={-12}>
+          {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
+        </View>
+        <View position="absolute" bottom={0} right={3}>
+          <HStack space={3}>
+            <Pressable>
+              <Image
+                source={require('../assets/icons/exclamation.jpeg')}
+                alt="exclamation"
+                width="28px"
+                height="28px"
+                padding={2}
+              />
+            </Pressable>
+            <Pressable onPress={toggleFavorite}>
+              <Center size={8}>
+                <FavIcon width="24px" />
+              </Center>
+            </Pressable>
+          </HStack>
         </View>
       </View>
 
-      <ScrollView variant="wrapper" flex={0.5} pt={4} mb={2}>
+      <ScrollView variant="wrapper" flex={1} pt={4}>
         {product?.fixedQandAs && QuestionAccordions(product?.fixedQandAs, 'fixed')}
         {product?.uniqQandAs && QuestionAccordions(product?.uniqQandAs, 'uniq')}
 
         {/* add extra space to avoid contents to be hidden by FAB */}
-        <View h="60px" />
+        <View h="96px" />
       </ScrollView>
 
       <Button variant="fab" onPress={setQuestionForm}>
