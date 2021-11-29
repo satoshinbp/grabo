@@ -112,11 +112,9 @@ export default () => {
     )
   }
   return (
-    <View variant="wrapper">
-      <VStack variant="container" flex={1} justifyContent="space-between" alignItems="center" my={12}>
-        <Camera ref={cameraRef} ratio="1:1" width={windowWidth * 0.92} height={windowWidth * 0.92} alignSelf="center" />
-        {actionButtons}
-      </VStack>
-    </View>
+    <VStack variant="container" flex={1} justifyContent="space-between" alignItems="center" my={12}>
+      <Camera ref={cameraRef} ratio="1:1" width={windowWidth} height={windowWidth} alignSelf="center" />
+      {actionButtons}
+    </VStack>
   )
 }
