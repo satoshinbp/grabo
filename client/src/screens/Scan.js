@@ -62,28 +62,13 @@ export default () => {
   }
 
   const actionButtons = (
-    <>
-      <Pressable position="absolute" bottom={4} right={4} onPress={openImagePickerAsync}>
-        <Center
-          width="48px"
-          height="48px"
-          borderRadius="full"
-          bg="primary.500"
-          _pressed={{
-            bg: 'primary.700',
-          }}
-        >
-          <GalleryIcon width="48px" />
-        </Center>
-      </Pressable>
-
+    <HStack w="100%" px={8} justifyContent="space-between" alignItems="center">
+      <Box w="36px" h="36px" />
       <Button
         isDisabled={!hasPermission}
         onPress={takePicture}
-        position="absolute"
-        bottom={4}
-        width="84px"
-        height="84px"
+        width="56px"
+        height="56px"
         borderRadius="full"
         bg="white"
         shadow={2}
@@ -92,9 +77,22 @@ export default () => {
           bg: `muted.200`,
         }}
       >
-        <Box w="68px" h="68px" borderWidth="4px" borderColor="primary.500" borderRadius="full" />
+        <Box w="52px" h="52px" borderWidth="2px" borderColor="primary.500" borderRadius="full" />
       </Button>
-    </>
+      <Pressable onPress={openImagePickerAsync}>
+        <Center
+          w="36px"
+          h="36px"
+          borderRadius="full"
+          bg="primary.500"
+          _pressed={{
+            bg: 'primary.700',
+          }}
+        >
+          <GalleryIcon width="36px" />
+        </Center>
+      </Pressable>
+    </HStack>
   )
 
   if (!isFocused) return <View />
@@ -114,9 +112,11 @@ export default () => {
     )
   }
   return (
-    <View flex={1} pt={12}>
-      <Camera ref={cameraRef} ratio="1:1" width={windowWidth * 0.96} height={windowWidth * 0.96} alignSelf="center" />
-      {actionButtons}
+    <View variant="wrapper">
+      <VStack variant="container" flex={1} justifyContent="space-between" alignItems="center" my={12}>
+        <Camera ref={cameraRef} ratio="1:1" width={windowWidth * 0.92} height={windowWidth * 0.92} alignSelf="center" />
+        {actionButtons}
+      </VStack>
     </View>
   )
 }

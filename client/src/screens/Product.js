@@ -253,7 +253,7 @@ export default () => {
                 <Text
                   onPress={() =>
                     setAnswerForm(
-                      question.question.id,
+                      question._id,
                       type,
                       type === 'uniq' ? question.question.description : question.question,
                       question.highlightedBy
@@ -400,12 +400,12 @@ export default () => {
         </View>
       </View>
 
-      <ScrollView variant="wrapper" flex={1} pt={4} mb={2}>
+      <ScrollView variant="wrapper" flex={1} pt={4}>
         {product?.fixedQandAs && QuestionAccordions(product?.fixedQandAs, 'fixed')}
         {product?.uniqQandAs && QuestionAccordions(product?.uniqQandAs, 'uniq')}
 
         {/* add extra space to avoid contents to be hidden by FAB */}
-        <View h="60px" />
+        <View h="96px" />
       </ScrollView>
 
       <Button variant="fab" onPress={setQuestionForm}>
