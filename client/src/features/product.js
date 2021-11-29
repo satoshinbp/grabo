@@ -195,8 +195,6 @@ const productSlice = createSlice({
       })
 
       state[productsType] = productsWithHighlightSum.sort((a, b) => b.highlightSum - a.highlightSum)
-
-      console.log(state.groupedProducts)
     },
   },
   extraReducers: {

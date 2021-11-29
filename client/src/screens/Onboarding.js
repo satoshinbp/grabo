@@ -26,22 +26,22 @@ export default ({ setIsFirstLaunch }) => {
         const inputRange = [(i - 1) * windowWidth, i * windowWidth, (i + 1) * windowWidth]
         const scale = scrollX.interpolate({
           inputRange,
-          outputRange: [0.8, 1.4, 0.8],
+          outputRange: [0.6, 1, 0.6],
           extrapolate: 'clamp',
         })
         const opacity = scrollX.interpolate({
           inputRange,
-          outputRange: [0.6, 0.9, 0.6],
+          outputRange: [0.6, 1, 0.6],
           extrapolate: 'clamp',
         })
         return (
           <Animated.View
             key={`indicator-${i}`}
             style={{
-              width: 10,
-              height: 10,
+              width: 15,
+              height: 15,
               margin: 8,
-              borderRadius: 5,
+              borderRadius: 7.5,
               backgroundColor: colors.primary[500],
               transform: [{ scale }],
               opacity,

@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { View, Button, HStack, VStack, Text, Pressable } from 'native-base'
+import { Animated, Dimensions } from 'react-native'
+import { View, Box, Center, Button, HStack, VStack, Text, Pressable } from 'native-base'
 import { useIsFocused } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { addImage } from '../features/image'
 import Loading from '../components/Loading'
 import GalleryIcon from '../assets/icons/Gallery'
+
+const windowWidth = Dimensions.get('window').width
 
 export default () => {
   const isFocused = useIsFocused()
@@ -60,34 +63,37 @@ export default () => {
 
   const actionButtons = (
     <>
-      <Pressable
-        position="absolute"
-        top="4"
-        right="4"
-        width="42px"
-        height="42px"
-        borderRadius="full"
-        // backgroundColor="primary.500"
-        // shadow="2"
-        flex={1}
-        onPress={openImagePickerAsync}
-      >
-        <GalleryIcon width="43px" />
+      <Pressable position="absolute" bottom={4} right={4} onPress={openImagePickerAsync}>
+        <Center
+          width="48px"
+          height="48px"
+          borderRadius="full"
+          bg="primary.500"
+          _pressed={{
+            bg: 'primary.700',
+          }}
+        >
+          <GalleryIcon width="48px" />
+        </Center>
       </Pressable>
 
       <Button
+        isDisabled={!hasPermission}
+        onPress={takePicture}
         position="absolute"
-        bottom="4"
-        alignSelf="center"
+        bottom={4}
         width="84px"
         height="84px"
         borderRadius="full"
-        backgroundColor="primary.500"
-        shadow="2"
-        flex={1}
-        isDisabled={!hasPermission}
-        onPress={takePicture}
-      ></Button>
+        bg="white"
+        shadow={2}
+        alignSelf="center"
+        _pressed={{
+          bg: `muted.200`,
+        }}
+      >
+        <Box w="68px" h="68px" borderWidth="4px" borderColor="primary.500" borderRadius="full" />
+      </Button>
     </>
   )
 
@@ -108,10 +114,9 @@ export default () => {
     )
   }
   return (
-    <Camera flex={1} ref={cameraRef}>
-      <View variant="wrapper" justifyContent="flex-end">
-        {actionButtons}
-      </View>
-    </Camera>
+    <View flex={1} pt={12}>
+      <Camera ref={cameraRef} ratio="1:1" width={windowWidth * 0.96} height={windowWidth * 0.96} alignSelf="center" />
+      {actionButtons}
+    </View>
   )
 }

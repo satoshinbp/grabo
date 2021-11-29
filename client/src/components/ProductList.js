@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { ImageBackground } from 'react-native'
-import { View, Box, Pressable, FlatList, Text, Flex } from 'native-base'
-import { _ } from 'lodash'
+import { View, Box, Center, HStack, FlatList, Pressable, Text } from 'native-base'
 import { sortProductsByDate, sortProductsByHighlight } from '../features/product'
 
 export default () => {
@@ -75,44 +74,41 @@ export default () => {
 
   return (
     <>
-      <>
-        {productRoute === 'GroupProduct' && (
-          <Text fontSize="lg" bold my="3">
-            {route.params.language} Group
-          </Text>
-        )}
-        <Flex direction="row" alignItems="center" justify="center" width="100%">
-          <Box variant={sortedBy === 'date' ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
+      {products.length > 0 ? (
+        <>
+          <HStack>
             <Pressable
+              variant={sortedBy === 'date' ? 'activeTab' : 'inactiveTab'}
               py="4"
-              onPress={() => {
-                setSortedBy('date')
-              }}
+              onPress={() => setSortedBy('date')}
             >
               <Text alignItems="center" fontWeight={sortedBy === 'date' ? 'bold' : 'normal'}>
-                Products by Date
+                Sort by Date
               </Text>
             </Pressable>
-          </Box>
-          <Box variant={sortedBy === 'highlight' ? 'sortProductToggleOn' : 'sortProductToggleOff'}>
             <Pressable
+              variant={sortedBy === 'highlight' ? 'activeTab' : 'inactiveTab'}
               py="4"
-              onPress={() => {
-                setSortedBy('highlight')
-              }}
+              onPress={() => setSortedBy('highlight')}
             >
-              <Text fontWeight={sortedBy === 'highlight' ? 'bold' : 'normal'}>Products by Highlights</Text>
+              <Text fontWeight={sortedBy === 'highlight' ? 'bold' : 'normal'}>Sort by Highlights</Text>
             </Pressable>
-          </Box>
-        </Flex>
-      </>
-      <Text>{products.length === 0 && 'No products added'}</Text>
-      <FlatList
-        data={gridLayoutFormat(products, numColumns)}
-        renderItem={ProductCard}
-        numColumns={numColumns}
-        keyExtractor={(item) => item._id}
-      />
+          </HStack>
+
+          <FlatList
+            data={gridLayoutFormat(products, numColumns)}
+            renderItem={ProductCard}
+            numColumns={numColumns}
+            keyExtractor={(item) => item._id}
+          />
+        </>
+      ) : (
+        <Center flex={1}>
+          <Text fontSize="lg" textAlign="center" mt={12}>
+            No products added
+          </Text>
+        </Center>
+      )}
     </>
   )
 }
