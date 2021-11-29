@@ -17,7 +17,7 @@ import { postImage } from '../api/image'
 import { patchUser } from '../api/auth'
 import { clearImage } from './image'
 import * as RootNavigation from '../navigators/RootNavigation'
-import lodash from 'lodash'
+import lodash, { keys, cloneDeep } from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   const products = await fetchProductsByGroup(token, code)
@@ -159,10 +159,46 @@ const updateProduct = (state, product) => {
 
   state.loading = false
 }
+const selectProductsByRoute = (route) => {
+  switch (route) {
+    case 'Group':
+      return 'groupedProducts'
+    case 'MyProducts':
+      return 'postedProducts'
+    case 'Favorites':
+      return 'savedProducts'
+    default:
+      return null
+  }
+}
 
 const productSlice = createSlice({
   name: 'product',
   initialState: { groupedProducts: [], postedProducts: [], savedProducts: [], loading: false },
+  reducers: {
+    sortProductsByDate: (state, action) => {
+      const productsType = selectProductsByRoute(action.payload)
+      state[productsType].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    },
+    sortProductsByHighlight: (state, action) => {
+      const productsType = selectProductsByRoute(action.payload)
+      let highlightSum = 0
+
+      const productsWithHighlightSum = state[productsType].map((product) => {
+        product.fixedQandAs.forEach((question) => {
+          highlightSum += question.highlightedBy.length
+        })
+        product.uniqQandAs.forEach((question) => {
+          highlightSum += question.highlightedBy.length
+        })
+        return { ...product, highlightSum }
+      })
+
+      state[productsType] = productsWithHighlightSum.sort((a, b) => b.highlightSum - a.highlightSum)
+
+      console.log(state.groupedProducts)
+    },
+  },
   extraReducers: {
     [setProductsByGroup.pending]: (state) => startLoading(state),
     [setProductsByGroup.rejected]: (state) => finishLoading(state),
@@ -222,4 +258,5 @@ const productSlice = createSlice({
   },
 })
 
+export const { sortProductsByDate, sortProductsByHighlight } = productSlice.actions
 export default productSlice.reducer
