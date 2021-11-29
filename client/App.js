@@ -91,7 +91,7 @@ export default () => {
             alignItems: 'center',
             width: '50%',
             borderBottomWidth: 3,
-            borderBottomColor: '#FFC814',
+            borderBottomColor: 'primary.500',
           }),
           sortProductToggleOff: () => ({
             justifyContent: 'center',
