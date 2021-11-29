@@ -5,11 +5,18 @@ export default ({ text, subtext, icon, onPress, textColor, productIcon, code }) 
   <Pressable onPress={onPress}>
     <Box variant="listItemBarColored">
       <HStack space={3} alignItems="center">
-        <Center size={12} bg="primary.500" borderRadius="full">
-          <Text fontSize="md" bold>
-            {code}
-          </Text>
-        </Center>
+        {icon && (
+          <Center size={12} bg="primary.500" borderRadius="full">
+            {icon}
+          </Center>
+        )}
+        {code && (
+          <Center size={12} bg="primary.500" borderRadius="full">
+            <Text fontSize="md" bold>
+              {code}
+            </Text>
+          </Center>
+        )}
         <VStack flex={1}>
           <Text fontSize={subtext ? 'sm' : 'md'} bold color={textColor}>
             {text}
