@@ -56,9 +56,9 @@ const patchUser = async (token, id, params) => {
   }
 }
 
-const setNotificationTrue = async (token, params) => {
+const setNotificationTrue = async (token, { userId, notificationId }) => {
   try {
-    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${params.id}/notification`, params, {
+    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${userId}/notification/${notificationId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data

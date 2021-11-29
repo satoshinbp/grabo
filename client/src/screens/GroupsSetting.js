@@ -1,32 +1,27 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigation } from '@react-navigation/native'
-import { ScrollView, VStack, Checkbox, Text, Button, Box, HStack, SunIcon, Center, Icon } from 'native-base'
+import { ScrollView, Box, Center, VStack, HStack, Checkbox, Text, Heading, Button, SunIcon } from 'native-base'
+import * as RootNavigation from '../navigators/RootNavigation'
 import groupList from '../utils/groups'
 import { updateUser } from '../features/auth'
 
 export default () => {
-  const navigation = useNavigation()
-
   const { token, user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
   const [groups, setGroups] = useState(user.groups)
-  // const [isError, setIsError] = useState(false)
 
   const handleSave = () => {
-    // if (groups.length === 0) return setIsError(true)
-    // setIsError(false)
-
     const params = { groups }
     dispatch(updateUser({ token, id: user._id, params }))
 
-    navigation.navigate('Groups')
+    RootNavigation.navigate('GroupsTab', { screen: 'Groups' })
   }
 
   return (
     <ScrollView variant="wrapper">
       <VStack variant="container">
+        <Heading size="md">Choose languages that you speak</Heading>
         <Checkbox.Group
           defaultValue={user.groups}
           accessibilityLabel="choose language groups"
@@ -48,7 +43,6 @@ export default () => {
             </Box>
           ))}
         </Checkbox.Group>
-        {/* {isError && <Text>You have to belong to at least one Group</Text>} */}
         <Button onPress={handleSave}>Save</Button>
       </VStack>
     </ScrollView>

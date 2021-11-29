@@ -88,7 +88,6 @@ export default () => {
         dispatch(setAppReady())
       }
     }
-
     getCurrentUser()
 
     if (token) {

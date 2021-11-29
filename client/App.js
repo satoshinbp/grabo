@@ -96,6 +96,24 @@ export default () => {
           },
         },
       },
+      Pressable: {
+        variants: {
+          activeTab: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: 'primary.500',
+          }),
+          inactiveTab: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: 'transparent',
+          }),
+        },
+      },
       Button: {
         baseStyle: {
           _text: {

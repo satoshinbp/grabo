@@ -18,6 +18,7 @@ import {
   TextArea,
   Button,
   Checkbox,
+  useTheme,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -36,10 +37,13 @@ import SlideModal from '../elements/SlideModal'
 import FavIcon from '../assets/icons/Fav'
 
 const windowWidth = Dimensions.get('window').width
+const windowHeight = Dimensions.get('window').height
 
 export default () => {
   const route = useRoute()
   const navigation = useNavigation()
+
+  const { colors } = useTheme()
 
   const { token, user } = useSelector((state) => state.auth)
   const { loading, groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
@@ -216,26 +220,21 @@ export default () => {
   }
 
   // SUB COMPONENTS
-  const CarouselImages = ({ item }) => <Image source={{ uri: item.url }} alt="product image" size="100%" />
-
   const PaginationComponent = (images) => (
-    <View>
+    <Center w={windowWidth}>
       <Pagination
         dotsLength={images.length}
         activeDotIndex={activeSlide}
-        containerStyle={{ backgroundColor: 'rgba(255, 255, 255)' }}
-        alignSelf="center"
         dotStyle={{
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          backgroundColor: 'rgba(0, 0, 0, 0.54)',
+          width: 12,
+          height: 12,
+          borderRadius: 6,
+          backgroundColor: colors.primary[600],
         }}
-        inactiveDotOpacity={0.4}
+        inactiveDotOpacity={0.6}
         inactiveDotScale={0.6}
       />
-      <Center w={windowWidth} />
-    </View>
+    </Center>
   )
 
   const QuestionAccordions = (questions, type) =>
@@ -368,40 +367,40 @@ export default () => {
   if (loading || !product) return <Loading />
   return (
     <>
-      <View flex={0.5}>
-        <View position="relative">
-          <Carousel
-            data={product?.images}
-            renderItem={CarouselImages}
-            itemWidth={windowWidth}
-            sliderWidth={windowWidth}
-            onSnapToItem={(index) => setActiveSlide(index)}
-          />
-          <Text position="absolute" bottom={0}>
-            {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
-          </Text>
-          <View position="absolute" bottom={0} right={3}>
-            <HStack space={3}>
-              <Pressable>
-                <Image
-                  source={require('../assets/icons/exclamation.jpeg')}
-                  alt="exclamation"
-                  width="28px"
-                  height="28px"
-                  padding={2}
-                />
-              </Pressable>
-              <Pressable onPress={toggleFavorite}>
-                <Center size={8}>
-                  <FavIcon width="24px" />
-                </Center>
-              </Pressable>
-            </HStack>
-          </View>
+      <View height={windowHeight * 0.3} position="relative" bg="primary.100">
+        <Carousel
+          data={product?.images}
+          renderItem={({ item }) => (
+            <Image source={{ uri: item.url }} alt="product image" w="100%" h="100%" resizeMode="contain" />
+          )}
+          itemWidth={windowWidth}
+          sliderWidth={windowWidth}
+          onSnapToItem={(index) => setActiveSlide(index)}
+        />
+        <View position="absolute" bottom={-12}>
+          {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
+        </View>
+        <View position="absolute" bottom={0} right={3}>
+          <HStack space={3}>
+            <Pressable>
+              <Image
+                source={require('../assets/icons/exclamation.jpeg')}
+                alt="exclamation"
+                width="28px"
+                height="28px"
+                padding={2}
+              />
+            </Pressable>
+            <Pressable onPress={toggleFavorite}>
+              <Center size={8}>
+                <FavIcon width="24px" />
+              </Center>
+            </Pressable>
+          </HStack>
         </View>
       </View>
 
-      <ScrollView variant="wrapper" flex={0.5} pt={4} mb={2}>
+      <ScrollView variant="wrapper" flex={1} pt={4} mb={2}>
         {product?.fixedQandAs && QuestionAccordions(product?.fixedQandAs, 'fixed')}
         {product?.uniqQandAs && QuestionAccordions(product?.uniqQandAs, 'uniq')}
 
