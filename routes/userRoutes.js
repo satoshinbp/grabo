@@ -6,6 +6,6 @@ router.get('/', userController.getCurrentUser)
 router.get('/:group', userController.getUsersByGroup)
 router.post('/logout', userController.logout)
 router.patch('/:id', userController.updateUser)
-router.patch('/:id/notification', userController.readNotification)
+router.patch('/:userId/notification/:notificationId', userController.readNotification)
 
 module.exports = router

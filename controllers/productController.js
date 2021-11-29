@@ -2,31 +2,31 @@ const Product = require('../models/Product')
 
 const getProducts = (req, res) => {
   Product.find()
-    .then((result) => res.send(result))
+    .then((result) => res.status(200).send(result))
     .catch((e) => res.status(400).send())
 }
 
 const getProductById = (req, res) => {
   Product.findById(req.params.id)
-    .then((result) => res.send(result))
+    .then((result) => res.status(200).send(result))
     .catch((e) => res.status(400).send())
 }
 
 const getProductsByGroup = (req, res) => {
   Product.find({ group: req.params.group })
-    .then((result) => res.send(result))
+    .then((result) => res.status(200).send(result))
     .catch((e) => res.status(400).send())
 }
 
 const getProductsByUserId = (req, res) => {
   Product.find({ userId: req.params.id })
-    .then((result) => res.send(result))
+    .then((result) => res.status(200).send(result))
     .catch((e) => res.status(400).send())
 }
 
 const getProductsByFavoredUserId = (req, res) => {
   Product.find({ favoredUserIds: { $in: [req.params.id] } })
-    .then((result) => res.send(result))
+    .then((result) => res.status(200).send(result))
     .catch((e) => res.status(400).send())
 }
 
@@ -41,7 +41,7 @@ const fixedQuestions = [
 const createProduct = (req, res) => {
   const { userId, code: group, text: keywords, urls, highlitedQuestions, uniqQuestions } = req.body
 
-  const params = {
+  const product = {
     userId,
     group,
     keywords,
@@ -56,8 +56,8 @@ const createProduct = (req, res) => {
     })),
   }
 
-  Product.create(params)
-    .then((result) => res.send(result))
+  Product.create(product)
+    .then((result) => res.status(200).send(result))
     .catch((e) => res.status(400).send())
 }
 
@@ -70,7 +70,7 @@ const createUserToFavorite = (req, res) => {
       product.favoredUserIds.push(userId)
       product
         .save()
-        .then((result) => res.send(result))
+        .then((result) => res.status(200).send(result))
         .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
@@ -84,7 +84,7 @@ const removeUserFromFavorite = (req, res) => {
       product.favoredUserIds = product.favoredUserIds.filter((favoredUserId) => favoredUserId.toString() !== userId)
       product
         .save()
-        .then((result) => res.send(result))
+        .then((result) => res.status(200).send(result))
         .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
@@ -100,7 +100,7 @@ const createQuestion = (req, res) => {
       product.markModified(questionType)
       product
         .save()
-        .then((result) => res.send(result))
+        .then((result) => res.status(200).send(result))
         .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
@@ -119,7 +119,7 @@ const createAnswer = (req, res) => {
       product.markModified(questionType)
       product
         .save()
-        .then((result) => res.send(result))
+        .then((result) => res.status(200).send(result))
         .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
@@ -138,7 +138,7 @@ const createReportToQuestion = (req, res) => {
       })
       product
         .save()
-        .then((result) => res.send(result))
+        .then((result) => res.status(200).send(result))
         .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
@@ -159,7 +159,7 @@ const createReportToAnswer = (req, res) => {
       })
       product
         .save()
-        .then((result) => res.send(result))
+        .then((result) => res.status(200).send(result))
         .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())
@@ -177,7 +177,7 @@ const createUserToHighlight = (req, res) => {
     product.markModified(questionType)
     product
       .save()
-      .then((result) => res.send(result))
+      .then((result) => res.status(200).send(result))
       .catch((e) => res.status(400).send())
   })
 }
@@ -196,7 +196,7 @@ const removeUserFromHighlight = (req, res) => {
       product.markModified(questionType)
       product
         .save()
-        .then((result) => res.send(result))
+        .then((result) => res.status(200).send(result))
         .catch((e) => res.status(400).send())
     })
     .catch((e) => res.status(400).send())

@@ -25,7 +25,6 @@ export const updateUser = createAsyncThunk('users/update', async ({ token, id, p
 })
 
 export const readNotification = createAsyncThunk('users/notification', async ({ token, params }) => {
-  // console.log(params)
   const user = await setNotificationTrue(token, params)
   return user
 })
