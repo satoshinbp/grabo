@@ -19,7 +19,7 @@ const upload = multer({
 
 const uploadImage = (req, res) => {
   console.log('Image successfully uploaded')
-  res.status(200).send(req.files.map((file) => file.location))
+  res.status(200).send(req.files[0].location)
 }
 
 module.exports = { upload, uploadImage }
