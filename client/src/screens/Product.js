@@ -30,6 +30,7 @@ import {
   unsaveProduct,
 } from '../features/product'
 import { reportQuestion, reportAnswer } from '../api/product'
+import { fetchUserByUserId, patchUser } from '../api/auth'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
@@ -89,11 +90,11 @@ export default () => {
     setModalContentType('question')
   }
 
-  const setAnswerForm = (id, type, description) => {
+  const setAnswerForm = (id, type, description, highlightedBy) => {
     setIsModalOpen(true)
     setModalContentType('answer')
 
-    setAnswerFormParams({ id, type, description })
+    setAnswerFormParams({ id, type, description, highlightedBy })
   }
 
   const setReportForm = (type, questionId, answerId) => {
@@ -119,11 +120,58 @@ export default () => {
     setQuestion(null)
   }
 
-  const submitAnswer = () => {
+  const submitAnswer = async () => {
     setIsModalOpen(false)
 
     const params = { id: answerFormParams.id, type: answerFormParams.type, answer }
     dispatch(addAnswer({ token, params }))
+
+    //send notification if question is highlighted
+    const userIds = answerFormParams.highlightedBy
+    const users = userIds.map((userId) => fetchUserByUserId(token, userId))
+    const fetchedUsers = await Promise.all(users)
+
+    const notificationParams = {
+      notifications: {
+        read: false,
+        message: `${user.firstName} answered your highlighted question`,
+        productId: product._id,
+      },
+    }
+
+    fetchedUsers.forEach(async (user) => {
+      await patchUser(token, user._id, notificationParams)
+    })
+
+    const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
+
+    const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
+    console.log(notificationTokens)
+
+    const sendPushNotification = async (expoPushToken) => {
+      const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: 'Got Answer!',
+        body: 'Someone answered your highlighted qusetion!',
+        data: { someData: 'goes here' },
+      }
+
+      await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      })
+    }
+
+    notificationTokens.forEach(async (token) => {
+      console.log(token)
+      await sendPushNotification(token)
+    })
 
     setAnswer(null)
     setAnswerFormParams(null)
@@ -205,9 +253,10 @@ export default () => {
                 <Text
                   onPress={() =>
                     setAnswerForm(
-                      question.question.id,
+                      question._id,
                       type,
-                      type === 'uniq' ? question.question.description : question.question
+                      type === 'uniq' ? question.question.description : question.question,
+                      question.highlightedBy
                     )
                   }
                 >
@@ -351,12 +400,12 @@ export default () => {
         </View>
       </View>
 
-      <ScrollView variant="wrapper" flex={1} pt={4} mb={2}>
+      <ScrollView variant="wrapper" flex={1} pt={4}>
         {product?.fixedQandAs && QuestionAccordions(product?.fixedQandAs, 'fixed')}
         {product?.uniqQandAs && QuestionAccordions(product?.uniqQandAs, 'uniq')}
 
         {/* add extra space to avoid contents to be hidden by FAB */}
-        <View h="60px" />
+        <View h="96px" />
       </ScrollView>
 
       <Button variant="fab" onPress={setQuestionForm}>
