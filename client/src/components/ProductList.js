@@ -4,21 +4,22 @@ import { useRoute, useNavigation } from '@react-navigation/native'
 import { ImageBackground } from 'react-native'
 import { View, Box, Pressable, FlatList, Text, Flex } from 'native-base'
 import { _ } from 'lodash'
-import { sortGroupedProductsByDate, sortGroupedProductsByHighlight } from '../features/product'
+import { sortProductsByDate, sortProductsByHighlight } from '../features/product'
 
 export default () => {
   const route = useRoute()
   const navigation = useNavigation()
-  const [sortedBy, setSortedBy] = useState('date')
-  const dispatch = useDispatch()
 
   const { groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
+  const dispatch = useDispatch()
+
+  const [sortedBy, setSortedBy] = useState('date')
 
   useEffect(() => {
     if (sortedBy === 'date') {
-      dispatch(sortGroupedProductsByDate())
+      dispatch(sortProductsByDate(route.name))
     } else {
-      dispatch(sortGroupedProductsByHighlight())
+      dispatch(sortProductsByHighlight(route.name))
     }
   }, [sortedBy])
 
