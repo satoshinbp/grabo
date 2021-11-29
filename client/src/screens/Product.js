@@ -205,7 +205,7 @@ export default () => {
                 <Text
                   onPress={() =>
                     setAnswerForm(
-                      question.question.id,
+                      question._id,
                       type,
                       type === 'uniq' ? question.question.description : question.question
                     )

@@ -17,7 +17,7 @@ import { postImage } from '../api/image'
 import { patchUser } from '../api/auth'
 import { clearImage } from './image'
 import * as RootNavigation from '../navigators/RootNavigation'
-import lodash, { keys, cloneDeep } from 'lodash'
+import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   const products = await fetchProductsByGroup(token, code)
@@ -84,7 +84,6 @@ export const createProduct = createAsyncThunk(
         productId: product._id,
       },
     }
-    console.log(fetchedUsers, notificationParams)
     const patchUserPromises = fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
     await Promise.all(patchUserPromises)
 
