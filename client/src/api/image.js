@@ -5,7 +5,7 @@ import groups from '../utils/groups'
 // In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const postImage = async (token, params) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/images`, params, {
+  const { data } = await axios.post(`http://10.128.216.55:8000/api/images`, params, {
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`,

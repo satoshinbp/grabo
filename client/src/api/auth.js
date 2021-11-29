@@ -5,7 +5,7 @@ import { SERVER_ROOT_URI } from '@env'
 
 const signInWithGoogle = async (idToken) => {
   try {
-    const { data } = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken })
+    const { data } = await axios.post(`http://10.128.216.55:8000/auth/google`, { idToken })
     return data
   } catch (e) {
     console.error(e)
@@ -14,7 +14,7 @@ const signInWithGoogle = async (idToken) => {
 
 const fetchUser = async (token) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users`, {
+    const { data } = await axios.get(`http://10.128.216.55:8000/api/users`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -25,7 +25,7 @@ const fetchUser = async (token) => {
 
 const fetchUsersByGroup = async (token, code) => {
   try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${code}`, {
+    const { data } = await axios.get(`http://10.128.216.55:8000/api/users/${code}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -36,7 +36,7 @@ const fetchUsersByGroup = async (token, code) => {
 
 const patchUser = async (token, id, params) => {
   try {
-    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${id}`, params, {
+    const { data } = await axios.patch(`http://10.128.216.55:8000/api/users/${id}`, params, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
@@ -47,7 +47,7 @@ const patchUser = async (token, id, params) => {
 
 const setNotificationTrue = async (token, { userId, notificationId }) => {
   try {
-    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${userId}/notification/${notificationId}`, {
+    const { data } = await axios.patch(`http://10.128.216.55:8000/api/users/${userId}/notification/${notificationId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data
