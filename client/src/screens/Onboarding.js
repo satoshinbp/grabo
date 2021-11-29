@@ -1,49 +1,11 @@
 import React, { useRef } from 'react'
-import { Animated, Dimensions, StyleSheet } from 'react-native'
+import { Animated, Dimensions } from 'react-native'
 import { View, Box, FlatList, Button, Image, useTheme } from 'native-base'
 import OnboardingItem from '../components/OnboardingItem'
 import onboardingSlides from '../utils/onboardingSlides'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
-
-// const Square = ({ scrollX }) => {
-//   const YOLO = Animated.modulo(
-//     Animated.divide(Animated.modulo(scrollX, windowWidth), new Animated.Value(windowWidth)),
-//     1
-//   )
-//   const rotate = YOLO.interpolate({
-//     inputRange: [0, 0.5, 1],
-//     outputRange: ['35deg', '0deg', '35deg'],
-//   })
-//   const translateX = YOLO.interpolate({
-//     inputRange: [0, 0.5, 1],
-//     outputRange: [0, -windowHeight, 0],
-//   })
-//   return (
-//     <Animated.View
-//       style={{
-//         position: 'absolute',
-//         top: -windowHeight * 0.6,
-//         left: -windowHeight * 0.3,
-//         width: windowHeight,
-//         height: windowHeight,
-//         borderRadius: 86,
-//         backgroundColor: '#fff',
-//         transform: [{ rotate }, { translateX }],
-//       }}
-//     />
-//   )
-// }
-
-// const bgs = ['#A5BBFF', '#DDBEFE', '#FF63ED', '#B98EFF']
-// const Backdrop = ({ scrollX }) => {
-//   const backgroundColor = scrollX.interpolate({
-//     inputRange: bgs.map((_, i) => i * windowWidth),
-//     outputRange: bgs.map((bg) => bg),
-//   })
-//   return <Animated.View style={[StyleSheet.absoluteFillObject, { backgroundColor }]} />
-// }
 
 export default ({ setIsFirstLaunch }) => {
   const scrollX = useRef(new Animated.Value(0)).current
@@ -64,22 +26,22 @@ export default ({ setIsFirstLaunch }) => {
         const inputRange = [(i - 1) * windowWidth, i * windowWidth, (i + 1) * windowWidth]
         const scale = scrollX.interpolate({
           inputRange,
-          outputRange: [0.8, 1.4, 0.8],
+          outputRange: [0.6, 1, 0.6],
           extrapolate: 'clamp',
         })
         const opacity = scrollX.interpolate({
           inputRange,
-          outputRange: [0.6, 0.9, 0.6],
+          outputRange: [0.6, 1, 0.6],
           extrapolate: 'clamp',
         })
         return (
           <Animated.View
             key={`indicator-${i}`}
             style={{
-              width: 10,
-              height: 10,
+              width: 15,
+              height: 15,
               margin: 8,
-              borderRadius: 5,
+              borderRadius: 7.5,
               backgroundColor: colors.primary[500],
               transform: [{ scale }],
               opacity,
@@ -90,16 +52,33 @@ export default ({ setIsFirstLaunch }) => {
     </Box>
   )
 
-  return (
-    <View flex={1} bg="lightText">
-      {/* <Backdrop scrollX={scrollX} />
-      <Square scrollX={scrollX} /> */}
-      <Image
+  const Backdrop = ({ scrollX }) => {
+    const inputRange = [0, (onboardingSlides.length - 1) * windowWidth]
+    const left = scrollX.interpolate({
+      inputRange,
+      outputRange: [0, -(onboardingSlides.length - 1) * windowWidth * 0.25], // with parallax effect
+      // outputRange: [0, -(onboardingSlides.length - 1) * windowWidth], // without parallax effect
+      extrapolate: 'clamp',
+    })
+    return (
+      <Animated.Image
         source={require('../assets/images/onboarding-background.png')}
-        w={windowWidth * onboardingSlides.length}
-        h={windowHeight / 2}
-        position="absolute"
+        alt="wave"
+        style={{
+          width: (onboardingSlides.length - 1) * windowWidth * 0.25 + windowWidth, // with parallax effect
+          // width: onboardingSlides.length * windowWidth + windowWidth, // without parallax effect
+          height: windowHeight * 0.65,
+          resizeMode: 'stretch',
+          position: 'absolute',
+          left,
+        }}
       />
+    )
+  }
+
+  return (
+    <View flex={1} bg="lightText" pt="56px">
+      <Backdrop scrollX={scrollX} />
       <Animated.FlatList
         data={onboardingSlides}
         renderItem={({ item }) => <OnboardingItem item={item} />}
@@ -109,7 +88,7 @@ export default ({ setIsFirstLaunch }) => {
         showsHorizontalScrollIndicator={false}
         pagingEnabled
         bounces={false}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.alt}
       />
       <Indicator scrollX={scrollX} />
       <Button

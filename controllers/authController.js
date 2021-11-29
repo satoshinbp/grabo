@@ -37,10 +37,9 @@ const signInWithGoogle = async (req, res) => {
     }
 
     const token = await generateAuthToken(user)
-    res.send({ token, user })
+    res.status(200).send({ token, user })
   } catch (e) {
-    console.error('Failed to fetch user')
-    throw new Error(e.message)
+    res.status(400).send()
   }
 }
 

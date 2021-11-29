@@ -45,9 +45,9 @@ const patchUser = async (token, id, params) => {
   }
 }
 
-const setNotificationTrue = async (token, params) => {
+const setNotificationTrue = async (token, { userId, notificationId }) => {
   try {
-    const { data } = await axios.patch(`http://54.202.13.134/api/users/${params.id}/notification`, params, {
+    const { data } = await axios.patch(`http://54.202.13.134/api/users/${userId}/notification/${notificationId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return data

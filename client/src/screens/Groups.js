@@ -13,7 +13,7 @@ export default () => {
   return (
     <View variant="wrapper">
       <VStack variant="container" flex={1}>
-        <Heading size="md">List of language groups that you speak</Heading>
+        <Heading size="md">List of languages that you speak</Heading>
         <GroupList />
       </VStack>
 

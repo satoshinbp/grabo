@@ -1,54 +1,61 @@
 const User = require('../models/User')
 
-const getCurrentUser = async (req, res) => res.send(req.user)
+const getCurrentUser = (req, res) => res.status(200).send(req.user)
 
-const getUsersByGroup = (req, res) => {
-  User.find({ groups: { $in: req.params.group } })
-    .then((result) => res.send(result))
-    .catch((e) => console.error(e))
+const getUsersByGroup = async (req, res) => {
+  try {
+    const users = await User.find({ groups: { $in: req.params.group } })
+    res.status(200).send(users)
+  } catch (e) {
+    res.status(400).send()
+  }
 }
 
 const updateUser = async (req, res) => {
-  let user = await User.findOne({ _id: req.params.id })
-  const updates = Object.keys(req.body)
+  try {
+    let user = await User.findById(req.params.id)
+    const updates = Object.keys(req.body)
 
-  updates.forEach((update) => {
-    if (update !== 'notifications') {
-      user[update] = req.body[update]
-    } else {
-      user.notifications.push(req.body.notifications)
-    }
-  })
-  await user
-    .save()
-    .then((result) => res.send(result))
-    .catch((error) => res.send(error))
+    updates.forEach((update) => {
+      if (update !== 'notifications') {
+        user[update] = req.body[update]
+      } else {
+        user.notifications.push(req.body.notifications)
+      }
+    })
+
+    const updatedUser = await user.save()
+    res.status(200).send(updatedUser)
+  } catch (e) {
+    res.status(400).send()
+  }
 }
 
 const readNotification = async (req, res) => {
-  let user = await User.findOne({ _id: req.body.id }, { notifications: 1 })
+  try {
+    let user = await User.findById(req.params.id)
 
-  user.notifications.map((notification) => {
-    if (notification._id === req.body.notificationId) {
-      notification.read = true
-    }
-  })
-  // console.log('after', user)
+    user.notifications.forEach((notification) => {
+      if (notification._id === req.params.notificationId) {
+        notification.read = true
+      }
+    })
 
-  await user
-    .save()
-    .then((result) => res.send(result))
-    .catch((error) => res.send(error))
+    const updatedUser = await user.save()
+    res.status(200).send(updatedUser)
+  } catch {
+    res.status(400).send()
+  }
 }
 
 const logout = async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => token !== req.token)
-    await req.user.save()
 
-    res.send()
+    await req.user.save()
+    res.status(200).send()
   } catch (e) {
-    res.status(500).send()
+    res.status(400).send()
   }
 }
 

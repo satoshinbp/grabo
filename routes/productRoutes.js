@@ -9,13 +9,16 @@ router.get('/user/:id', productController.getProductsByUserId)
 router.get('/fav/user/:id', productController.getProductsByFavoredUserId)
 
 router.post('/', productController.createProduct)
+router.post('/:id/questions/:type', productController.createQuestion)
+router.post('/questions/:type/:id/answers', productController.createAnswer)
+
+router.put('/questions/:type/:id/reports', productController.createReportToQuestion)
+router.put('/questions/:type/:questionId/answers/:answerId/reports', productController.createReportToAnswer)
+
+router.post('/questions/:type/:id/highlight', productController.createUserToHighlight)
+router.delete('/questions/:type/:id/highlight/:userId', productController.removeUserFromHighlight)
+
 router.post('/:id/favor', productController.createUserToFavorite)
 router.delete('/:id/favor/:userId', productController.removeUserFromFavorite)
-router.post('/:id/questions/:type', productController.createQuestion)
-router.post('/:id/questions/:type/:index/answers', productController.createAnswer)
-router.put('/:id/questions/:type/:index/reports', productController.createReportToQuestion)
-router.put('/:id/questions/:type/:questionIndex/answers/:answerIndex/reports', productController.createReportToAnswer)
-router.post('/:id/questions/:type/:index/highlight', productController.createUserToHighlight)
-router.delete('/:id/questions/:type/:index/highlight/:userId', productController.removeUserFromHighlight)
 
 module.exports = router

@@ -1,14 +1,26 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { ImageBackground } from 'react-native'
-import { View, Box, Pressable, FlatList } from 'native-base'
+import { View, Box, Center, HStack, FlatList, Pressable, Text } from 'native-base'
+import { sortProductsByDate, sortProductsByHighlight } from '../features/product'
 
 export default () => {
   const route = useRoute()
   const navigation = useNavigation()
 
   const { groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
+  const dispatch = useDispatch()
+
+  const [sortedBy, setSortedBy] = useState('date')
+
+  useEffect(() => {
+    if (sortedBy === 'date') {
+      dispatch(sortProductsByDate(route.name))
+    } else {
+      dispatch(sortProductsByHighlight(route.name))
+    }
+  }, [sortedBy])
 
   const gridLayoutFormat = (data, numColumns) => {
     const tempData = data.concat()
@@ -48,9 +60,10 @@ export default () => {
         <ImageBackground
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
           resizeMode="cover"
-          style={{ width: 144, height: 144, alignSelf: 'center', borderRadius: 32 }}
+          imageStyle={{ borderRadius: 12 }}
+          style={{ width: 144, height: 144, alignSelf: 'center' }}
         >
-          <Box variant="productCard" />
+          <Box variant="productCard"></Box>
         </ImageBackground>
       </Pressable>
     ) : (
@@ -60,11 +73,42 @@ export default () => {
   const numColumns = 2
 
   return (
-    <FlatList
-      data={gridLayoutFormat(products, numColumns)}
-      renderItem={ProductCard}
-      numColumns={numColumns}
-      keyExtractor={(item) => item._id}
-    />
+    <>
+      {products.length > 0 ? (
+        <>
+          <HStack>
+            <Pressable
+              variant={sortedBy === 'date' ? 'activeTab' : 'inactiveTab'}
+              py="4"
+              onPress={() => setSortedBy('date')}
+            >
+              <Text alignItems="center" fontWeight={sortedBy === 'date' ? 'bold' : 'normal'}>
+                Sort by Date
+              </Text>
+            </Pressable>
+            <Pressable
+              variant={sortedBy === 'highlight' ? 'activeTab' : 'inactiveTab'}
+              py="4"
+              onPress={() => setSortedBy('highlight')}
+            >
+              <Text fontWeight={sortedBy === 'highlight' ? 'bold' : 'normal'}>Sort by Highlights</Text>
+            </Pressable>
+          </HStack>
+
+          <FlatList
+            data={gridLayoutFormat(products, numColumns)}
+            renderItem={ProductCard}
+            numColumns={numColumns}
+            keyExtractor={(item) => item._id}
+          />
+        </>
+      ) : (
+        <Center flex={1}>
+          <Text fontSize="lg" textAlign="center" mt={12}>
+            No products added
+          </Text>
+        </Center>
+      )}
+    </>
   )
 }
