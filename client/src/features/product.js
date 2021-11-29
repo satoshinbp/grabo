@@ -197,7 +197,36 @@ const productSlice = createSlice({
       })
     },
     sortGroupedProductsByHighlight: (state) => {
-      state.groupedProducts = sortProductsByHighlight(state)
+      let totalHighlightForEachProduct = []
+      let sum
+      let copiedProducts = cloneDeep(state.groupedProducts)
+      let sortedGroupedProducts = []
+      // extract total number of highlights from each product
+      for (let i = 0; i < state.groupedProducts.length; i++) {
+        sum = 0
+        // fixed QandAs highlight total
+        for (let j = 0; j < state.groupedProducts[i].fixedQandAs.length; j++) {
+          sum += state.groupedProducts[i].fixedQandAs[j].highlightedBy.length
+        }
+        // uniq QandAs highlight total
+        for (let k = 0; k < state.groupedProducts[i].uniqQandAs.length; k++) {
+          sum += state.groupedProducts[i].uniqQandAs[k].highlightedBy.length
+        }
+        // store highlight sum and product index
+        totalHighlightForEachProduct.push({ totalHighlight: sum, index: totalHighlightForEachProduct.length })
+      }
+
+      // sort total highlight numbers by descending order
+      totalHighlightForEachProduct.sort((a, b) => {
+        return b.totalHighlight - a.totalHighlight
+      })
+
+      // match index in totalHighlightForEachProduct with product index
+      for (let i = 0; i < totalHighlightForEachProduct.length; i++) {
+        sortedGroupedProducts.push(copiedProducts[totalHighlightForEachProduct[i].index])
+      }
+
+      state.groupedProducts = sortedGroupedProducts
     },
   },
   extraReducers: {
