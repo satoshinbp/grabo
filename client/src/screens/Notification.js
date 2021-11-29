@@ -25,7 +25,7 @@ export default () => {
 
   const onPress = (item) => {
     params = {
-      id: user._id,
+      userId: user._id,
       notificationId: item._id,
     }
     dispatch(readNotification({ token, params }))
