@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FlatList, Avatar, View } from 'native-base'
+import { FlatList, Avatar, View, Heading } from 'native-base'
 import { navigateGroupProductById } from '../features/product'
 import ListItemBarColored from '../elements/ListItemBarColored'
 import { readNotification } from '../features/auth'
@@ -15,13 +15,17 @@ export default () => {
 
   const productIds = notifications.map((notification) => notification.productId)
 
-  const getListedProducts = async () => {
-    const products = productIds.map((productId) => fetchProductById(token, productId))
-    const results = await Promise.all(products)
-    const imageUrls = results.map((result) => result.images[0].url)
-    setUrls(imageUrls)
-  }
-  getListedProducts()
+  useEffect(() => {
+    const getListedProducts = async () => {
+      const products = productIds.map((productId) => fetchProductById(token, productId))
+      if (products.length > 0) {
+        const results = await Promise.all(products)
+        const imageUrls = results.map((result) => result.images[0].url)
+        setUrls(imageUrls)
+      }
+    }
+    getListedProducts()
+  }, [notifications])
 
   const onPress = (item) => {
     params = {
@@ -59,6 +63,8 @@ export default () => {
       flex={1}
     />
   ) : (
-    <View flex={1} bg="transparent" style={{ width: 144, height: 144, alignSelf: 'center' }} />
+    <View flex={1} bg="transparent" style={{ width: 144, height: 144, alignSelf: 'center' }}>
+      <Heading size="md">No notification</Heading>
+    </View>
   )
 }
