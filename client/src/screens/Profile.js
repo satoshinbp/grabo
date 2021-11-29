@@ -32,9 +32,9 @@ export default () => {
 
   if (loading) return <Loading />
   return (
-    <View variant="wrapper">
-      <VStack alignItems="center" space={1} mb={3}>
-        <Box position="absolute" top={0} h="128px" w="100%" my={2} borderRadius="md" bg="primary.500" />
+    <>
+      <VStack alignItems="center" mb={3}>
+        <Box position="absolute" top={0} h="128px" w="100%" borderBottomRadius="md" bg="primary.500" />
         <View h="64px" />
         <Avatar
           source={{ uri: user?.image }}
@@ -42,43 +42,45 @@ export default () => {
           alt="user portrait"
           position="relative"
           alignSelf="center"
+          mb={2}
           borderRadius="full"
         />
         <Text fontSize="lg" bold>
           {user?.firstName} {user?.lastName}
         </Text>
-        <Text fontSize="sm" color="darkText">
+        <Text fontSize="sm" color="muted.500">
           {user?.email}
         </Text>
       </VStack>
+      <View variant="wrapper">
+        <View>
+          {menu.map(({ text, icon, onPress }) => (
+            <ListItemBarPlain key={text} text={text} icon={icon} onPress={onPress} />
+          ))}
+        </View>
 
-      <View>
-        {menu.map(({ text, icon, onPress }) => (
-          <ListItemBarPlain key={text} text={text} icon={icon} onPress={onPress} />
-        ))}
+        <FadeModal
+          isOpen={notificationModalOpen}
+          onClose={() => setNotificationModalOpen(false)}
+          title="Notification"
+          content={user?.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
+          primaryAction={toggleNotification}
+          primaryActionLabel={user?.isNotificationOn ? 'Mute' : 'Unmute'}
+          secondaryAction={() => setNotificationModalOpen(false)}
+          secondaryActionLabel="Cancel"
+        />
+
+        <FadeModal
+          isOpen={logoutModalOpen}
+          onClose={() => setLogoutModalOpen(false)}
+          title="Logout"
+          content="Are you sure to logout from Grabo?"
+          primaryAction={() => dispatch(logout())}
+          primaryActionLabel="Logout"
+          secondaryAction={() => setLogoutModalOpen(false)}
+          secondaryActionLabel="Cancel"
+        />
       </View>
-
-      <FadeModal
-        isOpen={notificationModalOpen}
-        onClose={() => setNotificationModalOpen(false)}
-        title="Notification"
-        content={user?.isNotificationOn ? 'Mute notification?' : 'Unmute notification?'}
-        primaryAction={toggleNotification}
-        primaryActionLabel={user?.isNotificationOn ? 'Mute' : 'Unmute'}
-        secondaryAction={() => setNotificationModalOpen(false)}
-        secondaryActionLabel="Cancel"
-      />
-
-      <FadeModal
-        isOpen={logoutModalOpen}
-        onClose={() => setLogoutModalOpen(false)}
-        title="Logout"
-        content="Are you sure to logout from Grabo?"
-        primaryAction={() => dispatch(logout())}
-        primaryActionLabel="Logout"
-        secondaryAction={() => setLogoutModalOpen(false)}
-        secondaryActionLabel="Cancel"
-      />
-    </View>
+    </>
   )
 }
