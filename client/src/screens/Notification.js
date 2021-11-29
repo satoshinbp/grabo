@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { FlatList, Avatar, View, Heading } from 'native-base'
 import { navigateGroupProductById } from '../features/product'
@@ -15,15 +15,17 @@ export default () => {
 
   const productIds = notifications.map((notification) => notification.productId)
 
-  const getListedProducts = async () => {
-    const products = productIds.map((productId) => fetchProductById(token, productId))
-    if (products.length > 0) {
-      const results = await Promise.all(products)
-      const imageUrls = results.map((result) => result.images[0].url)
-      setUrls(imageUrls)
+  useEffect(() => {
+    const getListedProducts = async () => {
+      const products = productIds.map((productId) => fetchProductById(token, productId))
+      if (products.length > 0) {
+        const results = await Promise.all(products)
+        const imageUrls = results.map((result) => result.images[0].url)
+        setUrls(imageUrls)
+      }
     }
-  }
-  getListedProducts()
+    getListedProducts()
+  }, [notifications])
 
   const onPress = (item) => {
     params = {

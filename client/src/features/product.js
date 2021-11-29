@@ -45,7 +45,7 @@ const sendPushNotification = async (expoPushToken) => {
     to: expoPushToken,
     sound: 'default',
     title: 'Help',
-    body: 'Someone need your help!',
+    body: 'Someone is waiting for your help!',
     data: { someData: 'goes here' },
   }
 

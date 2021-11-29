@@ -30,7 +30,7 @@ export default () => {
           <Text>
             {isTextDetected
               ? 'Press next button to continue or change language if you think the detected language is wrong.'
-              : 'Create a new product by selecting a language that we currently support from the list below.'}
+              : 'Create a new product by selecting a language that grabo currently support from the list below.'}
           </Text>
         </View>
 
