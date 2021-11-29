@@ -86,6 +86,20 @@ export default () => {
             width: '72px',
             height: '72px',
           }),
+          sortProductToggleOn: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: 'primary.500',
+          }),
+          sortProductToggleOff: () => ({
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '50%',
+            borderBottomWidth: 3,
+            borderBottomColor: 'transparent',
+          }),
         },
       },
       VStack: {
