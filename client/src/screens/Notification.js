@@ -85,7 +85,7 @@ export default () => {
       flex={1}
     />
   ) : (
-    <View flex={1} bg="transparent" style={{ width: 144, height: 144, alignSelf: 'center' }}>
+    <View flex={1} bg="transparent" w="144px" h="144px" alignSelf="center">
       <Heading size="md">No notification</Heading>
     </View>
   )

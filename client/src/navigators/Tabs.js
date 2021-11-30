@@ -8,6 +8,7 @@ import FavsStacks from './FavsStacks'
 import ProfileStacks from './ProfileStacks'
 import Notification from '../screens/Notification'
 import GroupsSetting from '../screens/GroupsSetting'
+import Loading from '../components/Loading'
 import TabBar from '../components/TabBar'
 import GroupIcon from '../assets/icons/Group'
 import PostIcon from '../assets/icons/Post'
@@ -18,11 +19,12 @@ import ProfileIcon from '../assets/icons/Profile'
 const Tab = createBottomTabNavigator()
 
 export default () => {
-  const { user } = useSelector((state) => state.auth)
+  const { loading, user } = useSelector((state) => state.auth)
 
+  if (loading) return <Loading />
   return (
     <Tab.Navigator
-      initialRouteName={user.groups.length > 0 ? 'GroupsTab' : 'InitialGroupsSetting'}
+      initialRouteName={user?.groups?.length > 0 ? 'GroupsTab' : 'InitialGroupsSetting'}
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <TabBar {...props} />}
     >
