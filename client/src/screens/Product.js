@@ -37,7 +37,7 @@ import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
 import FavIcon from '../assets/icons/Fav'
 import DiamondIcon from '../assets/icons/Diamond'
-
+import ReportRedIcon from '../assets/icons/ReportRed'
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
@@ -253,7 +253,7 @@ export default () => {
                   {question.answers.length > 1 ? ' answers' : ' answer'}
                 </Text>
                 <HStack py={2} paddingRight={2} flexDirection="row" justifyContent="space-between" alignItems="center">
-                  <HStack space={2}>
+                  <HStack space={2} alignItems="center">
                     <Avatar size={7} alt="user portrait" borderRadius="full" />
                     <Pressable
                       onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
@@ -265,12 +265,7 @@ export default () => {
                     </Pressable>
                     {type === 'uniq' ? (
                       <Pressable onPress={() => setReportForm(type, question._id, answer?._id)}>
-                        <Image
-                          source={require('../assets/icons/exclamation.jpeg')}
-                          alt="exclamation"
-                          width="28px"
-                          height="28px"
-                        />
+                        <ReportRedIcon width="22px" />
                       </Pressable>
                     ) : (
                       <View></View>
@@ -304,16 +299,10 @@ export default () => {
               <>
                 <VStack p={4}>
                   <Text pb={2}>{answer?.description}</Text>
-                  <HStack space={2}>
+                  <HStack space={2} alignItems="center">
                     <Avatar size={7} alt="user portrait" borderRadius="full" />
                     <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
-                      <Image
-                        source={require('../assets/icons/exclamation.jpeg')}
-                        alt="exclamation"
-                        width="28px"
-                        height="28px"
-                        padding={2}
-                      />
+                      <ReportRedIcon width="22px" />
                     </Pressable>
                   </HStack>
                 </VStack>
