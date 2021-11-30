@@ -34,7 +34,7 @@ const fetchUsersByGroup = async (token, code) => {
   }
 }
 
-const fetchUserByUserId = async (token, id) => {
+const fetchUserById = async (token, id) => {
   try {
     const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/highlight/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -67,4 +67,4 @@ const setNotificationTrue = async (token, { userId, notificationId }) => {
   }
 }
 
-export { signInWithGoogle, fetchUser, fetchUsersByGroup, fetchUserByUserId, patchUser, setNotificationTrue }
+export { signInWithGoogle, fetchUser, fetchUsersByGroup, fetchUserById, patchUser, setNotificationTrue }
