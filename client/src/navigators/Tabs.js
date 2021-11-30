@@ -24,7 +24,7 @@ export default () => {
   if (loading) return <Loading />
   return (
     <Tab.Navigator
-      initialRouteName={user.groups.length > 0 ? 'GroupsTab' : 'InitialGroupsSetting'}
+      initialRouteName={user?.groups?.length > 0 ? 'GroupsTab' : 'InitialGroupsSetting'}
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <TabBar {...props} />}
     >
