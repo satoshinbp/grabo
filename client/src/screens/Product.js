@@ -77,7 +77,7 @@ export default () => {
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', getProduct)
+    const unsubscribe = navigation.addListener('tabPress', getProduct)
 
     return unsubscribe
   }, [navigation])
