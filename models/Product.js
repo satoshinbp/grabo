@@ -10,7 +10,7 @@ const reportSchema = new Schema({
 })
 
 const uniqCommentSchema = new Schema({
-  userId: { type: ObjectId }, //shall be required once autheintication gets ready
+  userId: { type: ObjectId, required: true },
   description: { type: String, required: true, trim: true },
   report: { type: reportSchema, default: () => ({}) },
 })
@@ -26,7 +26,7 @@ const productSchema = new Schema(
       ],
       required: true,
     },
-    userId: { type: ObjectId }, //shall be required once autheintication gets ready
+    userId: { type: ObjectId, required: true },
     group: { type: String, required: true },
     keywords: {
       type: [{ type: String, required: true, trim: true }],

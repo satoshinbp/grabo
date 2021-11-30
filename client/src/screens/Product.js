@@ -30,7 +30,7 @@ import {
   unsaveProduct,
 } from '../features/product'
 import { reportQuestion, reportAnswer } from '../api/product'
-import { fetchUserByUserId, patchUser } from '../api/auth'
+import { fetchUserById, patchUser } from '../api/auth'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
@@ -128,7 +128,7 @@ export default () => {
 
     //send notification if question is highlighted
     const userIds = answerFormParams.highlightedBy
-    const users = userIds.map((userId) => fetchUserByUserId(token, userId))
+    const users = userIds.map((userId) => fetchUserById(token, userId))
     const fetchedUsers = await Promise.all(users)
 
     const notificationParams = {
@@ -401,8 +401,8 @@ export default () => {
       </View>
 
       <ScrollView variant="wrapper" flex={1} pt={4}>
-        {product?.fixedQandAs && QuestionAccordions(product?.fixedQandAs, 'fixed')}
-        {product?.uniqQandAs && QuestionAccordions(product?.uniqQandAs, 'uniq')}
+        {product?.fixedQandAs.length > 0 && QuestionAccordions(product?.fixedQandAs, 'fixed')}
+        {product?.uniqQandAs.length > 0 && QuestionAccordions(product?.uniqQandAs, 'uniq')}
 
         {/* add extra space to avoid contents to be hidden by FAB */}
         <View h="96px" />
