@@ -21,16 +21,6 @@ import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   const products = await fetchProductsByGroup(token, code)
-
-  for (let i = 0; i < products.length; i++) {
-    // products[i].uniqQandAs.forEach((qa) => console.log(qa))
-    const userPromises = products[i].uniqQandAs.map((qa) => fetchUserById(token, qa.question.userId))
-    // console.log(userPromises)
-    const users = await Promise.all(userPromises)
-    const userImages = users.map((user) => user.image)
-    products[i].uniqQandAs.forEach((qa, index) => (qa.userImage = userImages[index]))
-  }
-
   return products
 })
 
@@ -153,13 +143,11 @@ const updateProduct = (state, product) => {
   const groupedProductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
   if (groupedProductIndex !== -1) {
     state.groupedProducts[groupedProductIndex] = product
-    console.log(state.groupedProducts[groupedProductIndex])
   }
 
   const postedProductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
   if (postedProductIndex !== -1) {
     state.postedProducts[postedProductIndex] = product
-    console.log(state.postedProducts[postedProductIndex])
   }
 
   const savedProductIndex = lodash.findIndex(state.savedProducts, { _id: product._id })

@@ -148,7 +148,6 @@ export default () => {
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
 
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
-    console.log(notificationTokens)
 
     const sendPushNotification = async (expoPushToken) => {
       const message = {
@@ -171,7 +170,6 @@ export default () => {
     }
 
     notificationTokens.forEach(async (token) => {
-      console.log(token)
       await sendPushNotification(token)
     })
 

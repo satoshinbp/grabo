@@ -11,17 +11,19 @@ export default () => {
 
   if (loading) return <Loading />
   return (
-    <ScrollView>
-      <View variant="wrapper">
-        <Heading size="md" my={3}>
-          List of languages that you speak
-        </Heading>
-        <GroupList />
-      </View>
+    <>
+      <ScrollView>
+        <View variant="wrapper">
+          <Heading size="md" my={3}>
+            List of languages that you speak
+          </Heading>
+          <GroupList />
+        </View>
+      </ScrollView>
 
       <Button variant="fab" onPress={() => navigation.navigate('GroupsSetting')}>
         Join / Leave Group
       </Button>
-    </ScrollView>
+    </>
   )
 }
