@@ -102,16 +102,16 @@ const authSlice = createSlice({
     [updateUser.rejected]: (state) => {
       state.loading = false
     },
-    // [readNotification.pending]: (state) => {
-    //   state.loading = true
-    // },
+    [readNotification.pending]: (state) => {
+      state.loading = true
+    },
     [readNotification.fulfilled]: (state, action) => {
       state.user = action.payload
       state.loading = false
     },
-    // [readNotification.rejected]: (state) => {
-    //   state.loading = false
-    // },
+    [readNotification.rejected]: (state) => {
+      state.loading = false
+    },
   },
 })
 
