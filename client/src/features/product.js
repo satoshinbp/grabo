@@ -21,6 +21,16 @@ import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   const products = await fetchProductsByGroup(token, code)
+
+  for (let i = 0; i < products.length; i++) {
+    // products[i].uniqQandAs.forEach((qa) => console.log(qa))
+    const userPromises = products[i].uniqQandAs.map((qa) => fetchUserById(token, qa.question.userId))
+    // console.log(userPromises)
+    const users = await Promise.all(userPromises)
+    const userImages = users.map((user) => user.image)
+    products[i].uniqQandAs.forEach((qa, index) => (qa.userImage = userImages[index]))
+  }
+
   return products
 })
 
