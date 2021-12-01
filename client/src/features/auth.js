@@ -24,10 +24,13 @@ export const updateUser = createAsyncThunk('users/update', async ({ token, id, p
   return user
 })
 
-export const readNotification = createAsyncThunk('users/notification', async ({ token, params }) => {
-  const user = await setNotificationTrue(token, params)
-  return user
-})
+export const readNotification = createAsyncThunk(
+  'users/notification',
+  async ({ token, userId, notificationId, params }) => {
+    const user = await setNotificationTrue(token, userId, notificationId, params)
+    return user
+  }
+)
 
 const initialUserState = {
   googleId: '',
@@ -99,16 +102,16 @@ const authSlice = createSlice({
     [updateUser.rejected]: (state) => {
       state.loading = false
     },
-    [readNotification.pending]: (state) => {
-      state.loading = true
-    },
+    // [readNotification.pending]: (state) => {
+    //   state.loading = true
+    // },
     [readNotification.fulfilled]: (state, action) => {
       state.user = action.payload
       state.loading = false
     },
-    [readNotification.rejected]: (state) => {
-      state.loading = false
-    },
+    // [readNotification.rejected]: (state) => {
+    //   state.loading = false
+    // },
   },
 })
 

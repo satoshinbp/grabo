@@ -39,11 +39,8 @@ export default () => {
   }, [notifications])
 
   const onPress = (item) => {
-    params = {
-      userId: user._id,
-      notificationId: item._id,
-    }
-    dispatch(readNotification({ token, params }))
+    const params = {}
+    dispatch(readNotification({ token, userId: user._id, notificationId: item._id, params }))
     dispatch(navigateGroupProductById({ token, id: item.productId }))
   }
 
