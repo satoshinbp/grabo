@@ -4,71 +4,43 @@ import { SERVER_ROOT_URI } from '@env'
 // In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const signInWithGoogle = async (idToken) => {
-  try {
-    const { data } = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/auth/google`, { idToken })
+  return data
 }
 
 const fetchUser = async (token) => {
-  try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const fetchUsersByGroup = async (token, code) => {
-  try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${code}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${code}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const fetchUserById = async (token, id) => {
-  try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/highlight/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/highlight/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const patchUser = async (token, id, params) => {
-  try {
-    const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${id}`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.patch(`${SERVER_ROOT_URI}/api/users/${id}`, params, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
-const setNotificationTrue = async (token, userId, notificationId, params) => {
-  try {
-    const { data } = await axios.patch(
-      `${SERVER_ROOT_URI}/api/users/${userId}/notification/${notificationId}`,
-      params,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const setNotificationTrue = async (token, userId, notificationId) => {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${userId}/notification/${notificationId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 export { signInWithGoogle, fetchUser, fetchUsersByGroup, fetchUserById, patchUser, setNotificationTrue }
