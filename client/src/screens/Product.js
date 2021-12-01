@@ -19,6 +19,7 @@ import {
   Button,
   Checkbox,
   useTheme,
+  Avatar,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -35,7 +36,8 @@ import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
 import FavIcon from '../assets/icons/Fav'
-
+import DiamondIcon from '../assets/icons/Diamond'
+import ReportRedIcon from '../assets/icons/ReportRed'
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
@@ -239,9 +241,9 @@ export default () => {
 
   const QuestionAccordions = (questions, type) =>
     questions.map((question) => (
-      <Accordion>
+      <Accordion my={1}>
         <Accordion.Item>
-          <Accordion.Summary>
+          <Accordion.Summary _expanded={{ backgroundColor: '#FFC814' }}>
             <HStack alignItems="center">
               <VStack flex={1}>
                 <Text>{type === 'uniq' ? question.question.description : question.question}</Text>
@@ -250,22 +252,41 @@ export default () => {
                   {question.answers.length}
                   {question.answers.length > 1 ? ' answers' : ' answer'}
                 </Text>
-                <Text
-                  onPress={() =>
-                    setAnswerForm(
-                      question._id,
-                      type,
-                      type === 'uniq' ? question.question.description : question.question,
-                      question.highlightedBy
-                    )
-                  }
-                >
-                  Answer
-                </Text>
+                <HStack py={2} paddingRight={2} flexDirection="row" justifyContent="space-between" alignItems="center">
+                  <HStack space={2} alignItems="center">
+                    <Avatar size={7} alt="user portrait" borderRadius="full" />
+                    <Pressable
+                      onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
+                    >
+                      <HStack space={0.5}>
+                        <DiamondIcon width="20px" />
+                        <Text>{`${question.highlightedBy.length}`}</Text>
+                      </HStack>
+                    </Pressable>
+                    {type === 'uniq' ? (
+                      <Pressable onPress={() => setReportForm(type, question._id, answer?._id)}>
+                        <ReportRedIcon width="22px" />
+                      </Pressable>
+                    ) : (
+                      <View></View>
+                    )}
+                  </HStack>
+                  <Button
+                    onPress={() =>
+                      setAnswerForm(
+                        question._id,
+                        type,
+                        type === 'uniq' ? question.question.description : question.question,
+                        question.highlightedBy
+                      )
+                    }
+                    w="120px"
+                  >
+                    <Text>Answer</Text>
+                  </Button>
+                </HStack>
               </VStack>
-              <Pressable onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}>
-                <Box>{`★ ${question.highlightedBy.length}`}</Box>
-              </Pressable>
+
               <Accordion.Icon />
             </HStack>
           </Accordion.Summary>
@@ -276,19 +297,16 @@ export default () => {
           >
             {question.answers.map((answer) => (
               <>
-                <View p={4} flexDirection="row" justifyContent="space-between">
-                  <Text>{answer?.description}</Text>
-                  <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
-                    <Image
-                      source={require('../assets/icons/exclamation.jpeg')}
-                      alt="exclamation"
-                      width="18px"
-                      height="18px"
-                      padding={2}
-                    />
-                  </Pressable>
-                </View>
-                <Divider w="100%" />
+                <VStack p={4}>
+                  <Text pb={2}>{answer?.description}</Text>
+                  <HStack space={2} alignItems="center">
+                    <Avatar size={7} alt="user portrait" borderRadius="full" />
+                    <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
+                      <ReportRedIcon width="22px" />
+                    </Pressable>
+                  </HStack>
+                </VStack>
+                <Divider bg="white" w="100%" />
               </>
             ))}
           </Accordion.Details>
@@ -381,22 +399,11 @@ export default () => {
           {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
         </View>
         <View position="absolute" bottom={0} right={3}>
-          <HStack space={3}>
-            <Pressable>
-              <Image
-                source={require('../assets/icons/exclamation.jpeg')}
-                alt="exclamation"
-                width="28px"
-                height="28px"
-                padding={2}
-              />
-            </Pressable>
-            <Pressable onPress={toggleFavorite}>
-              <Center size={8}>
-                <FavIcon width="24px" />
-              </Center>
-            </Pressable>
-          </HStack>
+          <Pressable onPress={toggleFavorite}>
+            <Center size={8}>
+              <FavIcon width="24px" />
+            </Center>
+          </Pressable>
         </View>
       </View>
 
