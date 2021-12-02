@@ -270,7 +270,7 @@ export default () => {
                         </HStack>
                       </Pressable>
                       {type === 'uniq' ? (
-                        <Pressable onPress={() => setReportForm(type, question._id, answer?._id)}>
+                        <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer?._id)}>
                           <ReportRedIcon width="22px" />
                         </Pressable>
                       ) : (
