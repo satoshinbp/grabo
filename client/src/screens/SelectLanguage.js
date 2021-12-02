@@ -44,10 +44,10 @@ export default () => {
                     {group.code}
                   </Text>
                 </Center>
-                <Text fontSize="md" bold>
+                <Text fontSize="md" textAlign="center" bold>
                   {group.language}
                 </Text>
-                <Radio value={group.code} marginLeft="auto" accessibilityLabel={group.language} />
+                <Radio value={group.code} ml="auto" accessibilityLabel={group.language} />
               </HStack>
             </Box>
           ))}

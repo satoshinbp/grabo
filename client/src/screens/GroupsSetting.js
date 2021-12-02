@@ -35,10 +35,10 @@ export default () => {
                     {group.code}
                   </Text>
                 </Center>
-                <Text fontSize="md" bold>
+                <Text fontSize="md" textAlign="center" bold>
                   {group.language}
                 </Text>
-                <Checkbox value={group.code} my={0.5} marginLeft="auto" />
+                <Checkbox value={group.code} my={0.5} ml="auto" />
               </HStack>
             </Box>
           ))}
