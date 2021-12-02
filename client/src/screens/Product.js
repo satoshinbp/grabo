@@ -62,7 +62,7 @@ export default () => {
   const [reportKeys, setReportKeys] = useState([])
 
   // SET UP PRODUCT WHEN SCREEN OPENED
-  const getProduct = async () => {
+  const getProduct = () => {
     switch (route.name) {
       case 'GroupProduct':
         setProduct(groupedProducts.find((product) => product._id === route.params.id))
