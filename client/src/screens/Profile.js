@@ -28,6 +28,7 @@ export default () => {
   const toggleNotification = () => {
     const params = { isNotificationOn: !user.isNotificationOn }
     dispatch(updateUser({ token, id: user._id, params }))
+    setNotificationModalOpen(false)
   }
 
   if (loading) return <Loading />
