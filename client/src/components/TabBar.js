@@ -5,7 +5,7 @@ export default ({ state, descriptors, navigation }) => {
   return (
     <View h="56px" flexDirection="row" bg="white" shadow={2}>
       {state.routes.map((route, index) => {
-        if (route.name !== 'Notification') {
+        if (route.name !== 'Notification' && route.name !== 'InitialGroupsSetting') {
           const { options } = descriptors[route.key]
           const label =
             options.tabBarLabel !== undefined

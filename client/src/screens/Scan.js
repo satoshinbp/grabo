@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { View, Button, HStack, VStack, Text, Pressable } from 'native-base'
+import { Animated, Dimensions } from 'react-native'
+import { View, Box, Center, Button, HStack, VStack, Text, Pressable } from 'native-base'
 import { useIsFocused } from '@react-navigation/native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { addImage } from '../features/image'
 import Loading from '../components/Loading'
 import GalleryIcon from '../assets/icons/Gallery'
+
+const windowWidth = Dimensions.get('window').width
 
 export default () => {
   const isFocused = useIsFocused()
@@ -59,36 +62,37 @@ export default () => {
   }
 
   const actionButtons = (
-    <>
-      <Pressable
-        position="absolute"
-        top="4"
-        right="4"
-        width="42px"
-        height="42px"
-        borderRadius="full"
-        // backgroundColor="primary.500"
-        // shadow="2"
-        flex={1}
-        onPress={openImagePickerAsync}
-      >
-        <GalleryIcon width="43px" />
-      </Pressable>
-
+    <HStack w="100%" px={8} justifyContent="space-between" alignItems="center">
+      <Box w="36px" h="36px" />
       <Button
-        position="absolute"
-        bottom="4"
-        alignSelf="center"
-        width="84px"
-        height="84px"
-        borderRadius="full"
-        backgroundColor="primary.500"
-        shadow="2"
-        flex={1}
         isDisabled={!hasPermission}
         onPress={takePicture}
-      ></Button>
-    </>
+        width="56px"
+        height="56px"
+        borderRadius="full"
+        bg="white"
+        shadow={2}
+        alignSelf="center"
+        _pressed={{
+          bg: `muted.200`,
+        }}
+      >
+        <Box w="52px" h="52px" borderWidth="2px" borderColor="primary.500" borderRadius="full" />
+      </Button>
+      <Pressable onPress={openImagePickerAsync}>
+        <Center
+          w="36px"
+          h="36px"
+          borderRadius="full"
+          bg="primary.500"
+          _pressed={{
+            bg: 'primary.700',
+          }}
+        >
+          <GalleryIcon width="36px" />
+        </Center>
+      </Pressable>
+    </HStack>
   )
 
   if (!isFocused) return <View />
@@ -108,10 +112,9 @@ export default () => {
     )
   }
   return (
-    <Camera flex={1} ref={cameraRef}>
-      <View variant="wrapper" justifyContent="flex-end">
-        {actionButtons}
-      </View>
-    </Camera>
+    <VStack variant="container" flex={1} justifyContent="space-between" alignItems="center" my={12}>
+      <Camera ref={cameraRef} ratio="1:1" width={windowWidth} height={windowWidth} alignSelf="center" />
+      {actionButtons}
+    </VStack>
   )
 }

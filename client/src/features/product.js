@@ -17,7 +17,7 @@ import { postImage } from '../api/image'
 import { patchUser } from '../api/auth'
 import { clearImage } from './image'
 import * as RootNavigation from '../navigators/RootNavigation'
-import lodash, { keys, cloneDeep } from 'lodash'
+import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
   const products = await fetchProductsByGroup(token, code)
@@ -45,7 +45,7 @@ const sendPushNotification = async (expoPushToken) => {
     to: expoPushToken,
     sound: 'default',
     title: 'Help',
-    body: 'Someone need your help!',
+    body: 'Someone is waiting for your help!',
     data: { someData: 'goes here' },
   }
 
@@ -66,18 +66,17 @@ export const createProduct = createAsyncThunk(
     const { image } = getState()
     const { auth } = getState()
 
-    const promises = image.value.uris.map((uri) => {
+    const postImagePromises = image.value.uris.map((uri) => {
       const imageParams = new FormData()
       imageParams.append('image', { uri, name: 'uploadedImage.jpeg', type: 'image/jpeg' })
       return postImage(token, imageParams)
     })
-    const urls = await Promise.all(promises)
+    const urls = await Promise.all(postImagePromises)
 
     productParams.urls = urls
     const product = await postProduct(token, productParams)
 
     const fetchedUsers = await fetchUsersByGroup(token, image.value.code)
-
     const notificationParams = {
       notifications: {
         read: false,
@@ -85,18 +84,15 @@ export const createProduct = createAsyncThunk(
         productId: product._id,
       },
     }
-    fetchedUsers.forEach(async (user) => {
-      await patchUser(token, user._id, notificationParams)
-    })
+    const patchUserPromises = fetchedUsers.map((user) => patchUser(token, user._id, notificationParams))
+    await Promise.all(patchUserPromises)
 
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
-    notificationTokens.forEach(async (token) => {
-      await sendPushNotification(token)
-    })
+    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token))
+    await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-
     RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
 
     return product

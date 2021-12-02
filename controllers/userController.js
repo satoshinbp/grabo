@@ -2,6 +2,15 @@ const User = require('../models/User')
 
 const getCurrentUser = (req, res) => res.status(200).send(req.user)
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    res.status(200).send(user)
+  } catch (e) {
+    res.status(400).send()
+  }
+}
+
 const getUsersByGroup = async (req, res) => {
   try {
     const users = await User.find({ groups: { $in: req.params.group } })
@@ -59,4 +68,4 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = { getCurrentUser, getUsersByGroup, updateUser, logout, readNotification }
+module.exports = { getCurrentUser, getUsersByGroup, updateUser, logout, readNotification, getUserById }
