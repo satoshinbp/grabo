@@ -80,11 +80,6 @@ export default () => {
             bg: 'white',
             shadow: 2,
           }),
-          productCard: () => ({
-            rounded: 'lg',
-            width: '72px',
-            height: '72px',
-          }),
         },
       },
       VStack: {

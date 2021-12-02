@@ -82,7 +82,7 @@ export default () => {
           imageStyle={{ borderRadius: 12 }}
           style={{ width: 156, height: 156, alignSelf: 'center', flex: 1, justifyContent: 'flex-end' }}
         >
-          <Box variant="productCard" justifyContent="flex-end">
+          <Box justifyContent="flex-end">
             <HStack>
               <Text
                 fontSize={11}
