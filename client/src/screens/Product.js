@@ -259,8 +259,8 @@ export default () => {
     questions.map((question, index) => (
       <View my={1} borderRadius="md" bg="white" shadow={2}>
         <Accordion borderWidth={0} borderRadius="md">
-          <Accordion.Item>
-            <Accordion.Summary _expanded={{ backgroundColor: '#FFC814' }}>
+          <Accordion.Item backgroundColor="white">
+            <Accordion.Summary _expanded={{ backgroundColor: colors.primary[500] }}>
               <HStack alignItems="center">
                 <VStack flex={1}>
                   <Text>{type === 'uniq' ? question.question.description : question.question}</Text>
