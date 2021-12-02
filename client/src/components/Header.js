@@ -10,12 +10,16 @@ export default () => {
   const navigation = useNavigation()
   const { user } = useSelector((state) => state.auth)
   const { notifications } = user
-  const [unreadNotifications, setUnreadNotifications] = useState([])
+  const [haveUnreadNotification, setUnreadNotifications] = useState(false)
 
   useEffect(() => {
     const statusOfNotifications = notifications.map((notification) => notification.read)
     const unReads = statusOfNotifications.filter((notification) => notification === false)
-    setUnreadNotifications(unReads)
+    if (unReads.length) {
+      setUnreadNotifications(true)
+    } else {
+      setUnreadNotifications(false)
+    }
   }, [notifications])
 
   return (
@@ -27,7 +31,7 @@ export default () => {
 
           <Center size="8">
             <Pressable onPress={() => navigation.navigate('Notification')}>
-              {unreadNotifications.length ? <BellIconWithCircle width="20px" /> : <NotificationIcon width="20px" />}
+              {haveUnreadNotification ? <BellIconWithCircle width="20px" /> : <NotificationIcon width="20px" />}
             </Pressable>
           </Center>
         </HStack>
