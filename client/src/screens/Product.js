@@ -279,7 +279,7 @@ export default () => {
                     <HStack space={2} alignItems="center">
                       {type === 'uniq' && (
                         <Avatar
-                          source={{ uri: userImages.length > 0 ? userImages[index] : '' }}
+                          // source={{ uri: userImages.length > 0 ? userImages[index] : '' }}
                           size={7}
                           alt="user portrait"
                           borderRadius="full"
