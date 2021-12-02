@@ -46,14 +46,14 @@ export default () => {
     >
       <VStack flex={1} justifyContent="space-between" alignItems="center" py={20}>
         <Heading>Welcome to</Heading>
-        <View>
-          <Text fontSize="2xl" textAlign="center" bold>
+        <View w="232px">
+          <Text fontSize="lg" bold mx={1} my={-2}>
             Let's sign in
           </Text>
           <TouchableOpacity activeOpacity={0.8} onPress={handleGoogleSignin}>
             <Image
               source={require('../assets/images/btn_google_signin_light_normal.png')}
-              w="232px"
+              w="100%"
               resizeMode="contain"
               alt="sign in with google"
             />
