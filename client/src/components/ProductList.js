@@ -74,25 +74,41 @@ export default () => {
   }
 
   const ProductCard = ({ item }) => {
-    const elapsedTimeBetweenNowAndPostedDate = convertTimestampToDurationFromToday(item)
-
     return !item.empty && item.images.length > 0 ? (
       <Pressable flex={1} my={3} onPress={() => navigation.navigate(productRoute, { id: item._id })}>
         <ImageBackground
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
           resizeMode="cover"
           imageStyle={{ borderRadius: 12 }}
-          style={{ width: '100%', height: 144, alignSelf: 'center' }}
+          style={{ width: 156, height: 156, alignSelf: 'center', flex: 1, justifyContent: 'flex-end' }}
         >
-          <Box variant="productCard">
-            <Text>
-              {elapsedTimeBetweenNowAndPostedDate}&nbsp;
-              {elapsedTimeBetweenNowAndPostedDate > 1 ? 'days' : 'day'}&nbsp;ago
-            </Text>
-            <Text>
-              {countComments(item)}&nbsp;
-              {countComments(item) > 1 ? 'comments' : 'comment'}
-            </Text>
+          <Box variant="productCard" justifyContent="flex-end">
+            <HStack>
+              <Text
+                fontSize={11}
+                width={78}
+                bg="rgba(255, 255, 255, 0.8)"
+                pl={1.5}
+                py={1}
+                textAlign="left"
+                borderBottomLeftRadius={12}
+              >
+                {convertTimestampToDurationFromToday(item)}&nbsp;
+                {convertTimestampToDurationFromToday(item) > 1 ? 'days' : 'day'}&nbsp;ago
+              </Text>
+              <Text
+                fontSize={11}
+                width={78}
+                bg="rgba(255, 255, 255, 0.8)"
+                pr={1.5}
+                py={1}
+                textAlign="right"
+                borderBottomRightRadius={12}
+              >
+                {countComments(item)}&nbsp;
+                {countComments(item) > 1 ? 'comments' : 'comment'}
+              </Text>
+            </HStack>
           </Box>
         </ImageBackground>
       </Pressable>
@@ -107,31 +123,28 @@ export default () => {
     <>
       {products.length > 0 ? (
         <>
-          <HStack>
-            <Pressable
-              variant={sortedBy === 'date' ? 'activeTab' : 'inactiveTab'}
-              py="4"
-              onPress={() => setSortedBy('date')}
-            >
+          <HStack my={0.5} borderBottomWidth={3} borderBottomColor="#DADADA">
+            <Pressable variant={sortedBy === 'date' ? 'activeTab' : 'inactiveTab'} onPress={() => setSortedBy('date')}>
               <Text alignItems="center" fontWeight={sortedBy === 'date' ? 'bold' : 'normal'}>
                 Sort by Date
               </Text>
             </Pressable>
             <Pressable
               variant={sortedBy === 'highlight' ? 'activeTab' : 'inactiveTab'}
-              py="4"
               onPress={() => setSortedBy('highlight')}
             >
               <Text fontWeight={sortedBy === 'highlight' ? 'bold' : 'normal'}>Sort by Highlights</Text>
             </Pressable>
           </HStack>
 
-          <FlatList
-            data={gridLayoutFormat(products, numColumns)}
-            renderItem={ProductCard}
-            numColumns={numColumns}
-            keyExtractor={(item) => item._id}
-          />
+          <Box mt={4} style={{ flex: 1 }}>
+            <FlatList
+              data={gridLayoutFormat(products, numColumns)}
+              renderItem={ProductCard}
+              numColumns={numColumns}
+              keyExtractor={(item) => item._id}
+            />
+          </Box>
         </>
       ) : (
         <Center flex={1}>
