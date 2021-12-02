@@ -105,7 +105,7 @@ export default () => {
           }),
           icon: () => {
             return {
-              padding: 1,
+              padding: 0.5,
               borderRadius: 'full',
               _pressed: {
                 bg: `muted.300`,

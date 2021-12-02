@@ -5,10 +5,9 @@ import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
   ScrollView,
-  Box,
+  Center,
   VStack,
   HStack,
-  Center,
   Pressable,
   Accordion,
   Divider,
@@ -19,7 +18,6 @@ import {
   Button,
   Checkbox,
   useTheme,
-  Avatar,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -267,13 +265,17 @@ export default () => {
                           variant="icon"
                           onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
                         >
-                          <DiamondIcon width="20px" />
+                          <Center size={6}>
+                            <DiamondIcon width="20px" />
+                          </Center>
                         </Pressable>
-                        <Text>{`${question.highlightedBy.length}`}</Text>
+                        <Text>{question.highlightedBy.length}</Text>
                       </HStack>
                       {type === 'uniq' && (
                         <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer?._id)}>
-                          <ReportRedIcon width="22px" />
+                          <Center size={6}>
+                            <ReportRedIcon width="20px" />
+                          </Center>
                         </Pressable>
                       )}
                     </HStack>
@@ -407,11 +409,11 @@ export default () => {
         </View>
         <View position="absolute" bottom={0} right={3}>
           <Pressable variant="icon" onPress={toggleFavorite}>
-            <Center size={8}>
+            <Center size={6}>
               {product.favoredUserIds.includes(user._id) ? (
-                <FilledHeartIcon width="28px" />
+                <FilledHeartIcon width="24px" />
               ) : (
-                <WhiteHeartIcon width="28px" />
+                <WhiteHeartIcon width="24px" />
               )}
             </Center>
           </Pressable>
