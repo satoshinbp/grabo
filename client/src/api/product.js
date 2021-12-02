@@ -18,7 +18,7 @@ const fetchProductsByGroup = async (token, code) => {
 }
 
 const fetchProductsByUserId = async (token, userId) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
+  const { data } = await axios.get(`http://54.202.13.134/api/products/user/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -87,7 +87,7 @@ const deleteUserFromHighlight = async (token, { userId, questionId, questionType
 
 const postUserToFavorite = async (token, { productId, userId }) => {
   const { data } = await axios.post(
-    `${SERVER_ROOT_URI}/api/products/${productId}/favor`,
+    `http://54.202.13.134/api/products/${productId}/favor`,
     { userId },
     {
       headers: { Authorization: `Bearer ${token}` },
