@@ -143,13 +143,11 @@ const updateProduct = (state, product) => {
   const groupedProductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
   if (groupedProductIndex !== -1) {
     state.groupedProducts[groupedProductIndex] = product
-    console.log(state.groupedProducts[groupedProductIndex])
   }
 
   const postedProductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
   if (postedProductIndex !== -1) {
     state.postedProducts[postedProductIndex] = product
-    console.log(state.postedProducts[postedProductIndex])
   }
 
   const savedProductIndex = lodash.findIndex(state.savedProducts, { _id: product._id })

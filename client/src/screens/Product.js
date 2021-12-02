@@ -148,7 +148,6 @@ export default () => {
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
 
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
-    console.log(notificationTokens)
 
     const sendPushNotification = async (expoPushToken) => {
       const message = {
@@ -171,7 +170,6 @@ export default () => {
     }
 
     notificationTokens.forEach(async (token) => {
-      console.log(token)
       await sendPushNotification(token)
     })
 
@@ -240,78 +238,87 @@ export default () => {
   )
 
   const QuestionAccordions = (questions, type) =>
-    questions.map((question) => (
-      <Accordion my={1}>
-        <Accordion.Item>
-          <Accordion.Summary _expanded={{ backgroundColor: '#FFC814' }}>
-            <HStack alignItems="center">
-              <VStack flex={1}>
-                <Text>{type === 'uniq' ? question.question.description : question.question}</Text>
-                <Text fontSize="xs">
-                  This question has&nbsp;
-                  {question.answers.length}
-                  {question.answers.length > 1 ? ' answers' : ' answer'}
-                </Text>
-                <HStack py={2} paddingRight={2} flexDirection="row" justifyContent="space-between" alignItems="center">
-                  <HStack space={2} alignItems="center">
-                    <Avatar size={7} alt="user portrait" borderRadius="full" />
-                    <Pressable
-                      onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
-                    >
-                      <HStack space={0.5}>
-                        <DiamondIcon width="20px" />
-                        <Text>{`${question.highlightedBy.length}`}</Text>
-                      </HStack>
-                    </Pressable>
-                    {type === 'uniq' ? (
-                      <Pressable onPress={() => setReportForm(type, question._id, answer?._id)}>
-                        <ReportRedIcon width="22px" />
-                      </Pressable>
-                    ) : (
-                      <View></View>
-                    )}
-                  </HStack>
-                  <Button
-                    onPress={() =>
-                      setAnswerForm(
-                        question._id,
-                        type,
-                        type === 'uniq' ? question.question.description : question.question,
-                        question.highlightedBy
-                      )
-                    }
-                    w="120px"
+    questions.map((question, index) => (
+      <View my={1} borderRadius="md" bg="white" shadow={2}>
+        <Accordion borderWidth={0} borderRadius="md">
+          <Accordion.Item backgroundColor="white">
+            <Accordion.Summary _expanded={{ backgroundColor: colors.primary[500] }}>
+              <HStack alignItems="center">
+                <VStack flex={1}>
+                  <Text>{type === 'uniq' ? question.question.description : question.question}</Text>
+                  <Text fontSize="xs">
+                    This question has&nbsp;
+                    {question.answers.length}
+                    {question.answers.length > 1 ? ' answers' : ' answer'}
+                  </Text>
+                  <HStack
+                    py={2}
+                    paddingRight={2}
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
                   >
-                    <Text>Answer</Text>
-                  </Button>
-                </HStack>
-              </VStack>
-
-              <Accordion.Icon />
-            </HStack>
-          </Accordion.Summary>
-          <Accordion.Details
-            m={0}
-            p={0}
-            backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
-          >
-            {question.answers.map((answer) => (
-              <>
-                <VStack p={4}>
-                  <Text pb={2}>{answer?.description}</Text>
-                  <HStack space={2} alignItems="center">
-                    <Avatar size={7} alt="user portrait" borderRadius="full" />
-                    <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
-                      <ReportRedIcon width="22px" />
-                    </Pressable>
+                    <HStack space={2} alignItems="center">
+                      {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
+                      <Pressable
+                        variant="icon"
+                        onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
+                      >
+                        <HStack space={0.5}>
+                          <DiamondIcon width="20px" />
+                          <Text>{`${question.highlightedBy.length}`}</Text>
+                        </HStack>
+                      </Pressable>
+                      {type === 'uniq' ? (
+                        <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer?._id)}>
+                          <ReportRedIcon width="22px" />
+                        </Pressable>
+                      ) : (
+                        <View></View>
+                      )}
+                    </HStack>
+                    <Button
+                      onPress={() =>
+                        setAnswerForm(
+                          question._id,
+                          type,
+                          type === 'uniq' ? question.question.description : question.question,
+                          question.highlightedBy
+                        )
+                      }
+                      w="120px"
+                    >
+                      <Text>Answer</Text>
+                    </Button>
                   </HStack>
                 </VStack>
-                <Divider bg="white" w="100%" />
-              </>
-            ))}
-          </Accordion.Details>
-        </Accordion.Item>
-      </Accordion>
+
+                <Accordion.Icon />
+              </HStack>
+            </Accordion.Summary>
+            <Accordion.Details
+              m={0}
+              p={0}
+              backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
+            >
+              {question.answers.map((answer) => (
+                <>
+                  <VStack p={4}>
+                    <Text pb={2}>{answer?.description}</Text>
+                    <HStack space={2} alignItems="center">
+                      {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
+                      <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer._id)}>
+                        <ReportRedIcon width="22px" />
+                      </Pressable>
+                    </HStack>
+                  </VStack>
+                  <Divider bg="white" w="100%" />
+                </>
+              ))}
+            </Accordion.Details>
+          </Accordion.Item>
+        </Accordion>
+      </View>
     ))
 
   // SET UP MODAL PROPS
@@ -399,7 +406,7 @@ export default () => {
           {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
         </View>
         <View position="absolute" bottom={0} right={3}>
-          <Pressable onPress={toggleFavorite}>
+          <Pressable variant="icon" onPress={toggleFavorite}>
             <Center size={8}>
               <FavIcon width="24px" />
             </Center>
@@ -407,9 +414,11 @@ export default () => {
         </View>
       </View>
 
-      <ScrollView variant="wrapper" flex={1} pt={4}>
-        {product?.fixedQandAs.length > 0 && QuestionAccordions(product?.fixedQandAs, 'fixed')}
-        {product?.uniqQandAs.length > 0 && QuestionAccordions(product?.uniqQandAs, 'uniq')}
+      <ScrollView flex={1} pt={4}>
+        <View variant="wrapper">
+          {product?.fixedQandAs.length > 0 && QuestionAccordions(product?.fixedQandAs, 'fixed')}
+          {product?.uniqQandAs.length > 0 && QuestionAccordions(product?.uniqQandAs, 'uniq')}
+        </View>
 
         {/* add extra space to avoid contents to be hidden by FAB */}
         <View h="96px" />

@@ -112,6 +112,13 @@ export default () => {
             borderBottomWidth: 3,
             borderBottomColor: 'transparent',
           }),
+          icon: () => {
+            return {
+              _pressed: {
+                bg: `muted.300`,
+              },
+            }
+          },
         },
       },
       Button: {
@@ -150,8 +157,8 @@ export default () => {
               position: 'absolute',
               bottom: 4,
               right: 4,
-              width: '84px',
-              height: '84px',
+              width: '56px',
+              height: '56px',
               borderRadius: 'full',
               shadow: 2,
               _text: {
