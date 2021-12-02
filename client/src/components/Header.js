@@ -13,8 +13,7 @@ export default () => {
   const [haveUnreadNotification, setHaveUnreadNotification] = useState(false)
 
   useEffect(() => {
-    const checkUnreadNotification = notifications.map((notification) => notification.read).includes(false)
-    setHaveUnreadNotification(!checkUnreadNotification)
+    setHaveUnreadNotification(notifications.map((notification) => notification.read).includes(false))
   }, [notifications])
 
   return (
