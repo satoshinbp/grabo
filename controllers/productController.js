@@ -51,7 +51,7 @@ const createProduct = (req, res) => {
       highlightedBy: highlitedQuestions.includes(index) ? [userId] : [],
     })),
     uniqQandAs: uniqQuestions.map((uniqQuestion) => ({
-      question: { description: uniqQuestion },
+      question: { description: uniqQuestion, userId },
       highlightedBy: uniqQuestion ? [userId] : [],
     })),
   }

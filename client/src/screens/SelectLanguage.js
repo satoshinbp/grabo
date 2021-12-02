@@ -20,6 +20,7 @@ export default () => {
         setIsTextDetected(true)
       }
     })
+    setCode(image.code)
   }, [image.code])
 
   return (
@@ -36,10 +37,10 @@ export default () => {
 
         <Radio.Group name="Group" value={code} onChange={(value) => setCode(value)} flex={1}>
           {groups.map((group) => (
-            <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
+            <Box variant="listItemBar" borderLeftWidth="10px" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
-                  <Text fontSize="md" bold>
+                  <Text fontSize="xl" bold>
                     {group.code}
                   </Text>
                 </Center>

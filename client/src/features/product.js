@@ -140,12 +140,14 @@ const setProducts = (state, category, products) => {
   state.loading = false
 }
 const updateProduct = (state, product) => {
-  const groupedIroductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
-  state.groupedProducts[groupedIroductIndex] = product
+  const groupedProductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
+  if (groupedProductIndex !== -1) {
+    state.groupedProducts[groupedProductIndex] = product
+  }
 
-  const postedIroductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
-  if (postedIroductIndex !== -1) {
-    state.postedProducts[postedIroductIndex] = product
+  const postedProductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
+  if (postedProductIndex !== -1) {
+    state.postedProducts[postedProductIndex] = product
   }
 
   const savedProductIndex = lodash.findIndex(state.savedProducts, { _id: product._id })
@@ -240,14 +242,14 @@ const productSlice = createSlice({
     [saveProduct.rejected]: (state) => finishLoading(state),
     [saveProduct.fulfilled]: (state, action) => {
       state.savedProducts.push(action.payload)
-      state.loading = false
+      updateProduct(state, action.payload)
     },
 
     [unsaveProduct.pending]: (state) => startLoading(state),
     [unsaveProduct.rejected]: (state) => finishLoading(state),
     [unsaveProduct.fulfilled]: (state, action) => {
       state.savedProducts = state.savedProducts.filter((product) => product._id !== action.payload._id)
-      state.loading = false
+      updateProduct(state, action.payload)
     },
   },
 })

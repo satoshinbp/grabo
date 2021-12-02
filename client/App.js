@@ -62,19 +62,10 @@ export default () => {
       },
       Box: {
         variants: {
-          listItemBarPlain: () => ({
+          listItemBar: () => ({
             my: 1.5,
             px: 3.5,
             py: 2.5,
-            borderRadius: 'md',
-            backgroundColor: 'white',
-            shadow: 2,
-          }),
-          listItemBarColored: () => ({
-            my: 1.5,
-            px: 3.5,
-            py: 2.5,
-            borderLeftWidth: '10px',
             borderColor: 'primary.500',
             borderRadius: 'md',
             bg: 'white',
@@ -111,6 +102,24 @@ export default () => {
             width: '50%',
             borderBottomWidth: 3,
             borderBottomColor: 'transparent',
+          }),
+          icon: () => {
+            return {
+              padding: 0.5,
+              borderRadius: 'full',
+              _pressed: {
+                bg: `muted.300`,
+              },
+            }
+          },
+          listItemBar: () => ({
+            my: 1.5,
+            px: 3.5,
+            py: 2.5,
+            borderColor: 'primary.500',
+            borderRadius: 'md',
+            bg: 'white',
+            shadow: 2,
           }),
         },
       },
@@ -150,8 +159,8 @@ export default () => {
               position: 'absolute',
               bottom: 4,
               right: 4,
-              width: '84px',
-              height: '84px',
+              width: '56px',
+              height: '56px',
               borderRadius: 'full',
               shadow: 2,
               _text: {

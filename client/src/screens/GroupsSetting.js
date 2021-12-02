@@ -9,7 +9,7 @@ export default () => {
   const { token, user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
-  const [groups, setGroups] = useState(user.groups)
+  const [groups, setGroups] = useState(user?.groups)
 
   const handleSave = () => {
     const params = { groups }
@@ -23,15 +23,15 @@ export default () => {
       <VStack variant="container">
         <Heading size="md">Choose languages that you speak</Heading>
         <Checkbox.Group
-          defaultValue={user.groups}
+          defaultValue={user?.groups}
           accessibilityLabel="choose language groups"
           onChange={(values) => setGroups(values)}
         >
           {groupList.map((group) => (
-            <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
+            <Box variant="listItemBar" borderLeftWidth="10px" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
-                  <Text fontSize="md" bold>
+                  <Text fontSize="xl" bold>
                     {group.code}
                   </Text>
                 </Center>
