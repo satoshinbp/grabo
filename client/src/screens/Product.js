@@ -261,6 +261,7 @@ export default () => {
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
                       <Pressable
+                        variant="icon"
                         onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
                       >
                         <HStack space={0.5}>
@@ -306,7 +307,7 @@ export default () => {
                     <Text pb={2}>{answer?.description}</Text>
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
-                      <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
+                      <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer._id)}>
                         <ReportRedIcon width="22px" />
                       </Pressable>
                     </HStack>
@@ -405,7 +406,7 @@ export default () => {
           {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
         </View>
         <View position="absolute" bottom={0} right={3}>
-          <Pressable onPress={toggleFavorite}>
+          <Pressable variant="icon" onPress={toggleFavorite}>
             <Center size={8}>
               <FavIcon width="24px" />
             </Center>
