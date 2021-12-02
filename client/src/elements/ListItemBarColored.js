@@ -1,9 +1,9 @@
 import React from 'react'
 import { Box, Center, VStack, HStack, Pressable, Text } from 'native-base'
 
-export default ({ text, subtext, icon, onPress, textColor, productIcon, code }) => (
+export default ({ text, subtext, icon, onPress, textColor, productIcon, code, borderLeftWidth }) => (
   <Pressable onPress={onPress}>
-    <Box variant="listItemBarColored">
+    <Box borderLeftWidth={borderLeftWidth} variant="listItemBarColored">
       <HStack space={3} alignItems="center">
         {icon && (
           <Center size={12} bg="primary.500" borderRadius="full">

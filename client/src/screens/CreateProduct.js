@@ -88,10 +88,10 @@ export default () => {
     <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <VStack flex={1} space={3} m={3} px={3} py={3} bg="white" borderRadius="md" shadow={2}>
-          <Heading>Product Information</Heading>
+          <Heading size="md">Product Information</Heading>
 
           <View>
-            <Text fontSize="lg" bold>
+            <Text fontSize="md" bold mb={4}>
               Image
             </Text>
             <VStack alignItems="center" space={2}>
@@ -162,7 +162,9 @@ export default () => {
             </FormControl.Label>
             <Checkbox.Group ml={2} onChange={setHighlitedQuestions} value={highlitedQuestions}>
               {fixedQuestions.map((question, index) => (
-                <Checkbox value={index}>{question}</Checkbox>
+                <Checkbox color="primary.500" value={index}>
+                  {question}
+                </Checkbox>
               ))}
             </Checkbox.Group>
           </FormControl>

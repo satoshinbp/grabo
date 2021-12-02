@@ -16,7 +16,7 @@ export default () => {
       {groups
         .filter((group) => user.groups.includes(group.code))
         .map((group) => (
-          <ListItemBarColored text={group.language} icon={<SunIcon size={8} />} onPress={() => onPress(group)} />
+          <ListItemBarColored text={group.language} code={group.code} onPress={() => onPress(group)} />
         ))}
 
       {/* add extra space to avoid contents to be hidden by FAB */}
