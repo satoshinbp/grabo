@@ -86,9 +86,13 @@ const deleteUserFromHighlight = async (token, { userId, questionId, questionType
 }
 
 const postUserToFavorite = async (token, { productId, userId }) => {
-  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${productId}/favor`, userId, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
+  const { data } = await axios.post(
+    `${SERVER_ROOT_URI}/api/products/${productId}/favor`,
+    { userId },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  )
   return data
 }
 
