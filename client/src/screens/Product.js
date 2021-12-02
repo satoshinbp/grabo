@@ -38,6 +38,8 @@ import SlideModal from '../elements/SlideModal'
 import FavIcon from '../assets/icons/Fav'
 import DiamondIcon from '../assets/icons/Diamond'
 import ReportRedIcon from '../assets/icons/ReportRed'
+import FilledHeartIcon from '../assets/icons/HeartFilledYellow'
+import WhiteHeartIcon from '../assets/icons/HeartStrokeWhite'
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
@@ -408,7 +410,11 @@ export default () => {
         <View position="absolute" bottom={0} right={3}>
           <Pressable variant="icon" onPress={toggleFavorite}>
             <Center size={8}>
-              <FavIcon width="24px" />
+              {product.favoredUserIds.includes(user._id) ? (
+                <FilledHeartIcon width="28px" />
+              ) : (
+                <WhiteHeartIcon width="28px" />
+              )}
             </Center>
           </Pressable>
         </View>

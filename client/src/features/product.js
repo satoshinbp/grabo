@@ -242,14 +242,14 @@ const productSlice = createSlice({
     [saveProduct.rejected]: (state) => finishLoading(state),
     [saveProduct.fulfilled]: (state, action) => {
       state.savedProducts.push(action.payload)
-      state.loading = false
+      updateProduct(state, action.payload)
     },
 
     [unsaveProduct.pending]: (state) => startLoading(state),
     [unsaveProduct.rejected]: (state) => finishLoading(state),
     [unsaveProduct.fulfilled]: (state, action) => {
       state.savedProducts = state.savedProducts.filter((product) => product._id !== action.payload._id)
-      state.loading = false
+      updateProduct(state, action.payload)
     },
   },
 })
