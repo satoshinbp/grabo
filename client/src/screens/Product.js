@@ -60,19 +60,12 @@ export default () => {
   const [answer, setAnswer] = useState(null)
   const [reportFormParams, setReportFormParams] = useState(null)
   const [reportKeys, setReportKeys] = useState([])
-  // const [userImages, setUserImages] = useState([])
 
   // SET UP PRODUCT WHEN SCREEN OPENED
   const getProduct = async () => {
     switch (route.name) {
       case 'GroupProduct':
-        const fetchedProduct = groupedProducts.find((product) => product._id === route.params.id)
-        setProduct(fetchedProduct)
-
-        // const users = await Promise.all(fetchedProduct.uniqQandAs.map((qa) => fetchUserById(token, qa.question.userId)))
-        // const fetchedUserImages = users.map((user) => user.image)
-        // console.log(fetchedUserImages)
-        // setUserImages(fetchedUserImages)
+        setProduct(groupedProducts.find((product) => product._id === route.params.id))
         break
       case 'MyProduct':
         setProduct(postedProducts.find((product) => product._id === route.params.id))
@@ -92,17 +85,6 @@ export default () => {
   }, [navigation])
 
   useEffect(getProduct, [loading])
-
-  // useEffect(() => {
-  //   getProduct()
-  // }, [loading])
-
-  // useEffect(() => {
-  //   product.uniqQandAs((qa, index) => {
-  //     qa.question.userImage = userImages[index]
-  //   })
-  //   setProduct(product)
-  // }, [userImages])
 
   // SET UP MODAL FORM
   const setQuestionForm = () => {
@@ -277,14 +259,7 @@ export default () => {
                     alignItems="center"
                   >
                     <HStack space={2} alignItems="center">
-                      {type === 'uniq' && (
-                        <Avatar
-                          // source={{ uri: userImages.length > 0 ? userImages[index] : '' }}
-                          size={7}
-                          alt="user portrait"
-                          borderRadius="full"
-                        />
-                      )}
+                      {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
                       <Pressable
                         onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
                       >
@@ -330,7 +305,7 @@ export default () => {
                   <VStack p={4}>
                     <Text pb={2}>{answer?.description}</Text>
                     <HStack space={2} alignItems="center">
-                      <Avatar size={7} alt="user portrait" borderRadius="full" />
+                      {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
                       <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
                         <ReportRedIcon width="22px" />
                       </Pressable>
