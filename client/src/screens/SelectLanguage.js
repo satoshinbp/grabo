@@ -40,7 +40,7 @@ export default () => {
             <Box variant="listItemBar" borderLeftWidth="10px" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
-                  <Text fontSize="md" bold>
+                  <Text fontSize="xl" bold>
                     {group.code}
                   </Text>
                 </Center>

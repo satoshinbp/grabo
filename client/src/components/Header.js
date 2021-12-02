@@ -10,16 +10,11 @@ export default () => {
   const navigation = useNavigation()
   const { user } = useSelector((state) => state.auth)
   const { notifications } = user
-  const [haveUnreadNotification, setUnreadNotifications] = useState(false)
+  const [haveUnreadNotification, setHaveUnreadNotification] = useState(false)
 
   useEffect(() => {
-    const statusOfNotifications = notifications.map((notification) => notification.read)
-    const unReads = statusOfNotifications.filter((notification) => notification === false)
-    if (unReads.length) {
-      setUnreadNotifications(true)
-    } else {
-      setUnreadNotifications(false)
-    }
+    const checkUnreadNotification = notifications.map((notification) => notification.read).includes(false)
+    setHaveUnreadNotification(!checkUnreadNotification)
   }, [notifications])
 
   return (
