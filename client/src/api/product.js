@@ -4,60 +4,56 @@ import { SERVER_ROOT_URI } from '@env'
 // In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const fetchProductById = async (token, id) => {
-  const { data } = await axios.get(`http://192.168.1.65:8000/api/products/${id}`, {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const fetchProductsByGroup = async (token, code) => {
-  const { data } = await axios.get(`http://192.168.1.65:8000/api/products/group/${code}`, {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/group/${code}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const fetchProductsByUserId = async (token, userId) => {
-  try {
-    const { data } = await axios.get(`http://192.168.1.65:8000/api/products/user/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/user/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const fetchProductsByFavoredUserId = async (token, userId) => {
-  const { data } = await axios.get(`http://192.168.1.65:8000/api/products/fav/user/${userId}`, {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/products/fav/user/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const postProduct = async (token, params) => {
-  const { data } = await axios.post(`http://192.168.1.65:8000/api/products`, params, {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products`, params, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const postQuestionUniq = async (token, { productId, question }) => {
-  const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${productId}/questions/uniq`, question, {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${productId}/questions/uniq`, question, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const postAnswer = async (token, { id, type, answer }) => {
-  const { data } = await axios.post(`http://192.168.1.65:8000/api/products/questions/${type}/${id}/answers`, answer, {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/questions/${type}/${id}/answers`, answer, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const reportQuestion = async (token, { id, type, reportKeys }) => {
-  const res = await axios.put(`http://192.168.1.65:8000/api/products/questions/${type}/${id}/reports`, reportKeys, {
+  const res = await axios.put(`${SERVER_ROOT_URI}/api/products/questions/${type}/${id}/reports`, reportKeys, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return res
@@ -65,7 +61,7 @@ const reportQuestion = async (token, { id, type, reportKeys }) => {
 
 const reportAnswer = async (token, { type, questionId, answerId, reportKeys }) => {
   const res = await axios.put(
-    `http://192.168.1.65:8000/api/products/questions/${type}/${questionId}/answers/${answerId}/reports`,
+    `${SERVER_ROOT_URI}/api/products/questions/${type}/${questionId}/answers/${answerId}/reports`,
     reportKeys,
     { headers: { Authorization: `Bearer ${token}` } }
   )
@@ -74,7 +70,7 @@ const reportAnswer = async (token, { type, questionId, answerId, reportKeys }) =
 
 const postUserToHighlight = async (token, { userId, questionId, questionType }) => {
   const { data } = await axios.post(
-    `http://192.168.1.65:8000/api/products/questions/${questionType}/${questionId}/highlight`,
+    `${SERVER_ROOT_URI}/api/products/questions/${questionType}/${questionId}/highlight`,
     { userId },
     { headers: { Authorization: `Bearer ${token}` } }
   )
@@ -83,21 +79,21 @@ const postUserToHighlight = async (token, { userId, questionId, questionType }) 
 
 const deleteUserFromHighlight = async (token, { userId, questionId, questionType }) => {
   const { data } = await axios.delete(
-    `http://192.168.1.65:8000/api/products/questions/${questionType}/${questionId}/highlight/${userId}`,
+    `${SERVER_ROOT_URI}/api/products/questions/${questionType}/${questionId}/highlight/${userId}`,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   return data
 }
 
 const postUserToFavorite = async (token, { productId, userId }) => {
-  const { data } = await axios.post(`http://192.168.1.65:8000/api/products/${productId}/favor`, userId, {
+  const { data } = await axios.post(`${SERVER_ROOT_URI}/api/products/${productId}/favor`, userId, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
 }
 
 const deleteUserFromFavorite = async (token, { productId, userId }) => {
-  const { data } = await axios.delete(`http://192.168.1.65:8000/api/products/${productId}/favor/${userId}`, {
+  const { data } = await axios.delete(`${SERVER_ROOT_URI}/api/products/${productId}/favor/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data

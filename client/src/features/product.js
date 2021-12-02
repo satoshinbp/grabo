@@ -140,12 +140,14 @@ const setProducts = (state, category, products) => {
   state.loading = false
 }
 const updateProduct = (state, product) => {
-  const groupedIroductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
-  state.groupedProducts[groupedIroductIndex] = product
+  const groupedProductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
+  if (groupedProductIndex !== -1) {
+    state.groupedProducts[groupedProductIndex] = product
+  }
 
-  const postedIroductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
-  if (postedIroductIndex !== -1) {
-    state.postedProducts[postedIroductIndex] = product
+  const postedProductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
+  if (postedProductIndex !== -1) {
+    state.postedProducts[postedProductIndex] = product
   }
 
   const savedProductIndex = lodash.findIndex(state.savedProducts, { _id: product._id })

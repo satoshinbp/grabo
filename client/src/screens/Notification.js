@@ -1,42 +1,50 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FlatList, Avatar, View, Heading } from 'native-base'
+import { FlatList, Avatar, View, Heading, AlertDialog } from 'native-base'
 import { navigateGroupProductById } from '../features/product'
 import ListItemBarColored from '../elements/ListItemBarColored'
 import { readNotification } from '../features/auth'
 import { fetchProductById } from '../api/product'
+import { fetchUserById } from '../api/auth'
+import Loading from '../components/Loading'
 
 export default () => {
   const { token, user } = useSelector((state) => state.auth)
+  const { notifications } = user
   const dispatch = useDispatch()
-  const [urls, setUrls] = useState('')
 
-  const notifications = user.notifications
-
-  const productIds = notifications.map((notification) => notification.productId)
+  const [loading, setLoading] = useState(false)
+  const [productImages, setProductImages] = useState([])
+  const [userImages, setUserImages] = useState([])
 
   useEffect(() => {
     const getListedProducts = async () => {
-      const products = productIds.map((productId) => fetchProductById(token, productId))
-      if (products.length > 0) {
-        const results = await Promise.all(products)
-        const imageUrls = results.map((result) => result.images[0].url)
-        setUrls(imageUrls)
-      }
+      if (notifications.length === 0) return
+
+      setLoading(true)
+
+      const productPromises = notifications.map((notification) => fetchProductById(token, notification.productId))
+      const fetchedProducts = await Promise.all(productPromises)
+      const fetchedProductImages = fetchedProducts.map((product) => product.images[0].url)
+      const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
+      const fetchedUser = await Promise.all(userPromises)
+      const fetchedUserImages = fetchedUser.map((user) => user.image)
+
+      setProductImages(fetchedProductImages)
+      setUserImages(fetchedUserImages)
+
+      setLoading(false)
     }
     getListedProducts()
   }, [notifications])
 
   const onPress = (item) => {
-    params = {
-      userId: user._id,
-      notificationId: item._id,
-    }
-    dispatch(readNotification({ token, params }))
+    dispatch(readNotification({ token, userId: user._id, notificationId: item._id }))
     dispatch(navigateGroupProductById({ token, id: item.productId }))
   }
 
-  return notifications && urls ? (
+  if (loading) return <Loading />
+  return notifications.length > 0 ? (
     <FlatList
       data={notifications}
       renderItem={({ item, index }) => (
@@ -45,7 +53,7 @@ export default () => {
           text={item.message}
           icon={
             <Avatar
-              source={{ uri: user?.image }}
+              source={{ uri: userImages[index] }}
               size={8}
               alt="user portrait"
               position="relative"
@@ -54,7 +62,13 @@ export default () => {
             />
           }
           productIcon={
-            <Avatar source={{ uri: urls[index] }} size={8} alt="user portrait" position="relative" alignSelf="center" />
+            <Avatar
+              source={{ uri: productImages[index] }}
+              size={8}
+              alt="user portrait"
+              position="relative"
+              alignSelf="center"
+            />
           }
           onPress={() => onPress(item)}
         />

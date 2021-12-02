@@ -20,6 +20,7 @@ export default () => {
         setIsTextDetected(true)
       }
     })
+    setCode(image.code)
   }, [image.code])
 
   return (
