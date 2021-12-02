@@ -43,7 +43,9 @@ export default () => {
             </Box>
           ))}
         </Checkbox.Group>
-        <Button onPress={handleSave}>Save</Button>
+        <Button onPress={handleSave} size="fixed" alignSelf="center">
+          Save
+        </Button>
       </VStack>
     </ScrollView>
   )

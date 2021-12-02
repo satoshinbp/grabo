@@ -59,6 +59,8 @@ export default () => {
             dispatch(updateCode(code))
             navigation.navigate('CreateProduct')
           }}
+          size="fixed"
+          alignSelf="center"
         >
           Next
         </Button>

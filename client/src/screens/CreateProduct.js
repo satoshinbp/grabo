@@ -193,11 +193,17 @@ export default () => {
             </VStack>
           </FormControl>
 
-          <Button.Group w="100%" direction="column" alignItems="stretch" space={2}>
-            <Button isDisabled={uris.length === 0} onPress={submitProduct}>
+          <Button.Group w="100%" direction="column" space={2}>
+            <Button isDisabled={uris.length === 0} onPress={submitProduct} size="fixed" alignSelf="center">
               Submit
             </Button>
-            <Button variant="outline" onPress={cancelProduct} _text={{ color: 'black' }}>
+            <Button
+              variant="outline"
+              onPress={cancelProduct}
+              _text={{ color: 'black' }}
+              size="fixed"
+              alignSelf="center"
+            >
               Cancel
             </Button>
           </Button.Group>

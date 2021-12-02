@@ -38,11 +38,6 @@ export default () => {
         900: '#4e3b00',
       },
     },
-    fonts: {
-      heading: 'Roboto',
-      body: 'Roboto',
-      mono: 'Roboto',
-    },
     components: {
       View: {
         variants: {
@@ -128,6 +123,7 @@ export default () => {
           _text: {
             color: 'black',
             textAlign: 'center',
+            fontWeight: 'bold',
           },
         },
         variants: {
@@ -168,6 +164,16 @@ export default () => {
                 textAlign: 'center',
               },
             }
+          },
+        },
+        sizes: {
+          fixed: {
+            w: '232px',
+            px: '2',
+            py: '2',
+            _text: {
+              fontSize: 'sm',
+            },
           },
         },
       },

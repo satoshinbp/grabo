@@ -98,7 +98,9 @@ export default () => {
           </FormControl>
         </VStack>
 
-        <Button onPress={onSave}>Save</Button>
+        <Button onPress={onSave} size="fixed" alignSelf="center">
+          Save
+        </Button>
       </FormContainer>
     </ScrollView>
   )
