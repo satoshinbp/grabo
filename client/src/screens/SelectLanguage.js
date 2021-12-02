@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/core'
-import { View, ScrollView, Box, Center, VStack, HStack, Heading, Text, Radio, Button, SunIcon } from 'native-base'
+import { View, ScrollView, Box, Center, VStack, HStack, Heading, Text, Radio, Button } from 'native-base'
 import { updateCode } from '../features/image'
 import groups from '../utils/groups'
 

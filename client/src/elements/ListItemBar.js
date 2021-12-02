@@ -1,19 +1,12 @@
 import React from 'react'
 import { Box, Center, VStack, HStack, Pressable, Text } from 'native-base'
 
-export default ({ text, subtext, icon, onPress, textColor, productIcon, code, borderLeftWidth }) => (
-  <Pressable variant="listItemBar" onPress={onPress} borderLeftWidth={borderLeftWidth} _pressed={{ bg: `muted.300` }}>
+export default ({ text, subtext, icon, subIcon, onPress, borderLeft, textColor }) => {
+  const content = (
     <HStack space={3} alignItems="center">
       {icon && (
         <Center size={12} bg="primary.500" borderRadius="full">
           {icon}
-        </Center>
-      )}
-      {code && (
-        <Center size={12} bg="primary.500" borderRadius="full">
-          <Text fontSize="xl" bold>
-            {code}
-          </Text>
         </Center>
       )}
       <VStack flex={1}>
@@ -26,7 +19,22 @@ export default ({ text, subtext, icon, onPress, textColor, productIcon, code, bo
           </Text>
         )}
       </VStack>
-      {productIcon && <Center size={12}>{productIcon}</Center>}
+      {subIcon && <Center size={12}>{subIcon}</Center>}
     </HStack>
-  </Pressable>
-)
+  )
+
+  return onPress ? (
+    <Pressable
+      variant="listItemBar"
+      onPress={onPress}
+      borderLeftWidth={borderLeft ? '10px' : 0}
+      _pressed={{ bg: `muted.300` }}
+    >
+      {content}
+    </Pressable>
+  ) : (
+    <Box variant="listItemBar" borderLeftWidth={borderLeft ? '10px' : 0}>
+      {content}
+    </Box>
+  )
+}

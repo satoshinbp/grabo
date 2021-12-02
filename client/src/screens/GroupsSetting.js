@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ScrollView, Box, Center, VStack, HStack, Checkbox, Text, Heading, Button, SunIcon } from 'native-base'
+import { ScrollView, Box, Center, VStack, HStack, Checkbox, Text, Heading, Button } from 'native-base'
 import * as RootNavigation from '../navigators/RootNavigation'
 import groupList from '../utils/groups'
 import { updateUser } from '../features/auth'

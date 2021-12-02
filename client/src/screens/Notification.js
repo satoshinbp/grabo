@@ -49,9 +49,7 @@ export default () => {
       <View variant="wrapper">
         {notifications.map((notification, index) => (
           <ListItemBar
-            textColor={notification.read ? '#BBBCBD' : 'black'}
             text={notification.message}
-            borderLeftWidth={0}
             icon={
               <Avatar
                 source={{ uri: userImages[index] }}
@@ -62,7 +60,7 @@ export default () => {
                 borderRadius="full"
               />
             }
-            productIcon={
+            subIcon={
               <Avatar
                 source={{ uri: productImages[index] }}
                 size={10}
@@ -72,6 +70,7 @@ export default () => {
               />
             }
             onPress={() => onPress(notification)}
+            textColor={notification.read ? 'muted.300' : 'black'}
           />
         ))}
       </View>
