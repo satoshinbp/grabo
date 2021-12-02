@@ -262,21 +262,19 @@ export default () => {
                   >
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
-                      <Pressable
-                        variant="icon"
-                        onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
-                      >
-                        <HStack space={0.5}>
+                      <HStack space={0.5} alignItems="center">
+                        <Pressable
+                          variant="icon"
+                          onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
+                        >
                           <DiamondIcon width="20px" />
-                          <Text>{`${question.highlightedBy.length}`}</Text>
-                        </HStack>
-                      </Pressable>
-                      {type === 'uniq' ? (
+                        </Pressable>
+                        <Text>{`${question.highlightedBy.length}`}</Text>
+                      </HStack>
+                      {type === 'uniq' && (
                         <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer?._id)}>
                           <ReportRedIcon width="22px" />
                         </Pressable>
-                      ) : (
-                        <View></View>
                       )}
                     </HStack>
                     <Button

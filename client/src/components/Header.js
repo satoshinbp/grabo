@@ -29,11 +29,11 @@ export default () => {
         <HStack justifyContent="space-between" alignItems="center" px={3} py={2}>
           <Image source={require('../assets/icons/logo-lg.png')} alt="logo" h="48px" w="112px" resizeMode="contain" />
 
-          <Center size="8">
-            <Pressable onPress={() => navigation.navigate('Notification')}>
+          <Pressable variant="icon" onPress={() => navigation.navigate('Notification')}>
+            <Center size="8">
               {haveUnreadNotification ? <BellIconWithCircle width="20px" /> : <NotificationIcon width="20px" />}
-            </Pressable>
-          </Center>
+            </Center>
+          </Pressable>
         </HStack>
       </Box>
     </>

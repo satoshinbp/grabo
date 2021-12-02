@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import { View, Box, VStack, Text, Avatar } from 'native-base'
 import { logout, updateUser } from '../features/auth'
 import Loading from '../components/Loading'
-import ListItemBarPlain from '../elements/ListItemBarPlain'
+import ListItemBar from '../elements/ListItemBar'
 import FadeModal from '../elements/FadeModal'
 import AccountIcon from '../assets/icons/Account'
 import SettingIcon from '../assets/icons/Setting'
@@ -55,7 +55,7 @@ export default () => {
 
       <View variant="wrapper">
         {menu.map(({ text, icon, onPress }) => (
-          <ListItemBarPlain key={text} text={text} icon={icon} onPress={onPress} />
+          <ListItemBar key={text} text={text} icon={icon} onPress={onPress} />
         ))}
       </View>
 
