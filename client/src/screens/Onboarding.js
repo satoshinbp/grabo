@@ -78,10 +78,10 @@ export default ({ setIsFirstLaunch }) => {
   }
 
   return (
-    <View flex={1} bg="muted.100" pt="56px">
+    <View flex={1} bg="muted.200" pt="56px">
       <View
         position="absolute"
-        bottom={20}
+        bottom="96px"
         alignSelf="center"
         width={windowWidth * 1.1}
         height={windowWidth * 1.1}
