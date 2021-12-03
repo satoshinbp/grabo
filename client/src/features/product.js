@@ -40,13 +40,13 @@ export const navigateGroupProductById = createAsyncThunk('products/setById', asy
   return product
 })
 
-const sendPushNotification = async (expoPushToken) => {
+const sendPushNotification = async (expoPushToken, productId) => {
   const message = {
     to: expoPushToken,
     sound: 'default',
     title: 'Help',
     body: 'Someone is waiting for your help!',
-    data: { someData: 'goes here' },
+    data: { productId: productId },
   }
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -89,7 +89,7 @@ export const createProduct = createAsyncThunk(
 
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
-    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token))
+    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token, product._id))
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())

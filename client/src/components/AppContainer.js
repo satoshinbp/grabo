@@ -13,6 +13,7 @@ import Onboarding from '../screens/Onboarding'
 import Login from '../screens/Login'
 import Loading from '../components/Loading'
 import Header from '../components/Header'
+import { navigateGroupProductById } from '../features/product'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -103,7 +104,7 @@ export default () => {
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response)
+          dispatch(navigateGroupProductById({ token, id: response.notification.request.content.data.productId }))
         })
         const params = {
           notificationToken: expotoken,

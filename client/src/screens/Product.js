@@ -64,8 +64,8 @@ export default () => {
 
   const sortQuestionsByHighlight = (product) => {
     const clonedProduct = cloneDeep(product)
-    clonedProduct.fixedQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
-    clonedProduct.uniqQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    clonedProduct?.fixedQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    clonedProduct?.uniqQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
     return clonedProduct
   }
 
@@ -160,13 +160,13 @@ export default () => {
 
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
 
-    const sendPushNotification = async (expoPushToken) => {
+    const sendPushNotification = async (expoPushToken, productId) => {
       const message = {
         to: expoPushToken,
         sound: 'default',
         title: 'Got Answer!',
         body: 'Someone answered your highlighted qusetion!',
-        data: { someData: 'goes here' },
+        data: { productId: productId },
       }
 
       await fetch('https://exp.host/--/api/v2/push/send', {
@@ -181,7 +181,7 @@ export default () => {
     }
 
     notificationTokens.forEach(async (token) => {
-      await sendPushNotification(token)
+      await sendPushNotification(token, product._id)
     })
 
     setAnswer(null)
