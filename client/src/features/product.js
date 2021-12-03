@@ -19,17 +19,20 @@ import * as RootNavigation from '../navigators/RootNavigation'
 import lodash from 'lodash'
 
 export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, codes }) => {
-  const products = await Promise.all(codes.map((code) => fetchProductsByGroup(token, code)))
+  const fetchedProducts = await Promise.all(codes.map((code) => fetchProductsByGroup(token, code)))
+  const products = lodash.flatten(fetchedProducts).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return lodash.flatten(products)
 })
 
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
-  const products = await fetchProductsByUserId(token, userId)
+  const fetchedProducts = await fetchProductsByUserId(token, userId)
+  const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return products
 })
 
 export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
-  const products = await fetchProductsByFavoredUserId(token, userId)
+  const fetchedProducts = await fetchProductsByFavoredUserId(token, userId)
+  const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return products
 })
 
