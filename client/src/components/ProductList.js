@@ -32,7 +32,6 @@ export default () => {
       numberOfElementsLastRow = numberOfElementsLastRow + 1
     }
 
-    console.log(tempData)
     return tempData
   }
 
