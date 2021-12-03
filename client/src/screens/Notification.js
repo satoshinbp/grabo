@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import { Center, Avatar, View, Heading, ScrollView } from 'native-base'
-import { navigateGroupProductById } from '../features/product'
+import Loading from '../components/Loading'
 import ListItemBar from '../elements/ListItemBar'
 import { readNotification } from '../features/auth'
-import { fetchProductById } from '../api/product'
 import { fetchUserById } from '../api/auth'
-import Loading from '../components/Loading'
+import { fetchProductById } from '../api/product'
 
 export default () => {
+  const navigation = useNavigation()
+
   const { token, user } = useSelector((state) => state.auth)
   const { notifications } = user
+  const { groupedProducts } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
   const [loading, setLoading] = useState(false)
@@ -38,9 +41,13 @@ export default () => {
     getListedProducts()
   }, [notifications])
 
-  const onPress = (item) => {
-    dispatch(readNotification({ token, userId: user._id, notificationId: item._id }))
-    dispatch(navigateGroupProductById({ token, id: item.productId }))
+  const onPress = (notification) => {
+    if (groupedProducts.map((product) => product._id).includes(notification.productId)) {
+      dispatch(readNotification({ token, userId: user._id, notificationId: notification._id }))
+      navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: notification.productId } })
+    } else {
+      alert("Since you have left the group, you don't have access to this product.")
+    }
   }
 
   if (loading) return <Loading />

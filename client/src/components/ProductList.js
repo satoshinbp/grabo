@@ -39,7 +39,7 @@ export default () => {
   let productRoute
   switch (route.name) {
     case 'Group':
-      products = groupedProducts
+      products = groupedProducts.filter((product) => product.group === route.params.code)
       productRoute = 'GroupProduct'
       break
     case 'MyProducts':
