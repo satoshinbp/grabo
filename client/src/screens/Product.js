@@ -62,33 +62,27 @@ export default () => {
   const [reportFormParams, setReportFormParams] = useState(null)
   const [reportKeys, setReportKeys] = useState([])
 
-  const sortQuestionsByHighlight = (products) => {
-    const product = products.find((product) => product._id === route.params.id)
-    let productWithSortedQuestions = cloneDeep(product)
-
-    const sortedFixedQandAs = productWithSortedQuestions.fixedQandAs.sort(
-      (a, b) => b.highlightedBy.length - a.highlightedBy.length
-    )
-    productWithSortedQuestions.fixedQandAs = sortedFixedQandAs
-    const sortedUniqQandAs = productWithSortedQuestions.uniqQandAs.sort(
-      (a, b) => b.highlightedBy.length - a.highlightedBy.length
-    )
-    productWithSortedQuestions.uniqQandAs = sortedUniqQandAs
-
-    return productWithSortedQuestions
+  const sortQuestionsByHighlight = (product) => {
+    const clonedProduct = cloneDeep(product)
+    clonedProduct.fixedQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    clonedProduct.uniqQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    return clonedProduct
   }
 
   // SET UP PRODUCT WHEN SCREEN OPENED
   const getProduct = () => {
     switch (route.name) {
       case 'GroupProduct':
-        setProduct(sortQuestionsByHighlight(groupedProducts))
+        const groupedProduct = groupedProducts.find((product) => product._id === route.params.id)
+        setProduct(sortQuestionsByHighlight(groupedProduct))
         break
       case 'MyProduct':
-        setProduct(sortQuestionsByHighlight(postedProducts))
+        const postedProduct = postedProducts.find((product) => product._id === route.params.id)
+        setProduct(sortQuestionsByHighlight(postedProduct))
         break
       case 'Favorite':
-        setProduct(sortQuestionsByHighlight(savedProducts))
+        const savedProduct = savedProducts.find((product) => product._id === route.params.id)
+        setProduct(sortQuestionsByHighlight(savedProduct))
         break
       default:
         break
