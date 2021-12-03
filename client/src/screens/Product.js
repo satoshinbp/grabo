@@ -411,9 +411,9 @@ export default () => {
           <Pressable variant="icon" onPress={toggleFavorite}>
             <Center size={8}>
               {product.favoredUserIds.includes(user._id) ? (
-                <FilledHeartIcon width="24px" />
+                <FilledHeartIcon width="20px" />
               ) : (
-                <WhiteHeartIcon width="24px" />
+                <WhiteHeartIcon width="20px" />
               )}
             </Center>
           </Pressable>
