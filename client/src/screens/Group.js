@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
 import { useRoute } from '@react-navigation/core'
 import { View, Heading } from 'native-base'
-import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
 import Container from '../elements/Container'
 
