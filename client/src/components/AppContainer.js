@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import { patchUser } from '../api/auth'
 import { setAppReady, setUser } from '../features/auth'
-import { setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
+import { setProductsByGroup, setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
 import Login from '../screens/Login'
@@ -91,6 +91,7 @@ export default () => {
     getCurrentUser()
 
     if (token) {
+      dispatch(setProductsByGroup({ token, codes: user?.groups }))
       dispatch(setProductsByUserId({ token, userId: user?._id }))
       dispatch(setProductsByFavoredUserId({ token, userId: user?._id }))
 

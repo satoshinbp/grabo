@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { fetchUsersByGroup } from '../api/auth'
 import {
-  fetchProductById,
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
@@ -19,25 +18,22 @@ import { clearImage } from './image'
 import * as RootNavigation from '../navigators/RootNavigation'
 import lodash from 'lodash'
 
-export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
-  const products = await fetchProductsByGroup(token, code)
-  return products
+export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, codes }) => {
+  const fetchedProducts = await Promise.all(codes.map((code) => fetchProductsByGroup(token, code)))
+  const products = lodash.flatten(fetchedProducts).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  return lodash.flatten(products)
 })
 
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
-  const products = await fetchProductsByUserId(token, userId)
+  const fetchedProducts = await fetchProductsByUserId(token, userId)
+  const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return products
 })
 
 export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
-  const products = await fetchProductsByFavoredUserId(token, userId)
+  const fetchedProducts = await fetchProductsByFavoredUserId(token, userId)
+  const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return products
-})
-
-export const navigateGroupProductById = createAsyncThunk('products/setById', async ({ token, id }) => {
-  const product = await fetchProductById(token, id)
-  RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: product._id } })
-  return product
 })
 
 const sendPushNotification = async (expoPushToken) => {
@@ -93,7 +89,7 @@ export const createProduct = createAsyncThunk(
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
+    RootNavigation.navigate('MyProductsTab')
 
     return product
   }
@@ -126,6 +122,7 @@ export const saveProduct = createAsyncThunk('products/save', async ({ token, par
 
 export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, params }) => {
   const product = await deleteUserFromFavorite(token, params)
+  RootNavigation.navigate('Favorites')
   return product
 })
 
@@ -140,12 +137,14 @@ const setProducts = (state, category, products) => {
   state.loading = false
 }
 const updateProduct = (state, product) => {
-  const groupedIroductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
-  state.groupedProducts[groupedIroductIndex] = product
+  const groupedProductIndex = lodash.findIndex(state.groupedProducts, { _id: product._id })
+  if (groupedProductIndex !== -1) {
+    state.groupedProducts[groupedProductIndex] = product
+  }
 
-  const postedIroductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
-  if (postedIroductIndex !== -1) {
-    state.postedProducts[postedIroductIndex] = product
+  const postedProductIndex = lodash.findIndex(state.postedProducts, { _id: product._id })
+  if (postedProductIndex !== -1) {
+    state.postedProducts[postedProductIndex] = product
   }
 
   const savedProductIndex = lodash.findIndex(state.savedProducts, { _id: product._id })
@@ -206,13 +205,6 @@ const productSlice = createSlice({
     [setProductsByFavoredUserId.rejected]: (state) => finishLoading(state),
     [setProductsByFavoredUserId.fulfilled]: (state, action) => setProducts(state, 'savedProducts', action.payload),
 
-    [navigateGroupProductById.pending]: (state) => startLoading(state),
-    [navigateGroupProductById.rejected]: (state) => finishLoading(state),
-    [navigateGroupProductById.fulfilled]: (state, action) => {
-      state.groupedProducts = [action.payload]
-      state.loading = false
-    },
-
     [createProduct.pending]: (state) => startLoading(state),
     [createProduct.rejected]: (state) => finishLoading(state),
     [createProduct.fulfilled]: (state, action) => {
@@ -240,14 +232,14 @@ const productSlice = createSlice({
     [saveProduct.rejected]: (state) => finishLoading(state),
     [saveProduct.fulfilled]: (state, action) => {
       state.savedProducts.push(action.payload)
-      state.loading = false
+      updateProduct(state, action.payload)
     },
 
     [unsaveProduct.pending]: (state) => startLoading(state),
     [unsaveProduct.rejected]: (state) => finishLoading(state),
     [unsaveProduct.fulfilled]: (state, action) => {
       state.savedProducts = state.savedProducts.filter((product) => product._id !== action.payload._id)
-      state.loading = false
+      updateProduct(state, action.payload)
     },
   },
 })

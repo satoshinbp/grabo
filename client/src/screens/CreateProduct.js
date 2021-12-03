@@ -19,8 +19,9 @@ import {
   Button,
   AddIcon,
   FormControl,
+  Pressable,
 } from 'native-base'
-import { MaterialIcons } from '@expo/vector-icons'
+import TrashIcon from '../assets/icons/Trash'
 import { updateCode, deleteImage, clearImage } from '../features/image'
 import { createProduct } from '../features/product'
 import groups from '../utils/groups'
@@ -88,10 +89,10 @@ export default () => {
     <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <VStack flex={1} space={3} m={3} px={3} py={3} bg="white" borderRadius="md" shadow={2}>
-          <Heading>Product Information</Heading>
+          <Heading size="md">Product Information</Heading>
 
           <View>
-            <Text fontSize="lg" bold>
+            <Text fontSize="md" bold mb={4}>
               Image
             </Text>
             <VStack alignItems="center" space={2}>
@@ -100,28 +101,29 @@ export default () => {
                   {uris.map((uri, index) => (
                     <Box key={uri} position="relative" w="100px" h="100px">
                       <Image source={{ uri }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
-                      <Center
+                      <Button
                         position="absolute"
                         top={1}
                         right={1}
-                        w="30px"
-                        h="30px"
+                        padding={0.5}
                         borderRadius="full"
-                        bg="primary.500"
+                        bg="white"
+                        _pressed={{
+                          bg: `muted.300`,
+                        }}
+                        onPress={() => dispatch(deleteImage({ index }))}
                       >
-                        <MaterialIcons
-                          name="delete"
-                          size={18}
-                          color="black"
-                          onPress={() => dispatch(deleteImage({ index }))}
-                        />
-                      </Center>
+                        <Center size={6}>
+                          <TrashIcon width="20px" />
+                        </Center>
+                      </Button>
                     </Box>
                   ))}
                 </HStack>
               ) : (
                 <Text>At lease one picture is required.</Text>
               )}
+              {uris.length > 3 && <Text color="error.500"> Pick up 3 images.</Text>}
               <Button onPress={openCamera}>Add Image</Button>
             </VStack>
             {/* leave this comment */}
@@ -162,7 +164,9 @@ export default () => {
             </FormControl.Label>
             <Checkbox.Group ml={2} onChange={setHighlitedQuestions} value={highlitedQuestions}>
               {fixedQuestions.map((question, index) => (
-                <Checkbox value={index}>{question}</Checkbox>
+                <Checkbox color="primary.500" value={index}>
+                  {question}
+                </Checkbox>
               ))}
             </Checkbox.Group>
           </FormControl>
@@ -182,7 +186,10 @@ export default () => {
                     flex={1}
                     alignItems="center"
                   />
-                  <MaterialIcons name="delete" size={18} color="black" onPress={() => removeQuestion(index)} />
+
+                  <Pressable variant="icon" bg="transparent" onPress={() => removeQuestion(index)}>
+                    <TrashIcon width="24px" />
+                  </Pressable>
                 </HStack>
               ))}
               <Center w="36px" h="36px" borderRadius="full" bg="primary.500" my={2}>
@@ -191,11 +198,22 @@ export default () => {
             </VStack>
           </FormControl>
 
-          <Button.Group w="100%" direction="column" alignItems="stretch" space={2}>
-            <Button isDisabled={uris.length === 0} onPress={submitProduct}>
+          <Button.Group w="100%" direction="column" space={2}>
+            <Button
+              isDisabled={uris.length === 0 || uris.length > 3}
+              onPress={submitProduct}
+              size="fixed"
+              alignSelf="center"
+            >
               Submit
             </Button>
-            <Button variant="outline" onPress={cancelProduct} _text={{ color: 'black' }}>
+            <Button
+              variant="outline"
+              onPress={cancelProduct}
+              _text={{ color: 'black' }}
+              size="fixed"
+              alignSelf="center"
+            >
               Cancel
             </Button>
           </Button.Group>

@@ -12,15 +12,15 @@ export default () => {
   const { groupedProducts, postedProducts, savedProducts } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
-  const [sortedBy, setSortedBy] = useState('date')
+  const [sortBy, setSortBy] = useState('date')
 
   useEffect(() => {
-    if (sortedBy === 'date') {
+    if (sortBy === 'date') {
       dispatch(sortProductsByDate(route.name))
     } else {
       dispatch(sortProductsByHighlight(route.name))
     }
-  }, [sortedBy])
+  }, [sortBy])
 
   const gridLayoutFormat = (data, numColumns) => {
     const tempData = data.concat()
@@ -39,7 +39,7 @@ export default () => {
   let productRoute
   switch (route.name) {
     case 'Group':
-      products = groupedProducts
+      products = groupedProducts.filter((product) => product.group === route.params.code)
       productRoute = 'GroupProduct'
       break
     case 'MyProducts':
@@ -54,16 +54,53 @@ export default () => {
       break
   }
 
+  // e.g. 2021-11-28T21:49:02.330+00:00 => 12 days ago
+  const convertTimestampToDurationFromToday = (product) => {
+    const currentTime = new Date()
+    const productTimestamp = new Date(product.createdAt)
+    return Math.floor((currentTime - productTimestamp) / 1000 / 60 / 60 / 24)
+  }
+
+  const countComments = (product) => {
+    let commentLengthSum = 0
+    product.fixedQandAs.forEach((question) => {
+      commentLengthSum += question.answers.length
+    })
+    product.uniqQandAs.forEach((question) => {
+      commentLengthSum += question.answers.length
+    })
+    return commentLengthSum
+  }
+
   const ProductCard = ({ item }) =>
     !item.empty && item.images.length > 0 ? (
-      <Pressable flex={1} my={3} onPress={() => navigation.navigate(productRoute, { id: item._id })}>
+      <Pressable flex={1} my={2} onPress={() => navigation.navigate(productRoute, { id: item._id })}>
         <ImageBackground
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
           resizeMode="cover"
-          imageStyle={{ borderRadius: 12 }}
-          style={{ width: 144, height: 144, alignSelf: 'center' }}
+          imageStyle={{ borderRadius: 10 }}
+          style={{ width: 144, height: 144, alignSelf: 'center', flex: 1, justifyContent: 'flex-end' }}
         >
-          <Box variant="productCard"></Box>
+          <Box w="100%" justifyContent="flex-end">
+            <HStack
+              justifyContent="space-between"
+              alignItems="center"
+              w="100%"
+              px={3}
+              py={1}
+              borderBottomRadius="md"
+              bg="rgba(255, 255, 255, 0.8)"
+            >
+              <Text fontSize="xs" textAlign="left">
+                {convertTimestampToDurationFromToday(item)}&nbsp;
+                {convertTimestampToDurationFromToday(item) > 1 ? 'days' : 'day'}&nbsp;ago
+              </Text>
+              <Text fontSize="xs" textAlign="right">
+                {countComments(item)}&nbsp;
+                {countComments(item) > 1 ? 'comments' : 'comment'}
+              </Text>
+            </HStack>
+          </Box>
         </ImageBackground>
       </Pressable>
     ) : (
@@ -72,43 +109,34 @@ export default () => {
 
   const numColumns = 2
 
-  return (
-    <>
-      {products.length > 0 ? (
-        <>
-          <HStack>
-            <Pressable
-              variant={sortedBy === 'date' ? 'activeTab' : 'inactiveTab'}
-              py="4"
-              onPress={() => setSortedBy('date')}
-            >
-              <Text alignItems="center" fontWeight={sortedBy === 'date' ? 'bold' : 'normal'}>
-                Sort by Date
-              </Text>
-            </Pressable>
-            <Pressable
-              variant={sortedBy === 'highlight' ? 'activeTab' : 'inactiveTab'}
-              py="4"
-              onPress={() => setSortedBy('highlight')}
-            >
-              <Text fontWeight={sortedBy === 'highlight' ? 'bold' : 'normal'}>Sort by Highlights</Text>
-            </Pressable>
-          </HStack>
+  return products.length > 0 ? (
+    <View flex={1}>
+      <HStack my={0.5} borderBottomWidth={3} borderBottomColor="muted.300">
+        <Pressable variant={sortBy === 'date' ? 'activeTab' : 'inactiveTab'} onPress={() => setSortBy('date')}>
+          <Text fontWeight={sortBy === 'date' ? 'bold' : 'normal'}> Sort by Date</Text>
+        </Pressable>
+        <Pressable
+          variant={sortBy === 'highlight' ? 'activeTab' : 'inactiveTab'}
+          onPress={() => setSortBy('highlight')}
+        >
+          <Text fontWeight={sortBy === 'highlight' ? 'bold' : 'normal'}>Sort by Highlights</Text>
+        </Pressable>
+      </HStack>
 
-          <FlatList
-            data={gridLayoutFormat(products, numColumns)}
-            renderItem={ProductCard}
-            numColumns={numColumns}
-            keyExtractor={(item) => item._id}
-          />
-        </>
-      ) : (
-        <Center flex={1}>
-          <Text fontSize="lg" textAlign="center" mt={12}>
-            No products added
-          </Text>
-        </Center>
-      )}
-    </>
+      <FlatList
+        data={gridLayoutFormat(products, numColumns)}
+        renderItem={ProductCard}
+        numColumns={numColumns}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ marginVertical: 10, paddingHorizontal: 8 }}
+      />
+    </View>
+  ) : (
+    <Center flex={1}>
+      <Text fontSize="lg" textAlign="center">
+        No products added
+      </Text>
+    </Center>
   )
 }

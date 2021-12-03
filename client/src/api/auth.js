@@ -4,67 +4,43 @@ import { SERVER_ROOT_URI } from '@env'
 // In that case, replace SERVER_ROOT_URI to "http://<your network IP address>:<PORT>"
 
 const signInWithGoogle = async (idToken) => {
-  try {
-    const { data } = await axios.post(`http://54.202.13.134/auth/google`, { idToken })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.post(`http://54.202.13.134/auth/google`, { idToken })
+  return data
 }
 
 const fetchUser = async (token) => {
-  try {
-    const { data } = await axios.get(`http://54.202.13.134/api/users`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`http://54.202.13.134/api/users`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const fetchUsersByGroup = async (token, code) => {
-  try {
-    const { data } = await axios.get(`http://54.202.13.134/api/users/${code}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.get(`http://54.202.13.134/api/users/${code}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
-const fetchUserByUserId = async (token, id) => {
-  try {
-    const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/highlight/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const fetchUserById = async (token, id) => {
+  const { data } = await axios.get(`http://54.202.13.134/api/users/highlight/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
 const patchUser = async (token, id, params) => {
-  try {
-    const { data } = await axios.patch(`http://54.202.13.134/api/users/${id}`, params, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+  const { data } = await axios.patch(`http://54.202.13.134/api/users/${id}`, params, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
-const setNotificationTrue = async (token, { userId, notificationId }) => {
-  try {
-    const { data } = await axios.patch(`http://54.202.13.134/api/users/${userId}/notification/${notificationId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return data
-  } catch (e) {
-    console.error(e)
-  }
+const setNotificationTrue = async (token, userId, notificationId) => {
+  const { data } = await axios.get(`http://54.202.13.134/api/users/${userId}/notification/${notificationId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
 }
 
-export { signInWithGoogle, fetchUser, fetchUsersByGroup, fetchUserByUserId, patchUser, setNotificationTrue }
+export { signInWithGoogle, fetchUser, fetchUsersByGroup, fetchUserById, patchUser, setNotificationTrue }

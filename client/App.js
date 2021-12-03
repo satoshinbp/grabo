@@ -37,11 +37,9 @@ export default () => {
         800: '#806200',
         900: '#4e3b00',
       },
-    },
-    fonts: {
-      heading: 'Roboto',
-      body: 'Roboto',
-      mono: 'Roboto',
+      dark: {
+        50: '#282625',
+      },
     },
     components: {
       View: {
@@ -62,29 +60,14 @@ export default () => {
       },
       Box: {
         variants: {
-          listItemBarPlain: () => ({
+          listItemBar: () => ({
             my: 1.5,
             px: 3.5,
             py: 2.5,
-            borderRadius: 'md',
-            backgroundColor: 'white',
-            shadow: 2,
-          }),
-          listItemBarColored: () => ({
-            my: 1.5,
-            px: 3.5,
-            py: 2.5,
-            borderLeftWidth: '10px',
             borderColor: 'primary.500',
             borderRadius: 'md',
             bg: 'white',
             shadow: 2,
-          }),
-          productCard: () => ({
-            rounded: 'lg',
-            overflow: 'hidden',
-            width: '72px',
-            height: '72px',
           }),
         },
       },
@@ -102,6 +85,8 @@ export default () => {
             justifyContent: 'center',
             alignItems: 'center',
             width: '50%',
+            padding: 2,
+            my: 0,
             borderBottomWidth: 3,
             borderBottomColor: 'primary.500',
           }),
@@ -109,8 +94,28 @@ export default () => {
             justifyContent: 'center',
             alignItems: 'center',
             width: '50%',
+            padding: 2,
+            my: 0,
             borderBottomWidth: 3,
             borderBottomColor: 'transparent',
+          }),
+          icon: () => {
+            return {
+              padding: 0.5,
+              borderRadius: 'full',
+              _pressed: {
+                bg: `muted.300`,
+              },
+            }
+          },
+          listItemBar: () => ({
+            my: 1.5,
+            px: 3.5,
+            py: 2.5,
+            borderColor: 'primary.500',
+            borderRadius: 'md',
+            bg: 'white',
+            shadow: 2,
           }),
         },
       },
@@ -119,6 +124,7 @@ export default () => {
           _text: {
             color: 'black',
             textAlign: 'center',
+            fontWeight: 'bold',
           },
         },
         variants: {
@@ -150,8 +156,8 @@ export default () => {
               position: 'absolute',
               bottom: 4,
               right: 4,
-              width: '84px',
-              height: '84px',
+              width: '56px',
+              height: '56px',
               borderRadius: 'full',
               shadow: 2,
               _text: {
@@ -160,6 +166,26 @@ export default () => {
               },
             }
           },
+        },
+        sizes: {
+          fixed: {
+            w: '232px',
+            px: '2',
+            py: '2',
+            _text: {
+              fontSize: 'sm',
+            },
+          },
+        },
+      },
+      Heading: {
+        baseStyle: {
+          color: 'dark.50',
+        },
+      },
+      Text: {
+        baseStyle: {
+          color: 'dark.50',
         },
       },
       TextArea: {

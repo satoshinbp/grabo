@@ -42,17 +42,17 @@ const updateUser = async (req, res) => {
 
 const readNotification = async (req, res) => {
   try {
-    let user = await User.findById(req.params.id)
+    let user = await User.findById(req.params.userId)
 
     user.notifications.forEach((notification) => {
-      if (notification._id === req.params.notificationId) {
+      if (notification._id.toString() === req.params.notificationId) {
         notification.read = true
       }
     })
 
     const updatedUser = await user.save()
     res.status(200).send(updatedUser)
-  } catch {
+  } catch (e) {
     res.status(400).send()
   }
 }
