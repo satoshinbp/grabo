@@ -134,7 +134,7 @@ export default () => {
     </>
   ) : (
     <Center flex={1}>
-      <Text fontSize="lg" textAlign="center" mt={12}>
+      <Text fontSize="lg" textAlign="center">
         No products added
       </Text>
     </Center>

@@ -407,9 +407,9 @@ export default () => {
         <View position="absolute" bottom={-12}>
           {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
         </View>
-        <View position="absolute" bottom={0} right={3}>
+        <View position="absolute" bottom={1} right={3}>
           <Pressable variant="icon" onPress={toggleFavorite}>
-            <Center size={6}>
+            <Center size={8}>
               {product.favoredUserIds.includes(user._id) ? (
                 <FilledHeartIcon width="24px" />
               ) : (
