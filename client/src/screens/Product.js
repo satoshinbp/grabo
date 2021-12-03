@@ -5,7 +5,6 @@ import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
   ScrollView,
-  Box,
   VStack,
   HStack,
   Center,
@@ -19,7 +18,6 @@ import {
   Button,
   Checkbox,
   useTheme,
-  Avatar,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -410,9 +408,9 @@ export default () => {
           <Pressable variant="icon" onPress={toggleFavorite}>
             <Center size={8}>
               {product.favoredUserIds.includes(user._id) ? (
-                <FilledHeartIcon width="28px" />
+                <FilledHeartIcon width="20px" />
               ) : (
-                <WhiteHeartIcon width="28px" />
+                <WhiteHeartIcon width="20px" />
               )}
             </Center>
           </Pressable>
