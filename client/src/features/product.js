@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { fetchUsersByGroup } from '../api/auth'
 import {
-  fetchProductById,
   fetchProductsByGroup,
   fetchProductsByUserId,
   fetchProductsByFavoredUserId,
@@ -19,28 +18,25 @@ import { clearImage } from './image'
 import * as RootNavigation from '../navigators/RootNavigation'
 import lodash from 'lodash'
 
-export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, code }) => {
-  const products = await fetchProductsByGroup(token, code)
-  return products
+export const setProductsByGroup = createAsyncThunk('products/setByGroup', async ({ token, codes }) => {
+  const fetchedProducts = await Promise.all(codes.map((code) => fetchProductsByGroup(token, code)))
+  const products = lodash.flatten(fetchedProducts).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  return lodash.flatten(products)
 })
 
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
-  const products = await fetchProductsByUserId(token, userId)
+  const fetchedProducts = await fetchProductsByUserId(token, userId)
+  const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return products
 })
 
 export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavoredUserId', async ({ token, userId }) => {
-  const products = await fetchProductsByFavoredUserId(token, userId)
+  const fetchedProducts = await fetchProductsByFavoredUserId(token, userId)
+  const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return products
 })
 
-export const navigateGroupProductById = createAsyncThunk('products/setById', async ({ token, id }) => {
-  const product = await fetchProductById(token, id)
-  RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: product._id } })
-  return product
-})
-
-const sendPushNotification = async (expoPushToken, productId) => {
+const sendPushNotification = async (expoPushToken) => {
   const message = {
     to: expoPushToken,
     sound: 'default',
@@ -93,7 +89,7 @@ export const createProduct = createAsyncThunk(
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
+    RootNavigation.navigate('MyProductsTab')
 
     return product
   }
@@ -208,13 +204,6 @@ const productSlice = createSlice({
     [setProductsByFavoredUserId.pending]: (state) => startLoading(state),
     [setProductsByFavoredUserId.rejected]: (state) => finishLoading(state),
     [setProductsByFavoredUserId.fulfilled]: (state, action) => setProducts(state, 'savedProducts', action.payload),
-
-    [navigateGroupProductById.pending]: (state) => startLoading(state),
-    [navigateGroupProductById.rejected]: (state) => finishLoading(state),
-    [navigateGroupProductById.fulfilled]: (state, action) => {
-      state.groupedProducts = [action.payload]
-      state.loading = false
-    },
 
     [createProduct.pending]: (state) => startLoading(state),
     [createProduct.rejected]: (state) => finishLoading(state),
