@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { Animated, Dimensions } from 'react-native'
-import { View, Box, FlatList, Button, Image, useTheme } from 'native-base'
+import { View, Box, Center, FlatList, Button, Image, useTheme } from 'native-base'
 import OnboardingItem from '../components/OnboardingItem'
 import onboardingSlides from '../utils/onboardingSlides'
 
@@ -19,8 +19,9 @@ export default ({ setIsFirstLaunch }) => {
       bottom={20}
       p={2}
       borderWidth={1}
-      borderColor="lightText"
+      borderColor="muted.300"
       borderRadius="full"
+      bg="muted.100"
     >
       {onboardingSlides.map((_, i) => {
         const inputRange = [(i - 1) * windowWidth, i * windowWidth, (i + 1) * windowWidth]
@@ -52,7 +53,7 @@ export default ({ setIsFirstLaunch }) => {
     </Box>
   )
 
-  const Backdrop = ({ scrollX }) => {
+  const BackdropWave = ({ scrollX }) => {
     const inputRange = [0, (onboardingSlides.length - 1) * windowWidth]
     const left = scrollX.interpolate({
       inputRange,
@@ -77,8 +78,17 @@ export default ({ setIsFirstLaunch }) => {
   }
 
   return (
-    <View flex={1} bg="lightText" pt="56px">
-      <Backdrop scrollX={scrollX} />
+    <View flex={1} bg="muted.100" pt="56px">
+      <View
+        position="absolute"
+        bottom={20}
+        alignSelf="center"
+        width={windowWidth * 1.1}
+        height={windowWidth * 1.1}
+        borderRadius="full"
+        bg="white"
+      />
+      <BackdropWave scrollX={scrollX} />
       <Animated.FlatList
         data={onboardingSlides}
         renderItem={({ item }) => <OnboardingItem item={item} />}

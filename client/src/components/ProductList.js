@@ -130,6 +130,7 @@ export default () => {
         numColumns={numColumns}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ marginTop: 10 }}
       />
     </>
   ) : (
