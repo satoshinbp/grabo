@@ -37,11 +37,9 @@ export default () => {
         800: '#806200',
         900: '#4e3b00',
       },
-    },
-    fonts: {
-      heading: 'Roboto',
-      body: 'Roboto',
-      mono: 'Roboto',
+      dark: {
+        50: '#282625',
+      },
     },
     components: {
       View: {
@@ -71,12 +69,6 @@ export default () => {
             bg: 'white',
             shadow: 2,
           }),
-          productCard: () => ({
-            rounded: 'lg',
-            overflow: 'hidden',
-            width: '72px',
-            height: '72px',
-          }),
         },
       },
       VStack: {
@@ -93,6 +85,8 @@ export default () => {
             justifyContent: 'center',
             alignItems: 'center',
             width: '50%',
+            padding: 2,
+            my: 0,
             borderBottomWidth: 3,
             borderBottomColor: 'primary.500',
           }),
@@ -100,6 +94,8 @@ export default () => {
             justifyContent: 'center',
             alignItems: 'center',
             width: '50%',
+            padding: 2,
+            my: 0,
             borderBottomWidth: 3,
             borderBottomColor: 'transparent',
           }),
@@ -128,6 +124,7 @@ export default () => {
           _text: {
             color: 'black',
             textAlign: 'center',
+            fontWeight: 'bold',
           },
         },
         variants: {
@@ -169,6 +166,26 @@ export default () => {
               },
             }
           },
+        },
+        sizes: {
+          fixed: {
+            w: '232px',
+            px: '2',
+            py: '2',
+            _text: {
+              fontSize: 'sm',
+            },
+          },
+        },
+      },
+      Heading: {
+        baseStyle: {
+          color: 'dark.50',
+        },
+      },
+      Text: {
+        baseStyle: {
+          color: 'dark.50',
         },
       },
       TextArea: {

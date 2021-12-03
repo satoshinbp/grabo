@@ -17,6 +17,7 @@ import {
   TextArea,
   Button,
   Checkbox,
+  AddIcon,
   useTheme,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
@@ -33,9 +34,9 @@ import { fetchUserById, patchUser } from '../api/auth'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
-import FavIcon from '../assets/icons/Fav'
 import DiamondIcon from '../assets/icons/Diamond'
 import ReportRedIcon from '../assets/icons/ReportRed'
+import { cloneDeep } from 'lodash'
 import FilledHeartIcon from '../assets/icons/HeartFilledYellow'
 import WhiteHeartIcon from '../assets/icons/HeartStrokeWhite'
 const windowWidth = Dimensions.get('window').width
@@ -61,17 +62,40 @@ export default () => {
   const [reportFormParams, setReportFormParams] = useState(null)
   const [reportKeys, setReportKeys] = useState([])
 
+  const sortQuestionsByHighlight = (product) => {
+    const clonedProduct = cloneDeep(product)
+    clonedProduct.fixedQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    clonedProduct.uniqQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    return clonedProduct
+  }
+
   // SET UP PRODUCT WHEN SCREEN OPENED
   const getProduct = () => {
     switch (route.name) {
       case 'GroupProduct':
-        setProduct(groupedProducts.find((product) => product._id === route.params.id))
+        const groupedProduct = groupedProducts.find((product) => product._id === route.params.id)
+        if (!groupedProduct) {
+          navigation.goBack()
+        } else {
+          setProduct(sortQuestionsByHighlight(groupedProduct))
+        }
         break
       case 'MyProduct':
-        setProduct(postedProducts.find((product) => product._id === route.params.id))
+        console.log(route.params.id)
+        const postedProduct = postedProducts.find((product) => product._id === route.params.id)
+        if (!postedProduct) {
+          navigation.goBack()
+        } else {
+          setProduct(sortQuestionsByHighlight(postedProduct))
+        }
         break
       case 'Favorite':
-        setProduct(savedProducts.find((product) => product._id === route.params.id))
+        const savedProduct = savedProducts.find((product) => product._id === route.params.id)
+        if (!savedProduct) {
+          navigation.goBack()
+        } else {
+          setProduct(sortQuestionsByHighlight(savedProduct))
+        }
         break
       default:
         break
@@ -407,13 +431,13 @@ export default () => {
         <View position="absolute" bottom={-12}>
           {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
         </View>
-        <View position="absolute" bottom={0} right={3}>
+        <View position="absolute" bottom={1} right={3}>
           <Pressable variant="icon" onPress={toggleFavorite}>
-            <Center size={6}>
+            <Center size={8}>
               {product.favoredUserIds.includes(user._id) ? (
-                <FilledHeartIcon width="24px" />
+                <FilledHeartIcon width="20px" />
               ) : (
-                <WhiteHeartIcon width="24px" />
+                <WhiteHeartIcon width="20px" />
               )}
             </Center>
           </Pressable>
@@ -422,8 +446,8 @@ export default () => {
 
       <ScrollView flex={1} pt={4}>
         <View variant="wrapper">
-          {product?.fixedQandAs.length > 0 && QuestionAccordions(product?.fixedQandAs, 'fixed')}
           {product?.uniqQandAs.length > 0 && QuestionAccordions(product?.uniqQandAs, 'uniq')}
+          {product?.fixedQandAs.length > 0 && QuestionAccordions(product?.fixedQandAs, 'fixed')}
         </View>
 
         {/* add extra space to avoid contents to be hidden by FAB */}
@@ -431,7 +455,7 @@ export default () => {
       </ScrollView>
 
       <Button variant="fab" onPress={setQuestionForm}>
-        Ask a Question
+        <AddIcon size="4" />
       </Button>
 
       <SlideModal

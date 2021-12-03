@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { View } from 'native-base'
 import Loading from '../components/Loading'
 import ProductList from '../components/ProductList'
+import Container from '../elements/Container'
 
 export default () => {
   const { loading } = useSelector((state) => state.product)
@@ -10,7 +11,9 @@ export default () => {
 
   return (
     <View variant="wrapper">
-      <ProductList />
+      <Container>
+        <ProductList />
+      </Container>
     </View>
   )
 }

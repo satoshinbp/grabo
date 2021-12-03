@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { ScrollView, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
+import { View, ScrollView, VStack, FormControl, Input, Button, Text, Avatar } from 'native-base'
 import { updateUser } from '../features/auth'
-import FormContainer from '../elements/FormContainer'
+import Container from '../elements/Container'
 
 export default () => {
   const navigation = useNavigation()
@@ -56,50 +56,56 @@ export default () => {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <FormContainer>
-        <VStack variant="container">
-          <Avatar
-            source={{ uri: user.image }}
-            size="2xl"
-            alt="user portrait"
-            position="relative"
-            alignSelf="center"
-            borderRadius="full"
-          />
+      <View variant="wrapper">
+        <Container>
+          <VStack flex={1} justifyContent="space-between" px={3} py={6}>
+            <VStack space={3}>
+              <Avatar
+                source={{ uri: user.image }}
+                size="2xl"
+                alt="user portrait"
+                position="relative"
+                alignSelf="center"
+                borderRadius="full"
+              />
 
-          <FormControl>
-            <FormControl.Label _text={{ bold: true }}>First name</FormControl.Label>
-            <Input value={firstName} onChangeText={(value) => setFirstName(value)} bg="warmGray.100" size="md" />
-            {'firstName' in errors && (
-              <Text fontSize="xs" color="error.500" fontWeight={500}>
-                {errors.firstName}
-              </Text>
-            )}
-          </FormControl>
+              <FormControl>
+                <FormControl.Label _text={{ bold: true }}>First name</FormControl.Label>
+                <Input value={firstName} onChangeText={(value) => setFirstName(value)} bg="warmGray.100" size="md" />
+                {'firstName' in errors && (
+                  <Text fontSize="xs" color="error.500" fontWeight={500}>
+                    {errors.firstName}
+                  </Text>
+                )}
+              </FormControl>
 
-          <FormControl>
-            <FormControl.Label _text={{ bold: true }}>Last name</FormControl.Label>
-            <Input value={lastName} onChangeText={(value) => setLastName(value)} bg="warmGray.100" size="md" />
-            {'lastName' in errors && (
-              <Text fontSize="xs" color="error.500" fontWeight={500}>
-                {errors.lastName}
-              </Text>
-            )}
-          </FormControl>
+              <FormControl>
+                <FormControl.Label _text={{ bold: true }}>Last name</FormControl.Label>
+                <Input value={lastName} onChangeText={(value) => setLastName(value)} bg="warmGray.100" size="md" />
+                {'lastName' in errors && (
+                  <Text fontSize="xs" color="error.500" fontWeight={500}>
+                    {errors.lastName}
+                  </Text>
+                )}
+              </FormControl>
 
-          <FormControl>
-            <FormControl.Label _text={{ bold: true }}>Email</FormControl.Label>
-            <Input value={email} onChangeText={(value) => setEmail(value)} bg="warmGray.100" size="md" />
-            {'email' in errors && (
-              <Text fontSize="xs" color="error.500" fontWeight={500}>
-                {errors.email}
-              </Text>
-            )}
-          </FormControl>
-        </VStack>
+              <FormControl>
+                <FormControl.Label _text={{ bold: true }}>Email</FormControl.Label>
+                <Input value={email} onChangeText={(value) => setEmail(value)} bg="warmGray.100" size="md" />
+                {'email' in errors && (
+                  <Text fontSize="xs" color="error.500" fontWeight={500}>
+                    {errors.email}
+                  </Text>
+                )}
+              </FormControl>
+            </VStack>
 
-        <Button onPress={onSave}>Save</Button>
-      </FormContainer>
+            <Button onPress={onSave} size="fixed" alignSelf="center">
+              Save
+            </Button>
+          </VStack>
+        </Container>
+      </View>
     </ScrollView>
   )
 }
