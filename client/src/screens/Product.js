@@ -36,6 +36,7 @@ import SlideModal from '../elements/SlideModal'
 import FavIcon from '../assets/icons/Fav'
 import DiamondIcon from '../assets/icons/Diamond'
 import ReportRedIcon from '../assets/icons/ReportRed'
+import { cloneDeep } from 'lodash'
 import FilledHeartIcon from '../assets/icons/HeartFilledYellow'
 import WhiteHeartIcon from '../assets/icons/HeartStrokeWhite'
 const windowWidth = Dimensions.get('window').width
@@ -61,17 +62,33 @@ export default () => {
   const [reportFormParams, setReportFormParams] = useState(null)
   const [reportKeys, setReportKeys] = useState([])
 
+  const sortQuestionsByHighlight = (products) => {
+    const product = products.find((product) => product._id === route.params.id)
+    let productWithSortedQuestions = cloneDeep(product)
+
+    const sortedFixedQandAs = productWithSortedQuestions.fixedQandAs.sort(
+      (a, b) => b.highlightedBy.length - a.highlightedBy.length
+    )
+    productWithSortedQuestions.fixedQandAs = sortedFixedQandAs
+    const sortedUniqQandAs = productWithSortedQuestions.uniqQandAs.sort(
+      (a, b) => b.highlightedBy.length - a.highlightedBy.length
+    )
+    productWithSortedQuestions.uniqQandAs = sortedUniqQandAs
+
+    return productWithSortedQuestions
+  }
+
   // SET UP PRODUCT WHEN SCREEN OPENED
   const getProduct = () => {
     switch (route.name) {
       case 'GroupProduct':
-        setProduct(groupedProducts.find((product) => product._id === route.params.id))
+        setProduct(sortQuestionsByHighlight(groupedProducts))
         break
       case 'MyProduct':
-        setProduct(postedProducts.find((product) => product._id === route.params.id))
+        setProduct(sortQuestionsByHighlight(postedProducts))
         break
       case 'Favorite':
-        setProduct(savedProducts.find((product) => product._id === route.params.id))
+        setProduct(sortQuestionsByHighlight(savedProducts))
         break
       default:
         break
@@ -422,8 +439,8 @@ export default () => {
 
       <ScrollView flex={1} pt={4}>
         <View variant="wrapper">
-          {product?.fixedQandAs.length > 0 && QuestionAccordions(product?.fixedQandAs, 'fixed')}
           {product?.uniqQandAs.length > 0 && QuestionAccordions(product?.uniqQandAs, 'uniq')}
+          {product?.fixedQandAs.length > 0 && QuestionAccordions(product?.fixedQandAs, 'fixed')}
         </View>
 
         {/* add extra space to avoid contents to be hidden by FAB */}
