@@ -5,10 +5,9 @@ import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
   ScrollView,
-  Box,
+  Center,
   VStack,
   HStack,
-  Center,
   Pressable,
   Accordion,
   Divider,
@@ -19,7 +18,6 @@ import {
   Button,
   Checkbox,
   useTheme,
-  Avatar,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -39,6 +37,8 @@ import FavIcon from '../assets/icons/Fav'
 import DiamondIcon from '../assets/icons/Diamond'
 import ReportRedIcon from '../assets/icons/ReportRed'
 import { cloneDeep } from 'lodash'
+import FilledHeartIcon from '../assets/icons/HeartFilledYellow'
+import WhiteHeartIcon from '../assets/icons/HeartStrokeWhite'
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
@@ -277,21 +277,23 @@ export default () => {
                   >
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
-                      <Pressable
-                        variant="icon"
-                        onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
-                      >
-                        <HStack space={0.5}>
-                          <DiamondIcon width="20px" />
-                          <Text>{`${question.highlightedBy.length}`}</Text>
-                        </HStack>
-                      </Pressable>
-                      {type === 'uniq' ? (
-                        <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer?._id)}>
-                          <ReportRedIcon width="22px" />
+                      <HStack space={0.5} alignItems="center">
+                        <Pressable
+                          variant="icon"
+                          onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
+                        >
+                          <Center size={6}>
+                            <DiamondIcon width="20px" />
+                          </Center>
                         </Pressable>
-                      ) : (
-                        <View></View>
+                        <Text>{question.highlightedBy.length}</Text>
+                      </HStack>
+                      {type === 'uniq' && (
+                        <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer?._id)}>
+                          <Center size={6}>
+                            <ReportRedIcon width="20px" />
+                          </Center>
+                        </Pressable>
                       )}
                     </HStack>
                     <Button
@@ -422,10 +424,14 @@ export default () => {
         <View position="absolute" bottom={-12}>
           {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
         </View>
-        <View position="absolute" bottom={0} right={3}>
+        <View position="absolute" bottom={1} right={3}>
           <Pressable variant="icon" onPress={toggleFavorite}>
             <Center size={8}>
-              <FavIcon width="24px" />
+              {product.favoredUserIds.includes(user._id) ? (
+                <FilledHeartIcon width="20px" />
+              ) : (
+                <WhiteHeartIcon width="20px" />
+              )}
             </Center>
           </Pressable>
         </View>
