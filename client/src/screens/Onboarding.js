@@ -16,7 +16,7 @@ export default ({ setIsFirstLaunch }) => {
       position="absolute"
       flexDirection="row"
       alignSelf="center"
-      bottom={20}
+      bottom={16}
       p={2}
       borderWidth={1}
       borderColor="muted.300"
@@ -81,10 +81,10 @@ export default ({ setIsFirstLaunch }) => {
     <View flex={1} bg="muted.200" pt="56px">
       <View
         position="absolute"
-        bottom="96px"
+        bottom={20}
         alignSelf="center"
-        width={windowWidth * 1.1}
-        height={windowWidth * 1.1}
+        width={windowWidth * 1.2}
+        height={windowWidth * 1.2}
         borderRadius="full"
         bg="white"
       />
