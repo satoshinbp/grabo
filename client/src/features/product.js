@@ -36,7 +36,7 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   return products
 })
 
-const sendPushNotification = async (expoPushToken) => {
+const sendPushNotification = async (expoPushToken, productId) => {
   const message = {
     to: expoPushToken,
     sound: 'default',
