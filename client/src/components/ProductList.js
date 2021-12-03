@@ -130,11 +130,12 @@ export default () => {
         numColumns={numColumns}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ marginTop: 10 }}
       />
     </>
   ) : (
     <Center flex={1}>
-      <Text fontSize="lg" textAlign="center" mt={12}>
+      <Text fontSize="lg" textAlign="center">
         No products added
       </Text>
     </Center>

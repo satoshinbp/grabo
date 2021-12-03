@@ -37,6 +37,9 @@ export default () => {
         800: '#806200',
         900: '#4e3b00',
       },
+      dark: {
+        50: '#282625',
+      },
     },
     components: {
       View: {
@@ -173,6 +176,16 @@ export default () => {
               fontSize: 'sm',
             },
           },
+        },
+      },
+      Heading: {
+        baseStyle: {
+          color: 'dark.50',
+        },
+      },
+      Text: {
+        baseStyle: {
+          color: 'dark.50',
         },
       },
       TextArea: {

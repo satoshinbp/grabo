@@ -7,8 +7,8 @@ const windowWidth = Dimensions.get('window').width
 export default ({ item }) => (
   <View variant="wrapper" w={windowWidth}>
     <VStack variant="container" flex={1} alignItems="center" px={8}>
-      <Image flex={0.7} w="100%" source={item.image} resizeMode="contain" alt={item.alt} />
-      <Text flex={0.3} bold fontSize="lg" textAlign="center">
+      <Image flex={0.65} w="100%" source={item.image} resizeMode="contain" alt={item.alt} />
+      <Text flex={0.35} bold fontSize="lg" textAlign="center">
         {item.description}
       </Text>
     </VStack>
