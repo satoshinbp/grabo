@@ -34,7 +34,6 @@ import { fetchUserById, patchUser } from '../api/auth'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
 import SlideModal from '../elements/SlideModal'
-import FavIcon from '../assets/icons/Fav'
 import DiamondIcon from '../assets/icons/Diamond'
 import ReportRedIcon from '../assets/icons/ReportRed'
 import { cloneDeep } from 'lodash'
@@ -75,15 +74,28 @@ export default () => {
     switch (route.name) {
       case 'GroupProduct':
         const groupedProduct = groupedProducts.find((product) => product._id === route.params.id)
-        setProduct(sortQuestionsByHighlight(groupedProduct))
+        if (!groupedProduct) {
+          navigation.goBack()
+        } else {
+          setProduct(sortQuestionsByHighlight(groupedProduct))
+        }
         break
       case 'MyProduct':
+        console.log(route.params.id)
         const postedProduct = postedProducts.find((product) => product._id === route.params.id)
-        setProduct(sortQuestionsByHighlight(postedProduct))
+        if (!postedProduct) {
+          navigation.goBack()
+        } else {
+          setProduct(sortQuestionsByHighlight(postedProduct))
+        }
         break
       case 'Favorite':
         const savedProduct = savedProducts.find((product) => product._id === route.params.id)
-        setProduct(sortQuestionsByHighlight(savedProduct))
+        if (!savedProduct) {
+          navigation.goBack()
+        } else {
+          setProduct(sortQuestionsByHighlight(savedProduct))
+        }
         break
       default:
         break

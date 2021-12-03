@@ -21,7 +21,6 @@ import {
   FormControl,
   Pressable,
 } from 'native-base'
-import { MaterialIcons } from '@expo/vector-icons'
 import TrashIcon from '../assets/icons/Trash'
 import { updateCode, deleteImage, clearImage } from '../features/image'
 import { createProduct } from '../features/product'
