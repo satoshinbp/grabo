@@ -67,8 +67,8 @@ export default () => {
       <Button
         isDisabled={!hasPermission}
         onPress={takePicture}
-        width="56px"
-        height="56px"
+        width="62px"
+        height="62px"
         borderRadius="full"
         bg="white"
         shadow={2}
@@ -79,16 +79,15 @@ export default () => {
       >
         <Box w="52px" h="52px" borderWidth="2px" borderColor="primary.500" borderRadius="full" />
       </Button>
-      <Pressable onPress={openImagePickerAsync}>
-        <Center
-          w="36px"
-          h="36px"
-          borderRadius="full"
-          bg="primary.500"
-          _pressed={{
-            bg: 'primary.700',
-          }}
-        >
+      <Pressable
+        variant="icon"
+        borderWidth="1.5px"
+        shadow={2}
+        bg="white"
+        borderColor="primary.500"
+        onPress={openImagePickerAsync}
+      >
+        <Center size="8">
           <GalleryIcon width="36px" />
         </Center>
       </Pressable>

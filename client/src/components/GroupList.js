@@ -1,9 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { View, SunIcon } from 'native-base'
+import { View, Text } from 'native-base'
 import groups from '../utils/groups'
-import ListItemBarColored from '../elements/ListItemBarColored'
+import ListItemBar from '../elements/ListItemBar'
 
 export default () => {
   const { user } = useSelector((state) => state.auth)
@@ -16,7 +16,16 @@ export default () => {
       {groups
         .filter((group) => user.groups.includes(group.code))
         .map((group) => (
-          <ListItemBarColored text={group.language} icon={<SunIcon size={8} />} onPress={() => onPress(group)} />
+          <ListItemBar
+            text={group.language}
+            icon={
+              <Text fontSize="xl" textAlign="center" bold>
+                {group.code}
+              </Text>
+            }
+            onPress={() => onPress(group)}
+            borderLeft
+          />
         ))}
 
       {/* add extra space to avoid contents to be hidden by FAB */}

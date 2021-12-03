@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FlatList, Avatar, View, Heading, AlertDialog } from 'native-base'
+import { Center, Avatar, View, Heading, ScrollView } from 'native-base'
 import { navigateGroupProductById } from '../features/product'
-import ListItemBarColored from '../elements/ListItemBarColored'
+import ListItemBar from '../elements/ListItemBar'
 import { readNotification } from '../features/auth'
 import { fetchProductById } from '../api/product'
 import { fetchUserById } from '../api/auth'
@@ -45,40 +45,39 @@ export default () => {
 
   if (loading) return <Loading />
   return notifications.length > 0 ? (
-    <FlatList
-      data={notifications}
-      renderItem={({ item, index }) => (
-        <ListItemBarColored
-          textColor={item.read ? '#BBBCBD' : 'black'}
-          text={item.message}
-          icon={
-            <Avatar
-              source={{ uri: userImages[index] }}
-              size={8}
-              alt="user portrait"
-              position="relative"
-              alignSelf="center"
-              borderRadius="full"
-            />
-          }
-          productIcon={
-            <Avatar
-              source={{ uri: productImages[index] }}
-              size={8}
-              alt="user portrait"
-              position="relative"
-              alignSelf="center"
-            />
-          }
-          onPress={() => onPress(item)}
-        />
-      )}
-      showsVerticalScrollIndicator={false}
-      flex={1}
-    />
+    <ScrollView>
+      <View variant="wrapper">
+        {notifications.map((notification, index) => (
+          <ListItemBar
+            text={notification.message}
+            icon={
+              <Avatar
+                source={{ uri: userImages[index] }}
+                size={10}
+                alt="user portrait"
+                position="relative"
+                alignSelf="center"
+                borderRadius="full"
+              />
+            }
+            subIcon={
+              <Avatar
+                source={{ uri: productImages[index] }}
+                size={10}
+                alt="user portrait"
+                position="relative"
+                alignSelf="center"
+              />
+            }
+            onPress={() => onPress(notification)}
+            textColor={notification.read ? 'muted.300' : 'black'}
+          />
+        ))}
+      </View>
+    </ScrollView>
   ) : (
-    <View flex={1} bg="transparent" w="144px" h="144px" alignSelf="center">
+    <Center flex={1} bg="transparent" w="144px" h="144px" alignSelf="center">
       <Heading size="md">No notification</Heading>
-    </View>
+    </Center>
   )
 }

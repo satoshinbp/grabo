@@ -5,9 +5,9 @@ import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
   ScrollView,
+  Center,
   VStack,
   HStack,
-  Center,
   Pressable,
   Accordion,
   Divider,
@@ -260,20 +260,23 @@ export default () => {
                   >
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
-                      <Pressable
-                        onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
-                      >
-                        <HStack space={0.5}>
-                          <DiamondIcon width="20px" />
-                          <Text>{`${question.highlightedBy.length}`}</Text>
-                        </HStack>
-                      </Pressable>
-                      {type === 'uniq' ? (
-                        <Pressable onPress={() => setReportForm(type, question._id, answer?._id)}>
-                          <ReportRedIcon width="22px" />
+                      <HStack space={0.5} alignItems="center">
+                        <Pressable
+                          variant="icon"
+                          onPress={() => toggleHighlight(question._id, type, question.highlightedBy.includes(user._id))}
+                        >
+                          <Center size={6}>
+                            <DiamondIcon width="20px" />
+                          </Center>
                         </Pressable>
-                      ) : (
-                        <View></View>
+                        <Text>{question.highlightedBy.length}</Text>
+                      </HStack>
+                      {type === 'uniq' && (
+                        <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer?._id)}>
+                          <Center size={6}>
+                            <ReportRedIcon width="20px" />
+                          </Center>
+                        </Pressable>
                       )}
                     </HStack>
                     <Button
@@ -306,7 +309,7 @@ export default () => {
                     <Text pb={2}>{answer?.description}</Text>
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
-                      <Pressable onPress={() => setReportForm(type, question._id, answer._id)}>
+                      <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer._id)}>
                         <ReportRedIcon width="22px" />
                       </Pressable>
                     </HStack>
@@ -404,7 +407,7 @@ export default () => {
         <View position="absolute" bottom={-12}>
           {product?.images?.length > 0 ? PaginationComponent(product?.images) : null}
         </View>
-        <View position="absolute" bottom={0} right={3}>
+        <View position="absolute" bottom={1} right={3}>
           <Pressable variant="icon" onPress={toggleFavorite}>
             <Center size={8}>
               {product.favoredUserIds.includes(user._id) ? (

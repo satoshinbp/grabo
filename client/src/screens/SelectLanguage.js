@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/core'
-import { View, ScrollView, Box, Center, VStack, HStack, Heading, Text, Radio, Button, SunIcon } from 'native-base'
+import { View, ScrollView, Box, Center, VStack, HStack, Heading, Text, Radio, Button } from 'native-base'
 import { updateCode } from '../features/image'
 import groups from '../utils/groups'
 
@@ -37,17 +37,17 @@ export default () => {
 
         <Radio.Group name="Group" value={code} onChange={(value) => setCode(value)} flex={1}>
           {groups.map((group) => (
-            <Box variant="listItemBarColored" alignSelf="stretch" key={group.code}>
+            <Box variant="listItemBar" borderLeftWidth="10px" alignSelf="stretch" key={group.code}>
               <HStack space={3} alignItems="center">
                 <Center size={12} bg="primary.500" borderRadius="full">
-                  <Text fontSize="md" bold>
+                  <Text fontSize="xl" bold>
                     {group.code}
                   </Text>
                 </Center>
-                <Text fontSize="md" bold>
+                <Text fontSize="md" textAlign="center" bold>
                   {group.language}
                 </Text>
-                <Radio value={group.code} marginLeft="auto" accessibilityLabel={group.language} />
+                <Radio value={group.code} ml="auto" accessibilityLabel={group.language} />
               </HStack>
             </Box>
           ))}
@@ -59,6 +59,8 @@ export default () => {
             dispatch(updateCode(code))
             navigation.navigate('CreateProduct')
           }}
+          size="fixed"
+          alignSelf="center"
         >
           Next
         </Button>
