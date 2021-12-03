@@ -19,8 +19,10 @@ import {
   Button,
   AddIcon,
   FormControl,
+  Pressable,
 } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
+import TrashIcon from '../assets/icons/Trash'
 import { updateCode, deleteImage, clearImage } from '../features/image'
 import { createProduct } from '../features/product'
 import groups from '../utils/groups'
@@ -109,12 +111,9 @@ export default () => {
                         borderRadius="full"
                         bg="primary.500"
                       >
-                        <MaterialIcons
-                          name="delete"
-                          size={18}
-                          color="black"
-                          onPress={() => dispatch(deleteImage({ index }))}
-                        />
+                        <Pressable bg="transparent" onPress={() => dispatch(deleteImage({ index }))}>
+                          <TrashIcon width="24px" />
+                        </Pressable>
                       </Center>
                     </Box>
                   ))}
@@ -122,6 +121,7 @@ export default () => {
               ) : (
                 <Text>At lease one picture is required.</Text>
               )}
+              {uris.length > 3 && <Text color="error.500"> Pick up 3 images.</Text>}
               <Button onPress={openCamera}>Add Image</Button>
             </VStack>
             {/* leave this comment */}
@@ -184,7 +184,10 @@ export default () => {
                     flex={1}
                     alignItems="center"
                   />
-                  <MaterialIcons name="delete" size={18} color="black" onPress={() => removeQuestion(index)} />
+
+                  <Pressable variant="icon" bg="transparent" onPress={() => removeQuestion(index)}>
+                    <TrashIcon width="24px" />
+                  </Pressable>
                 </HStack>
               ))}
               <Center w="36px" h="36px" borderRadius="full" bg="primary.500" my={2}>
@@ -194,7 +197,12 @@ export default () => {
           </FormControl>
 
           <Button.Group w="100%" direction="column" space={2}>
-            <Button isDisabled={uris.length === 0} onPress={submitProduct} size="fixed" alignSelf="center">
+            <Button
+              isDisabled={uris.length === 0 || uris.length > 3}
+              onPress={submitProduct}
+              size="fixed"
+              alignSelf="center"
+            >
               Submit
             </Button>
             <Button
