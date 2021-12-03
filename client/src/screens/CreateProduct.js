@@ -102,19 +102,22 @@ export default () => {
                   {uris.map((uri, index) => (
                     <Box key={uri} position="relative" w="100px" h="100px">
                       <Image source={{ uri }} alt="picked image" w="100%" h="100%" borderRadius="lg" />
-                      <Center
+                      <Button
                         position="absolute"
                         top={1}
                         right={1}
-                        w="30px"
-                        h="30px"
+                        padding={0.5}
                         borderRadius="full"
-                        bg="primary.500"
+                        bg="white"
+                        _pressed={{
+                          bg: `muted.300`,
+                        }}
+                        onPress={() => dispatch(deleteImage({ index }))}
                       >
-                        <Pressable bg="transparent" onPress={() => dispatch(deleteImage({ index }))}>
-                          <TrashIcon width="24px" />
-                        </Pressable>
-                      </Center>
+                        <Center size={6}>
+                          <TrashIcon width="20px" />
+                        </Center>
+                      </Button>
                     </Box>
                   ))}
                 </HStack>

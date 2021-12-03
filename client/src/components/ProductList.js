@@ -32,7 +32,6 @@ export default () => {
       numberOfElementsLastRow = numberOfElementsLastRow + 1
     }
 
-    console.log(tempData)
     return tempData
   }
 
@@ -80,7 +79,7 @@ export default () => {
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
           resizeMode="cover"
           imageStyle={{ borderRadius: 10 }}
-          style={{ width: 156, height: 156, alignSelf: 'center', flex: 1, justifyContent: 'flex-end' }}
+          style={{ width: 144, height: 144, alignSelf: 'center', flex: 1, justifyContent: 'flex-end' }}
         >
           <Box w="100%" justifyContent="flex-end">
             <HStack
@@ -111,7 +110,7 @@ export default () => {
   const numColumns = 2
 
   return products.length > 0 ? (
-    <>
+    <View flex={1}>
       <HStack my={0.5} borderBottomWidth={3} borderBottomColor="muted.300">
         <Pressable variant={sortBy === 'date' ? 'activeTab' : 'inactiveTab'} onPress={() => setSortBy('date')}>
           <Text fontWeight={sortBy === 'date' ? 'bold' : 'normal'}> Sort by Date</Text>
@@ -130,9 +129,9 @@ export default () => {
         numColumns={numColumns}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ marginTop: 10 }}
+        contentContainerStyle={{ marginVertical: 10, paddingHorizontal: 8 }}
       />
-    </>
+    </View>
   ) : (
     <Center flex={1}>
       <Text fontSize="lg" textAlign="center">

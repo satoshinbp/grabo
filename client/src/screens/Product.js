@@ -17,6 +17,7 @@ import {
   TextArea,
   Button,
   Checkbox,
+  AddIcon,
   useTheme,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
@@ -442,7 +443,7 @@ export default () => {
       </ScrollView>
 
       <Button variant="fab" onPress={setQuestionForm}>
-        Ask a Question
+        <AddIcon size="4" />
       </Button>
 
       <SlideModal

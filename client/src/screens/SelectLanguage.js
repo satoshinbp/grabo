@@ -24,47 +24,47 @@ export default () => {
   }, [image.code])
 
   return (
-    <ScrollView variant="wrapper">
-      <VStack variant="container">
-        <View>
+    <ScrollView>
+      <View variant="wrapper">
+        <VStack variant="container">
           <Heading size="md">{isTextDetected ? 'Text detected!' : 'Sorry! The language is not detectable!'}</Heading>
           <Text>
             {isTextDetected
               ? 'Press next button to continue or change language if you think the detected language is wrong.'
               : 'Create a new product by selecting a language that grabo currently support from the list below.'}
           </Text>
-        </View>
 
-        <Radio.Group name="Group" value={code} onChange={(value) => setCode(value)} flex={1}>
-          {groups.map((group) => (
-            <Box variant="listItemBar" borderLeftWidth="10px" alignSelf="stretch" key={group.code}>
-              <HStack space={3} alignItems="center">
-                <Center size={12} bg="primary.500" borderRadius="full">
-                  <Text fontSize="xl" bold>
-                    {group.code}
+          <Radio.Group name="Group" value={code} onChange={(value) => setCode(value)} flex={1}>
+            {groups.map((group) => (
+              <Box variant="listItemBar" borderLeftWidth="10px" alignSelf="stretch" key={group.code}>
+                <HStack space={3} alignItems="center">
+                  <Center size={12} bg="primary.500" borderRadius="full">
+                    <Text fontSize="xl" bold>
+                      {group.code}
+                    </Text>
+                  </Center>
+                  <Text fontSize="md" textAlign="center" bold>
+                    {group.language}
                   </Text>
-                </Center>
-                <Text fontSize="md" textAlign="center" bold>
-                  {group.language}
-                </Text>
-                <Radio value={group.code} ml="auto" accessibilityLabel={group.language} />
-              </HStack>
-            </Box>
-          ))}
-        </Radio.Group>
+                  <Radio value={group.code} ml="auto" accessibilityLabel={group.language} />
+                </HStack>
+              </Box>
+            ))}
+          </Radio.Group>
 
-        <Button
-          isDisabled={!code}
-          onPress={() => {
-            dispatch(updateCode(code))
-            navigation.navigate('CreateProduct')
-          }}
-          size="fixed"
-          alignSelf="center"
-        >
-          Next
-        </Button>
-      </VStack>
+          <Button
+            isDisabled={!code}
+            onPress={() => {
+              dispatch(updateCode(code))
+              navigation.navigate('CreateProduct')
+            }}
+            size="fixed"
+            alignSelf="center"
+          >
+            Next
+          </Button>
+        </VStack>
+      </View>
     </ScrollView>
   )
 }
