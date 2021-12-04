@@ -25,9 +25,15 @@ export const setProductsByGroup = createAsyncThunk('products/setByGroup', async 
   return lodash.flatten(products)
 })
 
-export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, id }) => {
+export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, id }) => {
   const product = await fetchProductById(token, id)
-  RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
+  console.log(product)
+  if (type.includes('waiting')) {
+    RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
+  } else {
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id } })
+  }
+  // RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
   return product
 })
 

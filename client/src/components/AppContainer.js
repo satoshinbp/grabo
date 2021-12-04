@@ -111,18 +111,20 @@ export default () => {
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-          if (response.notification.request.content.body.includes('waiting')) {
-            dispatch(setProductFromNotification({ token, id: response.notification.request.content.data.productId }))
-            // navigation.navigate('GroupsTab', {
-            //   screen: 'GroupProduct',
-            //   params: { id: response.notification.request.content.data.productId },
-            // })
-          } else {
-            navigation.navigate('MyProductsTab', {
-              screen: 'MyProduct',
-              params: { id: response.notification.request.content.data.productId },
+          // if (response.notification.request.content.body.includes('waiting')) {
+          dispatch(
+            setProductFromNotification({
+              token,
+              type: response.notification.request.content.body,
+              id: response.notification.request.content.data.productId,
             })
-          }
+          )
+          // } else {
+          //   navigation.navigate('MyProductsTab', {
+          //     screen: 'MyProduct',
+          //     params: { id: response.notification.request.content.data.productId },
+          //   })
+          // }
         })
         const params = {
           notificationToken: expotoken,
