@@ -79,14 +79,14 @@ export default () => {
           source={{ uri: item.images[Math.floor(Math.random() * item.images.length)].url }}
           resizeMode="cover"
           imageStyle={{ borderRadius: 10 }}
-          style={{ width: 144, height: 144, alignSelf: 'center', flex: 1, justifyContent: 'flex-end' }}
+          style={{ width: 152, height: 152, alignSelf: 'center', flex: 1, justifyContent: 'flex-end' }}
         >
           <Box w="100%" justifyContent="flex-end">
             <HStack
               justifyContent="space-between"
               alignItems="center"
               w="100%"
-              px={3}
+              px={1.5}
               py={1}
               borderBottomRadius="md"
               bg="rgba(255, 255, 255, 0.8)"
@@ -129,7 +129,7 @@ export default () => {
         numColumns={numColumns}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ marginVertical: 10, paddingHorizontal: 8 }}
+        contentContainerStyle={{ marginVertical: 10, paddingHorizontal: 4 }}
       />
     </View>
   ) : (

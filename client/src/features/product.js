@@ -95,7 +95,8 @@ export const createProduct = createAsyncThunk(
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-    RootNavigation.navigate('MyProductsTab')
+    // RootNavigation.navigate('MyProductsTab')
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
 
     return product
   }
@@ -126,9 +127,11 @@ export const saveProduct = createAsyncThunk('products/save', async ({ token, par
   return product
 })
 
-export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, params }) => {
+export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, route, params }) => {
   const product = await deleteUserFromFavorite(token, params)
-  RootNavigation.navigate('Favorites')
+  if (route === 'Favorite') {
+    RootNavigation.navigate('Favorites')
+  }
   return product
 })
 

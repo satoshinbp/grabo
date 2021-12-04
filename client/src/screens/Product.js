@@ -29,7 +29,7 @@ import {
   saveProduct,
   unsaveProduct,
 } from '../features/product'
-import { reportQuestion, reportAnswer } from '../api/product'
+import { reportAnswer } from '../api/product'
 import { fetchUserById, patchUser } from '../api/auth'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
@@ -108,7 +108,11 @@ export default () => {
     return unsubscribe
   }, [navigation])
 
-  useEffect(getProduct, [loading])
+  useEffect(() => {
+    if (!loading) {
+      getProduct()
+    }
+  }, [loading])
 
   // SET UP MODAL FORM
   const setQuestionForm = () => {
@@ -237,7 +241,7 @@ export default () => {
     const isFavored = product?.favoredUserIds.includes(user._id)
     const params = { productId: product?._id, userId: user._id }
     if (isFavored) {
-      dispatch(unsaveProduct({ token, params }))
+      dispatch(unsaveProduct({ token, route: route.name, params }))
     } else {
       dispatch(saveProduct({ token, params }))
     }
@@ -380,7 +384,7 @@ export default () => {
       </FormControl>
     ) : modalContentType === 'answer' ? (
       <FormControl>
-        <FormControl.Label>{answerFormParams?.question}</FormControl.Label>
+        <FormControl.Label>{answerFormParams?.description}</FormControl.Label>
         <TextArea
           placeholder="Write your answer here"
           blurOnSubmit
@@ -415,7 +419,7 @@ export default () => {
       ? submitReport
       : null
 
-  if (loading || !product) return <Loading />
+  if (!product) return <Loading />
   return (
     <>
       <View height={windowHeight * 0.3} position="relative" bg="primary.100">
