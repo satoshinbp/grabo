@@ -8,9 +8,9 @@ import GroupList from '../components/GroupList'
 
 export default () => {
   const navigation = useNavigation()
-  const { loading } = useSelector((state) => state.auth)
+  // const { loading } = useSelector((state) => state.auth)
 
-  if (loading) return <Loading />
+  // if (loading) return <Loading />
   return (
     <>
       <ScrollView>

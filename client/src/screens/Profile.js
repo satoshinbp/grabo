@@ -31,7 +31,7 @@ export default () => {
     setNotificationModalOpen(false)
   }
 
-  if (loading) return <Loading />
+  // if (loading) return <Loading />
   return (
     <>
       <VStack alignItems="center" mb={3}>

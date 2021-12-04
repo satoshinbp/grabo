@@ -11,6 +11,7 @@ import {
   deleteUserFromHighlight,
   postUserToFavorite,
   deleteUserFromFavorite,
+  fetchProductById,
 } from '../api/product'
 import { postImage } from '../api/image'
 import { patchUser } from '../api/auth'
@@ -22,6 +23,18 @@ export const setProductsByGroup = createAsyncThunk('products/setByGroup', async 
   const fetchedProducts = await Promise.all(codes.map((code) => fetchProductsByGroup(token, code)))
   const products = lodash.flatten(fetchedProducts).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return lodash.flatten(products)
+})
+
+export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, id }) => {
+  const product = await fetchProductById(token, id)
+  // console.log(product)
+  if (type.includes('waiting')) {
+    RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
+  } else {
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id } })
+  }
+  // RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
+  return { product: product, type: type.includes('waiting') }
 })
 
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
@@ -36,13 +49,13 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   return products
 })
 
-const sendPushNotification = async (expoPushToken) => {
+const sendPushNotification = async (expoPushToken, productId) => {
   const message = {
     to: expoPushToken,
     sound: 'default',
     title: 'Help',
     body: 'Someone is waiting for your help!',
-    data: { someData: 'goes here' },
+    data: { productId: productId },
   }
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -85,7 +98,7 @@ export const createProduct = createAsyncThunk(
 
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
-    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token))
+    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token, product._id))
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
@@ -199,6 +212,17 @@ const productSlice = createSlice({
     [setProductsByGroup.pending]: (state) => startLoading(state),
     [setProductsByGroup.rejected]: (state) => finishLoading(state),
     [setProductsByGroup.fulfilled]: (state, action) => setProducts(state, 'groupedProducts', action.payload),
+
+    [setProductFromNotification.pending]: (state) => startLoading(state),
+    [setProductFromNotification.rejected]: (state) => finishLoading(state),
+    [setProductFromNotification.fulfilled]: (state, action) => {
+      if (action.payload.type) {
+        state.groupedProducts.push(action.payload.product)
+      } else {
+        updateProduct(state, action.payload.product)
+      }
+      state.loading = false
+    },
 
     [setProductsByUserId.pending]: (state) => startLoading(state),
     [setProductsByUserId.rejected]: (state) => finishLoading(state),

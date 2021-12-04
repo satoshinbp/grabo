@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import Constants from 'expo-constants'
 import * as Notifications from 'expo-notifications'
 import * as SecureStore from 'expo-secure-store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import { patchUser } from '../api/auth'
-import { setAppReady, setUser } from '../features/auth'
+import { setAppReady, setUser, addNotification } from '../features/auth'
 import { setProductsByGroup, setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
 import Login from '../screens/Login'
 import Loading from '../components/Loading'
 import Header from '../components/Header'
+import { setProductFromNotification } from '../features/product'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,6 +25,7 @@ Notifications.setNotificationHandler({
 })
 
 export default () => {
+  const navigation = useNavigation()
   const dispatch = useDispatch()
   const { token, isReady, signingIn, signingOut, user } = useSelector((state) => state.auth)
   const [isFirstLaunch, setIsFirstLaunch] = useState(false)
@@ -99,12 +102,18 @@ export default () => {
       registerForPushNotifications().then((expotoken) => {
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification)
+          // dispatch(addNotification(notification))
         })
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response)
+          dispatch(
+            setProductFromNotification({
+              token,
+              type: response.notification.request.content.body,
+              id: response.notification.request.content.data.productId,
+            })
+          )
         })
         const params = {
           notificationToken: expotoken,

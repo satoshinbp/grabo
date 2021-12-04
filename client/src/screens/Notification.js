@@ -25,16 +25,18 @@ export default () => {
       if (notifications.length === 0) return
 
       setLoading(true)
-
-      const productPromises = notifications.map((notification) => fetchProductById(token, notification.productId))
-      const fetchedProducts = await Promise.all(productPromises)
-      const fetchedProductImages = fetchedProducts.map((product) => product.images[0].url)
-      const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
-      const fetchedUser = await Promise.all(userPromises)
-      const fetchedUserImages = fetchedUser.map((user) => user.image)
-
-      setProductImages(fetchedProductImages)
-      setUserImages(fetchedUserImages)
+      try {
+        const productPromises = notifications.map((notification) => fetchProductById(token, notification.productId))
+        const fetchedProducts = await Promise.all(productPromises)
+        const fetchedProductImages = fetchedProducts.map((product) => product.images[0].url)
+        const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
+        const fetchedUser = await Promise.all(userPromises)
+        const fetchedUserImages = fetchedUser.map((user) => user.image)
+        setProductImages(fetchedProductImages)
+        setUserImages(fetchedUserImages)
+      } catch (error) {
+        console.log(error)
+      }
 
       setLoading(false)
     }
@@ -44,7 +46,12 @@ export default () => {
   const onPress = (notification) => {
     if (groupedProducts.map((product) => product._id).includes(notification.productId)) {
       dispatch(readNotification({ token, userId: user._id, notificationId: notification._id }))
-      navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: notification.productId } })
+      //data model will be restructured in the future
+      if (notification.message.includes('Help')) {
+        navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: notification.productId } })
+      } else {
+        navigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: notification.productId } })
+      }
     } else {
       alert("Since you have left the group, you don't have access to this product.")
     }

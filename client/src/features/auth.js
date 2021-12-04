@@ -58,6 +58,10 @@ const authSlice = createSlice({
     setAppReady: (state) => {
       state.isReady = true
     },
+    addNotification: (state, action) => {
+      // console.log(action.payload)
+      state.user.notifications.push(action.payload)
+    },
   },
   extraReducers: {
     [setUser.fulfilled]: (state, action) => {
@@ -115,5 +119,5 @@ const authSlice = createSlice({
   },
 })
 
-export const { setAppReady } = authSlice.actions
+export const { setAppReady, addNotification } = authSlice.actions
 export default authSlice.reducer
