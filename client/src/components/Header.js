@@ -8,8 +8,10 @@ import BellIconWithCircle from '../assets/icons/BellWithCircle'
 export default () => {
   const { colors } = useTheme()
   const navigation = useNavigation()
+
   const { user } = useSelector((state) => state.auth)
   const { notifications } = user
+
   const [haveUnreadNotification, setHaveUnreadNotification] = useState(false)
 
   useEffect(() => {
