@@ -58,7 +58,7 @@ export default () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View variant="wrapper">
         <Container>
-          <VStack flex={1} justifyContent="space-between" px={3} py={6}>
+          <VStack flex={1} justifyContent="space-between" space={3} px={3} py={6}>
             <VStack space={3}>
               <Avatar
                 source={{ uri: user.image }}
