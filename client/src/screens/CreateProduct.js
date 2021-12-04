@@ -26,7 +26,6 @@ import { updateCode, deleteImage, clearImage } from '../features/image'
 import { createProduct } from '../features/product'
 import groups from '../utils/groups'
 import fixedQuestions from '../utils/questions'
-import Loading from '../components/Loading'
 
 export default () => {
   const navigation = useNavigation()
@@ -84,7 +83,6 @@ export default () => {
     }
   }
 
-  if (loading) return <Loading />
   return (
     <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

@@ -1,22 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { signInWithGoogle, fetchUser, patchUser, setNotificationTrue } from '../api/auth'
+import { signInWithGoogle, fetchUserByToken, patchUser, setNotificationTrue } from '../api/auth'
 
 export const setUser = createAsyncThunk('users/fetch', async (token) => {
-  const user = await fetchUser(token)
-  return { user, token }
+  const user = await fetchUserByToken(token)
+  return { token, user }
 })
 
 export const login = createAsyncThunk('users/login', async (idToken) => {
-  const { user, token } = await signInWithGoogle(idToken)
+  const { token, user } = await signInWithGoogle(idToken)
   await SecureStore.setItemAsync('token', token)
-  return { user, token }
+  return { token, user }
 })
 
 export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
-  AsyncStorage.clear() // This is to test onboarding slides.
+  AsyncStorage.clear() // This is to show onboarding slides on demo.
 })
 
 export const updateUser = createAsyncThunk('users/update', async ({ token, id, params }) => {
@@ -47,9 +47,9 @@ const initialUserState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: initialUserState,
-    token: null,
     loading: false,
+    token: null,
+    user: initialUserState,
     isReady: false,
     signingIn: false,
     signingOut: false,
@@ -59,7 +59,6 @@ const authSlice = createSlice({
       state.isReady = true
     },
     addNotification: (state, action) => {
-      // console.log(action.payload)
       state.user.notifications.push(action.payload)
     },
   },
@@ -73,6 +72,7 @@ const authSlice = createSlice({
       state.error = true
       state.isReady = true
     },
+
     [login.pending]: (state) => {
       state.signingIn = true
     },
@@ -85,6 +85,7 @@ const authSlice = createSlice({
     [login.rejected]: (state) => {
       state.signingIn = false
     },
+
     [logout.pending]: (state) => {
       state.signingOut = true
     },
@@ -96,6 +97,7 @@ const authSlice = createSlice({
     [logout.rejected]: (state) => {
       state.signingOut = false
     },
+
     [updateUser.pending]: (state) => {
       state.loading = true
     },
@@ -106,6 +108,7 @@ const authSlice = createSlice({
     [updateUser.rejected]: (state) => {
       state.loading = false
     },
+
     [readNotification.pending]: (state) => {
       state.loading = true
     },

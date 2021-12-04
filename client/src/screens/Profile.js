@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { View, Box, VStack, Text, Avatar } from 'native-base'
 import { logout, updateUser } from '../features/auth'
-import Loading from '../components/Loading'
 import ListItemBar from '../elements/ListItemBar'
 import FadeModal from '../elements/FadeModal'
 import AccountIcon from '../assets/icons/Account'
@@ -13,7 +12,7 @@ import LogoutIcon from '../assets/icons/Logout'
 export default () => {
   const navigation = useNavigation()
 
-  const { user, token, loading } = useSelector((state) => state.auth)
+  const { user, token } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
   const [logoutModalOpen, setLogoutModalOpen] = useState(false)
@@ -31,7 +30,6 @@ export default () => {
     setNotificationModalOpen(false)
   }
 
-  // if (loading) return <Loading />
   return (
     <>
       <VStack alignItems="center" mb={3}>

@@ -8,15 +8,8 @@ const signInWithGoogle = async (idToken) => {
   return data
 }
 
-const fetchUser = async (token) => {
+const fetchUserByToken = async (token) => {
   const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return data
-}
-
-const fetchUsersByGroup = async (token, code) => {
-  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${code}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -24,6 +17,13 @@ const fetchUsersByGroup = async (token, code) => {
 
 const fetchUserById = async (token, id) => {
   const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/highlight/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
+}
+
+const fetchUsersByGroup = async (token, code) => {
+  const { data } = await axios.get(`${SERVER_ROOT_URI}/api/users/${code}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return data
@@ -43,4 +43,4 @@ const setNotificationTrue = async (token, userId, notificationId) => {
   return data
 }
 
-export { signInWithGoogle, fetchUser, fetchUsersByGroup, fetchUserById, patchUser, setNotificationTrue }
+export { signInWithGoogle, fetchUserByToken, fetchUserById, fetchUsersByGroup, patchUser, setNotificationTrue }

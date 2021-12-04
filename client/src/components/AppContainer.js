@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigation } from '@react-navigation/native'
 import Constants from 'expo-constants'
 import * as Notifications from 'expo-notifications'
 import * as SecureStore from 'expo-secure-store'
@@ -25,13 +24,13 @@ Notifications.setNotificationHandler({
 })
 
 export default () => {
-  const navigation = useNavigation()
   const dispatch = useDispatch()
   const { token, isReady, signingIn, signingOut, user } = useSelector((state) => state.auth)
-  const [isFirstLaunch, setIsFirstLaunch] = useState(false)
-  const [notification, setNotification] = useState(false)
+
   const notificationListener = useRef()
   const responseListener = useRef()
+
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false)
 
   const registerForPushNotifications = async () => {
     let token
@@ -98,14 +97,13 @@ export default () => {
       dispatch(setProductsByUserId({ token, userId: user?._id }))
       dispatch(setProductsByFavoredUserId({ token, userId: user?._id }))
 
-      // notificationの確認
       registerForPushNotifications().then((expotoken) => {
-        // This listener is fired whenever a notification is received while the app is foregrounded
+        // Listen to receive notification while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
           // dispatch(addNotification(notification))
         })
 
-        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+        // Listen for the user to tap on or interact with a notification while the app is foregrounded, backgrounded, or killed
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
           dispatch(
             setProductFromNotification({

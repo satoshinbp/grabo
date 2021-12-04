@@ -23,8 +23,8 @@ export default () => {
   useEffect(() => {
     const getListedProducts = async () => {
       if (notifications.length === 0) return
-
       setLoading(true)
+
       try {
         const productPromises = notifications.map((notification) => fetchProductById(token, notification.productId))
         const fetchedProducts = await Promise.all(productPromises)
@@ -32,6 +32,7 @@ export default () => {
         const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
         const fetchedUser = await Promise.all(userPromises)
         const fetchedUserImages = fetchedUser.map((user) => user.image)
+
         setProductImages(fetchedProductImages)
         setUserImages(fetchedUserImages)
       } catch (error) {
@@ -43,17 +44,19 @@ export default () => {
     getListedProducts()
   }, [notifications])
 
-  const onPress = (notification) => {
-    if (groupedProducts.map((product) => product._id).includes(notification.productId)) {
-      dispatch(readNotification({ token, userId: user._id, notificationId: notification._id }))
-      //data model will be restructured in the future
-      if (notification.message.includes('Help')) {
-        navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: notification.productId } })
+  const onPress = ({ _id: notificationId, message, productId }) => {
+    dispatch(readNotification({ token, userId: user._id, notificationId }))
+
+    // This is temporary solution to judge where to navigate
+    // Better to restructure data model in future
+    if (message.includes('Help')) {
+      if (groupedProducts.map((product) => product._id).includes(productId)) {
+        navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: productId } })
       } else {
-        navigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: notification.productId } })
+        alert("Since you have left the group, you don't have access to this product.")
       }
     } else {
-      alert("Since you have left the group, you don't have access to this product.")
+      navigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: productId } })
     }
   }
 
@@ -63,6 +66,7 @@ export default () => {
       <View variant="wrapper">
         {notifications.map((notification, index) => (
           <ListItemBar
+            key={index}
             text={notification.message}
             icon={
               <Avatar

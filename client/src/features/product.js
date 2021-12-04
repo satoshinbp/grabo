@@ -25,18 +25,6 @@ export const setProductsByGroup = createAsyncThunk('products/setByGroup', async 
   return lodash.flatten(products)
 })
 
-export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, id }) => {
-  const product = await fetchProductById(token, id)
-  // console.log(product)
-  if (type.includes('waiting')) {
-    RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
-  } else {
-    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id } })
-  }
-  // RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
-  return { product: product, type: type.includes('waiting') }
-})
-
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
   const fetchedProducts = await fetchProductsByUserId(token, userId)
   const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -47,6 +35,19 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   const fetchedProducts = await fetchProductsByFavoredUserId(token, userId)
   const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   return products
+})
+
+export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, id }) => {
+  const product = await fetchProductById(token, id)
+
+  // This is temporary solution to judge where to navigate
+  // Better to restructure data model in future
+  if (type.includes('waiting')) {
+    RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
+  } else {
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id } })
+  }
+  return { product: product, type: type.includes('waiting') }
 })
 
 const sendPushNotification = async (expoPushToken, productId) => {
@@ -102,8 +103,9 @@ export const createProduct = createAsyncThunk(
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-    // RootNavigation.navigate('MyProductsTab')
-    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
+    RootNavigation.navigate('MyProductsTab')
+    // Shall be navigated to specific product screen, but below code might navigate to a wrong product screen
+    // RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
 
     return product
   }
@@ -213,6 +215,14 @@ const productSlice = createSlice({
     [setProductsByGroup.rejected]: (state) => finishLoading(state),
     [setProductsByGroup.fulfilled]: (state, action) => setProducts(state, 'groupedProducts', action.payload),
 
+    [setProductsByUserId.pending]: (state) => startLoading(state),
+    [setProductsByUserId.rejected]: (state) => finishLoading(state),
+    [setProductsByUserId.fulfilled]: (state, action) => setProducts(state, 'postedProducts', action.payload),
+
+    [setProductsByFavoredUserId.pending]: (state) => startLoading(state),
+    [setProductsByFavoredUserId.rejected]: (state) => finishLoading(state),
+    [setProductsByFavoredUserId.fulfilled]: (state, action) => setProducts(state, 'savedProducts', action.payload),
+
     [setProductFromNotification.pending]: (state) => startLoading(state),
     [setProductFromNotification.rejected]: (state) => finishLoading(state),
     [setProductFromNotification.fulfilled]: (state, action) => {
@@ -223,14 +233,6 @@ const productSlice = createSlice({
       }
       state.loading = false
     },
-
-    [setProductsByUserId.pending]: (state) => startLoading(state),
-    [setProductsByUserId.rejected]: (state) => finishLoading(state),
-    [setProductsByUserId.fulfilled]: (state, action) => setProducts(state, 'postedProducts', action.payload),
-
-    [setProductsByFavoredUserId.pending]: (state) => startLoading(state),
-    [setProductsByFavoredUserId.rejected]: (state) => finishLoading(state),
-    [setProductsByFavoredUserId.fulfilled]: (state, action) => setProducts(state, 'savedProducts', action.payload),
 
     [createProduct.pending]: (state) => startLoading(state),
     [createProduct.rejected]: (state) => finishLoading(state),
