@@ -11,6 +11,7 @@ import {
   deleteUserFromHighlight,
   postUserToFavorite,
   deleteUserFromFavorite,
+  fetchProductById,
 } from '../api/product'
 import { postImage } from '../api/image'
 import { patchUser } from '../api/auth'
