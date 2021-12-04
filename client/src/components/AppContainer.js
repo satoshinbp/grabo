@@ -7,7 +7,7 @@ import * as SecureStore from 'expo-secure-store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import { patchUser } from '../api/auth'
-import { setAppReady, setUser } from '../features/auth'
+import { setAppReady, setUser, addNotification } from '../features/auth'
 import { setProductsByGroup, setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
@@ -102,16 +102,11 @@ export default () => {
       registerForPushNotifications().then((expotoken) => {
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification)
-          // navigation.navigate('GroupsTab', {
-          //   screen: 'GroupProduct',
-          //   params: { id: notification.notification.request.content.data.productId },
-          // })
+          // dispatch(addNotification(notification))
         })
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-          // if (response.notification.request.content.body.includes('waiting')) {
           dispatch(
             setProductFromNotification({
               token,
@@ -119,12 +114,6 @@ export default () => {
               id: response.notification.request.content.data.productId,
             })
           )
-          // } else {
-          //   navigation.navigate('MyProductsTab', {
-          //     screen: 'MyProduct',
-          //     params: { id: response.notification.request.content.data.productId },
-          //   })
-          // }
         })
         const params = {
           notificationToken: expotoken,

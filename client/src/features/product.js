@@ -27,14 +27,14 @@ export const setProductsByGroup = createAsyncThunk('products/setByGroup', async 
 
 export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, id }) => {
   const product = await fetchProductById(token, id)
-  console.log(product)
+  // console.log(product)
   if (type.includes('waiting')) {
     RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
   } else {
     RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id } })
   }
   // RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
-  return product
+  return { product: product, type: type.includes('waiting') }
 })
 
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
@@ -216,7 +216,11 @@ const productSlice = createSlice({
     [setProductFromNotification.pending]: (state) => startLoading(state),
     [setProductFromNotification.rejected]: (state) => finishLoading(state),
     [setProductFromNotification.fulfilled]: (state, action) => {
-      state.groupedProducts.push(action.payload)
+      if (action.payload.type) {
+        state.groupedProducts.push(action.payload.product)
+      } else {
+        updateProduct(state, action.payload.product)
+      }
       state.loading = false
     },
 

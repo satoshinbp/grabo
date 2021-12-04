@@ -25,16 +25,18 @@ export default () => {
       if (notifications.length === 0) return
 
       setLoading(true)
-
-      const productPromises = notifications.map((notification) => fetchProductById(token, notification.productId))
-      const fetchedProducts = await Promise.all(productPromises)
-      const fetchedProductImages = fetchedProducts.map((product) => product.images[0].url)
-      const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
-      const fetchedUser = await Promise.all(userPromises)
-      const fetchedUserImages = fetchedUser.map((user) => user.image)
-
-      setProductImages(fetchedProductImages)
-      setUserImages(fetchedUserImages)
+      try {
+        const productPromises = notifications.map((notification) => fetchProductById(token, notification.productId))
+        const fetchedProducts = await Promise.all(productPromises)
+        const fetchedProductImages = fetchedProducts.map((product) => product.images[0].url)
+        const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
+        const fetchedUser = await Promise.all(userPromises)
+        const fetchedUserImages = fetchedUser.map((user) => user.image)
+        setProductImages(fetchedProductImages)
+        setUserImages(fetchedUserImages)
+      } catch (error) {
+        console.log(error)
+      }
 
       setLoading(false)
     }
