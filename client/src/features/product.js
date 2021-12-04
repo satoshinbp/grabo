@@ -24,6 +24,12 @@ export const setProductsByGroup = createAsyncThunk('products/setByGroup', async 
   return lodash.flatten(products)
 })
 
+export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, id }) => {
+  const product = await fetchProductById(token, id)
+  RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
+  return product
+})
+
 export const setProductsByUserId = createAsyncThunk('products/setByUserId', async ({ token, userId }) => {
   const fetchedProducts = await fetchProductsByUserId(token, userId)
   const products = fetchedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -196,6 +202,13 @@ const productSlice = createSlice({
     [setProductsByGroup.pending]: (state) => startLoading(state),
     [setProductsByGroup.rejected]: (state) => finishLoading(state),
     [setProductsByGroup.fulfilled]: (state, action) => setProducts(state, 'groupedProducts', action.payload),
+
+    [setProductFromNotification.pending]: (state) => startLoading(state),
+    [setProductFromNotification.rejected]: (state) => finishLoading(state),
+    [setProductFromNotification.fulfilled]: (state, action) => {
+      state.groupedProducts.push(action.payload)
+      state.loading = false
+    },
 
     [setProductsByUserId.pending]: (state) => startLoading(state),
     [setProductsByUserId.rejected]: (state) => finishLoading(state),
