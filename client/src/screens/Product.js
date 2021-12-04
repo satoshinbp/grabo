@@ -380,7 +380,7 @@ export default () => {
       </FormControl>
     ) : modalContentType === 'answer' ? (
       <FormControl>
-        <FormControl.Label>{answerFormParams?.question}</FormControl.Label>
+        <FormControl.Label>{answerFormParams?.description}</FormControl.Label>
         <TextArea
           placeholder="Write your answer here"
           blurOnSubmit
