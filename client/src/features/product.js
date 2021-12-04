@@ -89,7 +89,8 @@ export const createProduct = createAsyncThunk(
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-    RootNavigation.navigate('MyProductsTab')
+    // RootNavigation.navigate('MyProductsTab')
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
 
     return product
   }
