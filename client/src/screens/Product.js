@@ -241,7 +241,7 @@ export default () => {
     const isFavored = product?.favoredUserIds.includes(user._id)
     const params = { productId: product?._id, userId: user._id }
     if (isFavored) {
-      dispatch(unsaveProduct({ token, params }))
+      dispatch(unsaveProduct({ token, route: route.name, params }))
     } else {
       dispatch(saveProduct({ token, params }))
     }

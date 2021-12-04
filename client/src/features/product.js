@@ -121,9 +121,11 @@ export const saveProduct = createAsyncThunk('products/save', async ({ token, par
   return product
 })
 
-export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, params }) => {
+export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, route, params }) => {
   const product = await deleteUserFromFavorite(token, params)
-  RootNavigation.navigate('Favorites')
+  if (route === 'Favorite') {
+    RootNavigation.navigate('Favorites')
+  }
   return product
 })
 
