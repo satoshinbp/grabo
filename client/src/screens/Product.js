@@ -45,7 +45,6 @@ const windowHeight = Dimensions.get('window').height
 
 export default () => {
   const route = useRoute()
-  const navigation = useNavigation()
   const isFocused = useIsFocused()
 
   const { colors } = useTheme()
@@ -76,27 +75,15 @@ export default () => {
     switch (route.name) {
       case 'GroupProduct':
         const groupedProduct = groupedProducts.find((product) => product._id === route.params.id)
-        if (!groupedProduct) {
-          navigation.goBack()
-        } else {
-          setProduct(sortQuestionsByHighlight(groupedProduct))
-        }
+        setProduct(sortQuestionsByHighlight(groupedProduct))
         break
       case 'MyProduct':
         const postedProduct = postedProducts.find((product) => product._id === route.params.id)
-        if (!postedProduct) {
-          navigation.goBack()
-        } else {
-          setProduct(sortQuestionsByHighlight(postedProduct))
-        }
+        setProduct(sortQuestionsByHighlight(postedProduct))
         break
       case 'Favorite':
         const savedProduct = savedProducts.find((product) => product._id === route.params.id)
-        if (!savedProduct) {
-          navigation.goBack()
-        } else {
-          setProduct(sortQuestionsByHighlight(savedProduct))
-        }
+        setProduct(sortQuestionsByHighlight(savedProduct))
         break
       default:
         break
@@ -104,15 +91,10 @@ export default () => {
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('tabPress', getProduct)
-    return unsubscribe
-  }, [navigation])
-
-  useEffect(() => {
-    if (!loading) {
+    if (!loading && isFocused) {
       getProduct()
     }
-  }, [loading])
+  }, [loading, isFocused])
 
   // SET UP MODAL FORM
   const setQuestionForm = () => {
@@ -419,7 +401,7 @@ export default () => {
       ? submitReport
       : null
 
-  if (loading || !product) return <Loading />
+  if (!product || !isFocused) return <Loading />
   return (
     <>
       <View height={windowHeight * 0.3} position="relative" bg="primary.100">

@@ -32,7 +32,6 @@ export default () => {
 
   const { token, user } = useSelector((state) => state.auth)
   const { texts, uris, code } = useSelector((state) => state.image.value)
-  const { loading } = useSelector((state) => state.product)
   const dispatch = useDispatch()
 
   const [highlitedQuestions, setHighlitedQuestions] = useState([])

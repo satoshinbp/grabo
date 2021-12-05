@@ -103,7 +103,7 @@ export const createProduct = createAsyncThunk(
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-    RootNavigation.navigate('MyProductsTab')
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProducts' })
     // Shall be navigated to specific product screen, but below code might navigate to a wrong product screen
     // RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
 

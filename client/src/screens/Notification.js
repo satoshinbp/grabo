@@ -51,6 +51,7 @@ export default () => {
     // Better to restructure data model in future
     if (message.includes('Help')) {
       if (groupedProducts.map((product) => product._id).includes(productId)) {
+        console.log(productId)
         navigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: productId } })
       } else {
         alert("Since you have left the group, you don't have access to this product.")
