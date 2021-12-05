@@ -18,6 +18,7 @@ import {
   Button,
   Checkbox,
   useTheme,
+  Box,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -269,7 +270,8 @@ export default () => {
                     {question.answers.length > 1 ? ' answers' : ' answer'}
                   </Text>
                   <HStack
-                    py={2}
+                    pt={3}
+                    pb={2}
                     paddingRight={2}
                     flexDirection="row"
                     justifyContent="space-between"
@@ -307,30 +309,39 @@ export default () => {
                       }
                       w="120px"
                     >
-                      <Text>Answer</Text>
+                      Answer
                     </Button>
+                    {/* dammy box: in order to put answer button in the center  */}
+                    <Box w={type === 'uniq' ? '36px' : '0'}></Box>
                   </HStack>
                 </VStack>
-
                 <Accordion.Icon />
               </HStack>
             </Accordion.Summary>
             <Accordion.Details
               m={0}
               p={0}
-              backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
+              bg={{
+                linearGradient: {
+                  colors: ['rgba(255, 200, 20, 0.8)', '#FFFFFF'],
+                  start: [0, 0],
+                  end: [0, 1],
+                },
+              }}
             >
               {question.answers.map((answer) => (
                 <>
-                  <VStack p={4}>
-                    <Text pb={2}>{answer?.description}</Text>
+                  <HStack p={4} justifyContent="space-between">
+                    <Text pb={2} style={{ flex: 1, flexWrap: 'wrap' }}>
+                      {answer?.description}
+                    </Text>
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
                       <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer._id)}>
                         <ReportRedIcon width="22px" />
                       </Pressable>
                     </HStack>
-                  </VStack>
+                  </HStack>
                   <Divider bg="white" w="100%" />
                 </>
               ))}
