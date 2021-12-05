@@ -64,33 +64,35 @@ export default () => {
   return notifications.length > 0 ? (
     <ScrollView>
       <View variant="wrapper">
-        {notifications.map((notification, index) => (
-          <ListItemBar
-            key={index}
-            text={notification.message}
-            icon={
-              <Avatar
-                source={{ uri: userImages[index] }}
-                size={10}
-                alt="user portrait"
-                position="relative"
-                alignSelf="center"
-                borderRadius="full"
-              />
-            }
-            subIcon={
-              <Avatar
-                source={{ uri: productImages[index] }}
-                size={10}
-                alt="user portrait"
-                position="relative"
-                alignSelf="center"
-              />
-            }
-            onPress={() => onPress(notification)}
-            textColor={notification.read ? 'muted.300' : 'black'}
-          />
-        ))}
+        {notifications
+          .map((notification, index) => (
+            <ListItemBar
+              key={index}
+              text={notification.message}
+              icon={
+                <Avatar
+                  source={{ uri: userImages[index] }}
+                  size={10}
+                  alt="user portrait"
+                  position="relative"
+                  alignSelf="center"
+                  borderRadius="full"
+                />
+              }
+              subIcon={
+                <Avatar
+                  source={{ uri: productImages[index] }}
+                  size={10}
+                  alt="user portrait"
+                  position="relative"
+                  alignSelf="center"
+                />
+              }
+              onPress={() => onPress(notification)}
+              textColor={notification.read ? 'muted.300' : 'black'}
+            />
+          ))
+          .reverse()}
       </View>
     </ScrollView>
   ) : (
