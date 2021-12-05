@@ -50,13 +50,13 @@ export const setProductFromNotification = createAsyncThunk('products/setById', a
   return { product: product, type: type.includes('waiting') }
 })
 
-const sendPushNotification = async (expoPushToken, productId) => {
+const sendPushNotification = async (expoPushToken, productId, userId) => {
   const message = {
     to: expoPushToken,
     sound: 'default',
     title: 'Help',
     body: 'Someone is waiting for your help!',
-    data: { productId: productId },
+    data: { productId: productId, userId: userId },
   }
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -99,7 +99,9 @@ export const createProduct = createAsyncThunk(
 
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
-    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token, product._id))
+    const notificationPromises = notificationTokens.map((token) =>
+      sendPushNotification(token, product._id, auth.user._id)
+    )
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
@@ -209,6 +211,9 @@ const productSlice = createSlice({
 
       state[productsType] = productsWithHighlightSum.sort((a, b) => b.highlightSum - a.highlightSum)
     },
+    addProducts: (state, action) => {
+      state.groupedProducts.push(action.payload)
+    },
   },
   extraReducers: {
     [setProductsByGroup.pending]: (state) => startLoading(state),
@@ -273,5 +278,5 @@ const productSlice = createSlice({
   },
 })
 
-export const { sortProductsByDate, sortProductsByHighlight } = productSlice.actions
+export const { sortProductsByDate, sortProductsByHighlight, addProducts } = productSlice.actions
 export default productSlice.reducer
