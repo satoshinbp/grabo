@@ -227,7 +227,7 @@ const productSlice = createSlice({
     [setProductFromNotification.rejected]: (state) => finishLoading(state),
     [setProductFromNotification.fulfilled]: (state, action) => {
       if (action.payload.type) {
-        state.groupedProducts.push(action.payload.product)
+        state.groupedProducts.unshift(action.payload.product)
       } else {
         updateProduct(state, action.payload.product)
       }
@@ -237,7 +237,7 @@ const productSlice = createSlice({
     [createProduct.pending]: (state) => startLoading(state),
     [createProduct.rejected]: (state) => finishLoading(state),
     [createProduct.fulfilled]: (state, action) => {
-      state.postedProducts.push(action.payload)
+      state.postedProducts.unshift(action.payload)
       state.loading = false
     },
 
@@ -260,7 +260,7 @@ const productSlice = createSlice({
     [saveProduct.pending]: (state) => startLoading(state),
     [saveProduct.rejected]: (state) => finishLoading(state),
     [saveProduct.fulfilled]: (state, action) => {
-      state.savedProducts.push(action.payload)
+      state.savedProducts.unshift(action.payload)
       updateProduct(state, action.payload)
     },
 

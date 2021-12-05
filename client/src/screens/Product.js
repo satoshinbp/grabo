@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute, useNavigation } from '@react-navigation/core'
+import { useIsFocused } from '@react-navigation/native'
 import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
@@ -45,6 +46,7 @@ const windowHeight = Dimensions.get('window').height
 export default () => {
   const route = useRoute()
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
 
   const { colors } = useTheme()
 
@@ -81,7 +83,6 @@ export default () => {
         }
         break
       case 'MyProduct':
-        console.log(route.params.id)
         const postedProduct = postedProducts.find((product) => product._id === route.params.id)
         if (!postedProduct) {
           navigation.goBack()
@@ -104,7 +105,6 @@ export default () => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('tabPress', getProduct)
-
     return unsubscribe
   }, [navigation])
 
@@ -419,7 +419,7 @@ export default () => {
       ? submitReport
       : null
 
-  if (!product) return <Loading />
+  if (loading || !product) return <Loading />
   return (
     <>
       <View height={windowHeight * 0.3} position="relative" bg="primary.100">
