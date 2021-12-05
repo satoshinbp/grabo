@@ -1,11 +1,27 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { signInWithGoogle, fetchUserByToken, patchUser, setNotificationTrue } from '../api/auth'
+import { signInWithGoogle, fetchUserByToken, fetchUserById, patchUser, setNotificationTrue } from '../api/auth'
+import { fetchProductById } from '../api/product'
 
 export const setUser = createAsyncThunk('users/fetch', async (token) => {
   const user = await fetchUserByToken(token)
-  return { token, user }
+  if (user.notifications.length === 0) return { token, user, notifications: [] }
+
+  const productPromises = user.notifications.map((notification) => fetchProductById(token, notification.productId))
+  const fetchedProducts = await Promise.all(productPromises)
+  const fetchedProductImages = fetchedProducts.map((product) => product.images[0].url)
+  const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
+  const fetchedUser = await Promise.all(userPromises)
+  const fetchedUserImages = fetchedUser.map((user) => user.image)
+
+  const notifications = user.notifications.map((notification, index) => ({
+    ...notification,
+    userImage: fetchedUserImages[index],
+    productImage: fetchedProductImages[index],
+  }))
+
+  return { token, user, notifications }
 })
 
 export const login = createAsyncThunk('users/login', async (idToken) => {
@@ -50,6 +66,7 @@ const authSlice = createSlice({
     loading: false,
     token: null,
     user: initialUserState,
+    notifications: [],
     isReady: false,
     signingIn: false,
     signingOut: false,
@@ -66,6 +83,7 @@ const authSlice = createSlice({
     [setUser.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
+      state.notifications = action.payload.notifications
       state.isReady = true
     },
     [setUser.rejected]: (state) => {
