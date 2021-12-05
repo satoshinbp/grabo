@@ -30,7 +30,7 @@ export default () => {
 
   return notifications.length > 0 ? (
     <ScrollView>
-      <View variant="wrapper">
+      <View variant="wrapper" py={2}>
         {notifications
           .map((notification, index) => (
             <ListItemBar
@@ -43,14 +43,13 @@ export default () => {
                   alt="user portrait"
                   position="relative"
                   alignSelf="center"
-                  borderRadius="full"
                 />
               }
               subIcon={
                 <Avatar
                   source={{ uri: notification.productImage }}
                   size={10}
-                  alt="user portrait"
+                  alt="product image"
                   position="relative"
                   alignSelf="center"
                 />
