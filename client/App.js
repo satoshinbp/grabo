@@ -22,6 +22,12 @@ const store = createStore(
   applyMiddleware(thunk)
 )
 
+const config = {
+  dependencies: {
+    'linear-gradient': require('expo-linear-gradient').LinearGradient,
+  },
+}
+
 export default () => {
   const theme = extendTheme({
     colors: {
@@ -170,7 +176,6 @@ export default () => {
         sizes: {
           fixed: {
             w: '232px',
-            px: '2',
             py: '2',
             _text: {
               fontSize: 'sm',
@@ -200,7 +205,7 @@ export default () => {
 
   return (
     <Provider store={store}>
-      <NativeBaseProvider theme={theme}>
+      <NativeBaseProvider theme={theme} config={config}>
         <NavigationContainer ref={navigationRef}>
           <AppContainer />
         </NavigationContainer>
