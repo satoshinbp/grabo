@@ -160,13 +160,13 @@ export default () => {
 
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
 
-    const sendPushNotification = async (expoPushToken, productId) => {
+    const sendPushNotification = async (expoPushToken, productId, userId) => {
       const message = {
         to: expoPushToken,
         sound: 'default',
         title: 'Got Answer!',
         body: 'Someone answered your highlighted qusetion!',
-        data: { productId: productId },
+        data: { productId: productId, userId: userId },
       }
 
       await fetch('https://exp.host/--/api/v2/push/send', {
@@ -181,7 +181,7 @@ export default () => {
     }
 
     notificationTokens.forEach(async (token) => {
-      await sendPushNotification(token, product._id)
+      await sendPushNotification(token, product._id, user._id)
     })
 
     setAnswer(null)

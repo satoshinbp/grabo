@@ -76,7 +76,8 @@ const authSlice = createSlice({
       state.isReady = true
     },
     addNotification: (state, action) => {
-      state.user.notifications.push(action.payload)
+      state.notifications.push(action.payload)
+      // console.log(state.user.notifications)
     },
   },
   extraReducers: {
