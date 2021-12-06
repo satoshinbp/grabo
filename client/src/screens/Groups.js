@@ -1,16 +1,12 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { ScrollView, View, Button, Heading } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
-import Loading from '../components/Loading'
 import GroupList from '../components/GroupList'
 
 export default () => {
   const navigation = useNavigation()
-  const { loading } = useSelector((state) => state.auth)
 
-  if (loading) return <Loading />
   return (
     <>
       <ScrollView>

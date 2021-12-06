@@ -1,22 +1,38 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as SecureStore from 'expo-secure-store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { signInWithGoogle, fetchUser, patchUser, setNotificationTrue } from '../api/auth'
+import { signInWithGoogle, fetchUserByToken, fetchUserById, patchUser, setNotificationTrue } from '../api/auth'
+import { fetchProductById } from '../api/product'
 
 export const setUser = createAsyncThunk('users/fetch', async (token) => {
-  const user = await fetchUser(token)
-  return { user, token }
+  const user = await fetchUserByToken(token)
+  if (user.notifications.length === 0) return { token, user, notifications: [] }
+
+  const productPromises = user.notifications.map((notification) => fetchProductById(token, notification.productId))
+  const fetchedProducts = await Promise.all(productPromises)
+  const fetchedProductImages = fetchedProducts.map((product) => product.images[0].url)
+  const userPromises = fetchedProducts.map((product) => fetchUserById(token, product.userId))
+  const fetchedUser = await Promise.all(userPromises)
+  const fetchedUserImages = fetchedUser.map((user) => user.image)
+
+  const notifications = user.notifications.map((notification, index) => ({
+    ...notification,
+    userImage: fetchedUserImages[index],
+    productImage: fetchedProductImages[index],
+  }))
+
+  return { token, user, notifications }
 })
 
 export const login = createAsyncThunk('users/login', async (idToken) => {
-  const { user, token } = await signInWithGoogle(idToken)
+  const { token, user } = await signInWithGoogle(idToken)
   await SecureStore.setItemAsync('token', token)
-  return { user, token }
+  return { token, user }
 })
 
 export const logout = createAsyncThunk('users/logout', async () => {
   await SecureStore.deleteItemAsync('token')
-  AsyncStorage.clear() // This is to test onboarding slides.
+  AsyncStorage.clear() // This is to show onboarding slides on demo.
 })
 
 export const updateUser = createAsyncThunk('users/update', async ({ token, id, params }) => {
@@ -28,7 +44,7 @@ export const readNotification = createAsyncThunk(
   'users/notification',
   async ({ token, userId, notificationId, params }) => {
     const user = await setNotificationTrue(token, userId, notificationId, params)
-    return user
+    return { user, notificationId }
   }
 )
 
@@ -47,9 +63,10 @@ const initialUserState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: initialUserState,
-    token: null,
     loading: false,
+    token: null,
+    user: initialUserState,
+    notifications: [],
     isReady: false,
     signingIn: false,
     signingOut: false,
@@ -58,17 +75,23 @@ const authSlice = createSlice({
     setAppReady: (state) => {
       state.isReady = true
     },
+    addNotification: (state, action) => {
+      state.notifications.push(action.payload)
+      // console.log(state.user.notifications)
+    },
   },
   extraReducers: {
     [setUser.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.token = action.payload.token
+      state.notifications = action.payload.notifications
       state.isReady = true
     },
     [setUser.rejected]: (state) => {
       state.error = true
       state.isReady = true
     },
+
     [login.pending]: (state) => {
       state.signingIn = true
     },
@@ -81,6 +104,7 @@ const authSlice = createSlice({
     [login.rejected]: (state) => {
       state.signingIn = false
     },
+
     [logout.pending]: (state) => {
       state.signingOut = true
     },
@@ -92,6 +116,7 @@ const authSlice = createSlice({
     [logout.rejected]: (state) => {
       state.signingOut = false
     },
+
     [updateUser.pending]: (state) => {
       state.loading = true
     },
@@ -102,11 +127,14 @@ const authSlice = createSlice({
     [updateUser.rejected]: (state) => {
       state.loading = false
     },
+
     [readNotification.pending]: (state) => {
       state.loading = true
     },
     [readNotification.fulfilled]: (state, action) => {
-      state.user = action.payload
+      state.user = action.payload.user
+      const index = state.notifications.findIndex((notification) => notification._id === action.payload.notificationId)
+      state.notifications[index].read = true
       state.loading = false
     },
     [readNotification.rejected]: (state) => {
@@ -115,5 +143,5 @@ const authSlice = createSlice({
   },
 })
 
-export const { setAppReady } = authSlice.actions
+export const { setAppReady, addNotification } = authSlice.actions
 export default authSlice.reducer
