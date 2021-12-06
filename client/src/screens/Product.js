@@ -166,7 +166,7 @@ export default () => {
         sound: 'default',
         title: 'Got Answer!',
         body: 'Someone answered your highlighted qusetion!',
-        data: { productId: productId, userId: userId },
+        data: { productId, userId },
       }
 
       await fetch('https://exp.host/--/api/v2/push/send', {

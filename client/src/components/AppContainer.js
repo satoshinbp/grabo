@@ -106,37 +106,23 @@ export default () => {
       registerForPushNotifications().then((expotoken) => {
         // Listen to receive notification while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(async (notification) => {
-          // console.log(notification)
-
           const postUser = await fetchUserById(token, notification.request.content.data.userId)
           const notifiedUser = await fetchUserById(token, user?._id)
           const product = await fetchProductById(token, notification.request.content.data.productId)
 
-          if (notification.request.content.body.includes('help')) {
-            dispatch(
-              addNotification({
-                _id: notifiedUser.notifications.slice(-1)[0]._id,
-                read: false,
-                message: `Help ${postUser.firstName} to find this product`,
-                productId: notification.request.content.data.productId,
-                userImage: postUser.image,
-                productImage: product.images[0].url,
-              })
-            )
-            dispatch(addProducts(product))
-          } else {
-            dispatch(
-              addNotification({
-                _id: notifiedUser.notifications.slice(-1)[0]._id,
-                read: false,
-                message: `${postUser.firstName} answered your highlighted question`,
-                productId: notification.request.content.data.productId,
-                userImage: postUser.image,
-                productImage: product.images[0].url,
-              })
-            )
-            dispatch(addProducts(product))
-          }
+          dispatch(
+            addNotification({
+              _id: notifiedUser.notifications.slice(-1)[0]._id,
+              read: false,
+              message: notification.request.content.body.includes('help')
+                ? `Help ${postUser.firstName} to find this product`
+                : `${postUser.firstName} answered your highlighted question`,
+              productId: notification.request.content.data.productId,
+              userImage: postUser.image,
+              productImage: product.images[0].url,
+            })
+          )
+          dispatch(addProducts(product))
         })
 
         // Listen for the user to tap on or interact with a notification while the app is foregrounded, backgrounded, or killed

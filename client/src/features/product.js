@@ -56,7 +56,7 @@ const sendPushNotification = async (expoPushToken, productId, userId) => {
     sound: 'default',
     title: 'Help',
     body: 'Someone is waiting for your help!',
-    data: { productId: productId, userId: userId },
+    data: { productId, userId },
   }
 
   await fetch('https://exp.host/--/api/v2/push/send', {
