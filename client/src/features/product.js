@@ -11,6 +11,7 @@ import {
   deleteUserFromHighlight,
   postUserToFavorite,
   deleteUserFromFavorite,
+  fetchProductById,
 } from '../api/product'
 import { postImage } from '../api/image'
 import { patchUser } from '../api/auth'
@@ -36,13 +37,26 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   return products
 })
 
-const sendPushNotification = async (expoPushToken) => {
+export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, productId }) => {
+  const product = await fetchProductById(token, id)
+
+  // This is temporary solution to judge where to navigate
+  // Better to restructure data model in future
+  if (type.includes('waiting')) {
+    RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: productId } })
+  } else {
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: productId } })
+  }
+  return { product, type: type.includes('waiting') }
+})
+
+const sendPushNotification = async (expoPushToken, productId, userId) => {
   const message = {
     to: expoPushToken,
     sound: 'default',
     title: 'Help',
     body: 'Someone is waiting for your help!',
-    data: { someData: 'goes here' },
+    data: { productId, userId },
   }
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -85,11 +99,15 @@ export const createProduct = createAsyncThunk(
 
     const notifiedUsers = fetchedUsers.filter((user) => user.isNotificationOn)
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
-    const notificationPromises = notificationTokens.map((token) => sendPushNotification(token))
+    const notificationPromises = notificationTokens.map((token) =>
+      sendPushNotification(token, product._id, auth.user._id)
+    )
     await Promise.all(notificationPromises)
 
     dispatch(clearImage())
-    RootNavigation.navigate('MyProductsTab')
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProducts' })
+    // Shall be navigated to specific product screen, but below code might navigate to a wrong product screen
+    // RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: product._id } })
 
     return product
   }
@@ -120,9 +138,11 @@ export const saveProduct = createAsyncThunk('products/save', async ({ token, par
   return product
 })
 
-export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, params }) => {
+export const unsaveProduct = createAsyncThunk('products/unsave', async ({ token, route, params }) => {
   const product = await deleteUserFromFavorite(token, params)
-  RootNavigation.navigate('Favorites')
+  if (route === 'Favorite') {
+    RootNavigation.navigate('Favorites')
+  }
   return product
 })
 
@@ -191,6 +211,9 @@ const productSlice = createSlice({
 
       state[productsType] = productsWithHighlightSum.sort((a, b) => b.highlightSum - a.highlightSum)
     },
+    addGroupedProduct: (state, action) => {
+      state.groupedProducts.push(action.payload)
+    },
   },
   extraReducers: {
     [setProductsByGroup.pending]: (state) => startLoading(state),
@@ -205,10 +228,21 @@ const productSlice = createSlice({
     [setProductsByFavoredUserId.rejected]: (state) => finishLoading(state),
     [setProductsByFavoredUserId.fulfilled]: (state, action) => setProducts(state, 'savedProducts', action.payload),
 
+    [setProductFromNotification.pending]: (state) => startLoading(state),
+    [setProductFromNotification.rejected]: (state) => finishLoading(state),
+    [setProductFromNotification.fulfilled]: (state, action) => {
+      if (action.payload.type) {
+        state.groupedProducts.unshift(action.payload.product)
+      } else {
+        updateProduct(state, action.payload.product)
+      }
+      state.loading = false
+    },
+
     [createProduct.pending]: (state) => startLoading(state),
     [createProduct.rejected]: (state) => finishLoading(state),
     [createProduct.fulfilled]: (state, action) => {
-      state.postedProducts.push(action.payload)
+      state.postedProducts.unshift(action.payload)
       state.loading = false
     },
 
@@ -231,7 +265,7 @@ const productSlice = createSlice({
     [saveProduct.pending]: (state) => startLoading(state),
     [saveProduct.rejected]: (state) => finishLoading(state),
     [saveProduct.fulfilled]: (state, action) => {
-      state.savedProducts.push(action.payload)
+      state.savedProducts.unshift(action.payload)
       updateProduct(state, action.payload)
     },
 
@@ -244,5 +278,5 @@ const productSlice = createSlice({
   },
 })
 
-export const { sortProductsByDate, sortProductsByHighlight } = productSlice.actions
+export const { sortProductsByDate, sortProductsByHighlight, addGroupedProduct } = productSlice.actions
 export default productSlice.reducer

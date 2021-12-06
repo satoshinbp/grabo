@@ -5,9 +5,16 @@ import * as Notifications from 'expo-notifications'
 import * as SecureStore from 'expo-secure-store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
-import { patchUser } from '../api/auth'
-import { setAppReady, setUser } from '../features/auth'
-import { setProductsByGroup, setProductsByUserId, setProductsByFavoredUserId } from '../features/product'
+import { fetchUserById, patchUser } from '../api/auth'
+import { fetchProductById } from '../api/product'
+import { setAppReady, setUser, addNotification } from '../features/auth'
+import {
+  setProductsByGroup,
+  setProductsByUserId,
+  setProductsByFavoredUserId,
+  setProductFromNotification,
+  addGroupedProduct,
+} from '../features/product'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
 import Login from '../screens/Login'
@@ -25,10 +32,11 @@ Notifications.setNotificationHandler({
 export default () => {
   const dispatch = useDispatch()
   const { token, isReady, signingIn, signingOut, user } = useSelector((state) => state.auth)
-  const [isFirstLaunch, setIsFirstLaunch] = useState(false)
-  const [notification, setNotification] = useState(false)
+
   const notificationListener = useRef()
   const responseListener = useRef()
+
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false)
 
   const registerForPushNotifications = async () => {
     let token
@@ -95,16 +103,41 @@ export default () => {
       dispatch(setProductsByUserId({ token, userId: user?._id }))
       dispatch(setProductsByFavoredUserId({ token, userId: user?._id }))
 
-      // notificationの確認
       registerForPushNotifications().then((expotoken) => {
-        // This listener is fired whenever a notification is received while the app is foregrounded
-        notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification)
+        // Listen to receive notification while the app is foregrounded
+        notificationListener.current = Notifications.addNotificationReceivedListener(async (notification) => {
+          const postUser = await fetchUserById(token, notification.request.content.data.userId)
+          const notifiedUser = await fetchUserById(token, user?._id)
+          const product = await fetchProductById(token, notification.request.content.data.productId)
+
+          dispatch(
+            addNotification({
+              _id: notifiedUser.notifications.slice(-1)[0]._id,
+              read: false,
+              message: notification.request.content.body.includes('help')
+                ? `Help ${postUser.firstName} to find this product`
+                : `${postUser.firstName} answered your highlighted question`,
+              productId: notification.request.content.data.productId,
+              userImage: postUser.image,
+              productImage: product.images[0].url,
+            })
+          )
+
+          if (notification.request.content.body.includes('help')) {
+            dispatch(addGroupedProduct(product))
+          }
         })
 
-        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+        // Listen for the user to tap on or interact with a notification while the app is foregrounded, backgrounded, or killed
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response)
+          console.log(response.notification.request.content)
+          dispatch(
+            setProductFromNotification({
+              token,
+              type: response.notification.request.content.body,
+              productId: response.notification.request.content.data.productId,
+            })
+          )
         })
         const params = {
           notificationToken: expotoken,

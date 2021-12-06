@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRoute, useNavigation } from '@react-navigation/core'
+import { useIsFocused } from '@react-navigation/native'
 import { Dimensions, Keyboard } from 'react-native'
 import {
   View,
@@ -19,6 +20,7 @@ import {
   Checkbox,
   AddIcon,
   useTheme,
+  Box,
 } from 'native-base'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -29,7 +31,7 @@ import {
   saveProduct,
   unsaveProduct,
 } from '../features/product'
-import { reportQuestion, reportAnswer } from '../api/product'
+import { reportAnswer } from '../api/product'
 import { fetchUserById, patchUser } from '../api/auth'
 import reportOptions from '../utils/reports'
 import Loading from '../components/Loading'
@@ -44,7 +46,7 @@ const windowHeight = Dimensions.get('window').height
 
 export default () => {
   const route = useRoute()
-  const navigation = useNavigation()
+  const isFocused = useIsFocused()
 
   const { colors } = useTheme()
 
@@ -64,8 +66,8 @@ export default () => {
 
   const sortQuestionsByHighlight = (product) => {
     const clonedProduct = cloneDeep(product)
-    clonedProduct.fixedQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
-    clonedProduct.uniqQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    clonedProduct?.fixedQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
+    clonedProduct?.uniqQandAs.sort((a, b) => b.highlightedBy.length - a.highlightedBy.length)
     return clonedProduct
   }
 
@@ -74,28 +76,15 @@ export default () => {
     switch (route.name) {
       case 'GroupProduct':
         const groupedProduct = groupedProducts.find((product) => product._id === route.params.id)
-        if (!groupedProduct) {
-          navigation.goBack()
-        } else {
-          setProduct(sortQuestionsByHighlight(groupedProduct))
-        }
+        setProduct(sortQuestionsByHighlight(groupedProduct))
         break
       case 'MyProduct':
-        console.log(route.params.id)
         const postedProduct = postedProducts.find((product) => product._id === route.params.id)
-        if (!postedProduct) {
-          navigation.goBack()
-        } else {
-          setProduct(sortQuestionsByHighlight(postedProduct))
-        }
+        setProduct(sortQuestionsByHighlight(postedProduct))
         break
       case 'Favorite':
         const savedProduct = savedProducts.find((product) => product._id === route.params.id)
-        if (!savedProduct) {
-          navigation.goBack()
-        } else {
-          setProduct(sortQuestionsByHighlight(savedProduct))
-        }
+        setProduct(sortQuestionsByHighlight(savedProduct))
         break
       default:
         break
@@ -103,12 +92,10 @@ export default () => {
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('tabPress', getProduct)
-
-    return unsubscribe
-  }, [navigation])
-
-  useEffect(getProduct, [loading])
+    if (!loading && isFocused) {
+      getProduct()
+    }
+  }, [loading, isFocused])
 
   // SET UP MODAL FORM
   const setQuestionForm = () => {
@@ -173,13 +160,13 @@ export default () => {
 
     const notificationTokens = notifiedUsers.map((user) => user.notificationToken)
 
-    const sendPushNotification = async (expoPushToken) => {
+    const sendPushNotification = async (expoPushToken, productId, userId) => {
       const message = {
         to: expoPushToken,
         sound: 'default',
         title: 'Got Answer!',
         body: 'Someone answered your highlighted qusetion!',
-        data: { someData: 'goes here' },
+        data: { productId, userId },
       }
 
       await fetch('https://exp.host/--/api/v2/push/send', {
@@ -194,7 +181,7 @@ export default () => {
     }
 
     notificationTokens.forEach(async (token) => {
-      await sendPushNotification(token)
+      await sendPushNotification(token, product._id, user._id)
     })
 
     setAnswer(null)
@@ -237,7 +224,7 @@ export default () => {
     const isFavored = product?.favoredUserIds.includes(user._id)
     const params = { productId: product?._id, userId: user._id }
     if (isFavored) {
-      dispatch(unsaveProduct({ token, params }))
+      dispatch(unsaveProduct({ token, route: route.name, params }))
     } else {
       dispatch(saveProduct({ token, params }))
     }
@@ -276,7 +263,8 @@ export default () => {
                     {question.answers.length > 1 ? ' answers' : ' answer'}
                   </Text>
                   <HStack
-                    py={2}
+                    pt={3}
+                    pb={2}
                     paddingRight={2}
                     flexDirection="row"
                     justifyContent="space-between"
@@ -314,30 +302,39 @@ export default () => {
                       }
                       w="120px"
                     >
-                      <Text>Answer</Text>
+                      Answer
                     </Button>
+                    {/* dammy box: in order to put answer button in the center  */}
+                    <Box w={type === 'uniq' ? '36px' : '0'}></Box>
                   </HStack>
                 </VStack>
-
                 <Accordion.Icon />
               </HStack>
             </Accordion.Summary>
             <Accordion.Details
               m={0}
               p={0}
-              backgroundColor="linear-gradient(180deg, rgba(255, 200, 20, 0.52) 0%, rgba(255, 255, 255, 0.8) 85.42%);"
+              bg={{
+                linearGradient: {
+                  colors: ['rgba(255, 200, 20, 0.8)', '#FFFFFF'],
+                  start: [0, 0],
+                  end: [0, 1],
+                },
+              }}
             >
               {question.answers.map((answer) => (
                 <>
-                  <VStack p={4}>
-                    <Text pb={2}>{answer?.description}</Text>
+                  <HStack p={4} justifyContent="space-between">
+                    <Text pb={2} style={{ flex: 1, flexWrap: 'wrap' }}>
+                      {answer?.description}
+                    </Text>
                     <HStack space={2} alignItems="center">
                       {/* <Avatar size={7} alt="user portrait" borderRadius="full" /> */}
                       <Pressable variant="icon" onPress={() => setReportForm(type, question._id, answer._id)}>
                         <ReportRedIcon width="22px" />
                       </Pressable>
                     </HStack>
-                  </VStack>
+                  </HStack>
                   <Divider bg="white" w="100%" />
                 </>
               ))}
@@ -380,7 +377,7 @@ export default () => {
       </FormControl>
     ) : modalContentType === 'answer' ? (
       <FormControl>
-        <FormControl.Label>{answerFormParams?.question}</FormControl.Label>
+        <FormControl.Label>{answerFormParams?.description}</FormControl.Label>
         <TextArea
           placeholder="Write your answer here"
           blurOnSubmit
@@ -415,7 +412,7 @@ export default () => {
       ? submitReport
       : null
 
-  if (loading || !product) return <Loading />
+  if (!product || !isFocused) return <Loading />
   return (
     <>
       <View height={windowHeight * 0.3} position="relative" bg="primary.100">
