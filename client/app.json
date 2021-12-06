@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "client",
-    "slug": "client",
+    "name": "Grabo",
+    "slug": "Grabo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icons/logo-sm.png",
@@ -13,16 +13,21 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/icons/adaptive-icon.png",
+        "foregroundImage": "./src/assets/icons/logo-sm.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.satoshibp.grabo",
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyBsflWNX6b5_Dz7eE5UI4hvPmo4Mr7yuf8",
+          "certificateHash": "BE:E2:68:57:EA:F5:44:CE:15:32:B3:92:96:F2:83:39:E5:1C:BB:47"
+        }
       }
     },
     "web": {
