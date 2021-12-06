@@ -13,7 +13,7 @@ import {
   setProductsByUserId,
   setProductsByFavoredUserId,
   setProductFromNotification,
-  addProducts,
+  addGroupedProduct,
 } from '../features/product'
 import Tabs from '../navigators/Tabs'
 import Onboarding from '../screens/Onboarding'
@@ -122,16 +122,20 @@ export default () => {
               productImage: product.images[0].url,
             })
           )
-          dispatch(addProducts(product))
+
+          if (notification.request.content.body.includes('help')) {
+            dispatch(addGroupedProduct(product))
+          }
         })
 
         // Listen for the user to tap on or interact with a notification while the app is foregrounded, backgrounded, or killed
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response.notification.request.content)
           dispatch(
             setProductFromNotification({
               token,
               type: response.notification.request.content.body,
-              id: response.notification.request.content.data.productId,
+              productId: response.notification.request.content.data.productId,
             })
           )
         })

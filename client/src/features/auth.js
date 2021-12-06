@@ -44,7 +44,7 @@ export const readNotification = createAsyncThunk(
   'users/notification',
   async ({ token, userId, notificationId, params }) => {
     const user = await setNotificationTrue(token, userId, notificationId, params)
-    return user
+    return { user, notificationId }
   }
 )
 
@@ -132,7 +132,9 @@ const authSlice = createSlice({
       state.loading = true
     },
     [readNotification.fulfilled]: (state, action) => {
-      state.user = action.payload
+      state.user = action.payload.user
+      const index = state.notifications.findIndex((notification) => notification._id === action.payload.notificationId)
+      state.notifications[index].read = true
       state.loading = false
     },
     [readNotification.rejected]: (state) => {

@@ -37,17 +37,17 @@ export const setProductsByFavoredUserId = createAsyncThunk('products/setByFavore
   return products
 })
 
-export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, id }) => {
+export const setProductFromNotification = createAsyncThunk('products/setById', async ({ token, type, productId }) => {
   const product = await fetchProductById(token, id)
 
   // This is temporary solution to judge where to navigate
   // Better to restructure data model in future
   if (type.includes('waiting')) {
-    RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id } })
+    RootNavigation.navigate('GroupsTab', { screen: 'GroupProduct', params: { id: productId } })
   } else {
-    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id } })
+    RootNavigation.navigate('MyProductsTab', { screen: 'MyProduct', params: { id: productId } })
   }
-  return { product: product, type: type.includes('waiting') }
+  return { product, type: type.includes('waiting') }
 })
 
 const sendPushNotification = async (expoPushToken, productId, userId) => {
@@ -211,7 +211,7 @@ const productSlice = createSlice({
 
       state[productsType] = productsWithHighlightSum.sort((a, b) => b.highlightSum - a.highlightSum)
     },
-    addProducts: (state, action) => {
+    addGroupedProduct: (state, action) => {
       state.groupedProducts.push(action.payload)
     },
   },
@@ -278,5 +278,5 @@ const productSlice = createSlice({
   },
 })
 
-export const { sortProductsByDate, sortProductsByHighlight, addProducts } = productSlice.actions
+export const { sortProductsByDate, sortProductsByHighlight, addGroupedProduct } = productSlice.actions
 export default productSlice.reducer
