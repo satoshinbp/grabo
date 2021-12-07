@@ -13,9 +13,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -28,7 +26,7 @@
       "config": {
         "googleSignIn": {
           "apiKey": "AIzaSyBsflWNX6b5_Dz7eE5UI4hvPmo4Mr7yuf8",
-          "certificateHash": "BE:E2:68:57:EA:F5:44:CE:15:32:B3:92:96:F2:83:39:E5:1C:BB:47"
+          "certificateHash": "B26BFD39AE6564D879E117F68B34AC9AA52300AE"
         }
       }
     },
