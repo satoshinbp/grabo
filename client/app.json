@@ -21,13 +21,6 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/icons/logo-sm.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.satoshibp.grabo",
-      "config": {
-        "googleSignIn": {
-          "apiKey": "AIzaSyBsflWNX6b5_Dz7eE5UI4hvPmo4Mr7yuf8",
-          "certificateHash": "B26BFD39AE6564D879E117F68B34AC9AA52300AE"
-        }
       }
     },
     "web": {

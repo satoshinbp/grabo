@@ -15,6 +15,7 @@
     "@reduxjs/toolkit": "^1.6.2",
     "axios": "^0.22.0",
     "expo": "~42.0.1",
+    "expo-auth-session": "^3.4.2",
     "expo-camera": "~11.2.2",
     "expo-google-app-auth": "^8.2.2",
     "expo-image-picker": "~10.2.2",
